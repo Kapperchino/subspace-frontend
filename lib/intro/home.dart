@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'login.dart';
 
 class Home extends StatelessWidget {
-  Home({super.key});
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context) {

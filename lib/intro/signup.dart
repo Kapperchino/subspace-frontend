@@ -1,4 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:frontend/models/token.dart';
+import 'package:http/http.dart' as http;
+
+import '../stores/store.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -13,7 +19,7 @@ class _SignupState extends State<Signup> {
   final FocusNode _focusNodeEmail = FocusNode();
   final FocusNode _focusNodePassword = FocusNode();
   final FocusNode _focusNodeConfirmPassword = FocusNode();
-  final TextEditingController _controllerUsername = TextEditingController();
+  final TextEditingController _controllerDisplayName = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerConFirmPassword =
@@ -43,10 +49,10 @@ class _SignupState extends State<Signup> {
               ),
               const SizedBox(height: 35),
               TextFormField(
-                controller: _controllerUsername,
+                controller: _controllerDisplayName,
                 keyboardType: TextInputType.name,
                 decoration: InputDecoration(
-                  labelText: "Username",
+                  labelText: "Display Name",
                   prefixIcon: const Icon(Icons.person_outline),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -58,7 +64,7 @@ class _SignupState extends State<Signup> {
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
                     return "Please enter username.";
-                  } 
+                  }
                   return null;
                 },
                 onEditingComplete: () => _focusNodeEmail.requestFocus(),
@@ -168,9 +174,10 @@ class _SignupState extends State<Signup> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
-
+                        final token = await register();
+                        Store.secure.write(key: "jwt", value: token.token);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             width: 200,
@@ -210,12 +217,35 @@ class _SignupState extends State<Signup> {
     );
   }
 
+  Future<Token> register() async {
+    final res = await http.post(
+      Uri.parse('http://localhost:3000/auth/user'),
+      body: jsonEncode({
+        'password': _controllerPassword.text,
+        'email': _controllerEmail.text,
+        'displayname': _controllerDisplayName.text
+      }),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if (res.statusCode == 200) {
+      // If the server did return a 201 CREATED response,
+      // then parse the JSON.
+      return Token.fromJson(jsonDecode(res.body));
+    } else {
+      // If the server did not return a 201 CREATED response,
+      // then throw an exception.
+      throw Exception('Failed to create album.');
+    }
+  }
+
   @override
   void dispose() {
     _focusNodeEmail.dispose();
     _focusNodePassword.dispose();
     _focusNodeConfirmPassword.dispose();
-    _controllerUsername.dispose();
+    _controllerDisplayName.dispose();
     _controllerEmail.dispose();
     _controllerPassword.dispose();
     _controllerConFirmPassword.dispose();
