@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
+import '../models/token.dart';
+import '../stores/store.dart';
 import 'home.dart';
 import 'signup.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   const Login({
@@ -16,7 +21,7 @@ class _LoginState extends State<Login> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   final FocusNode _focusNodePassword = FocusNode();
-  final TextEditingController _controllerUsername = TextEditingController();
+  final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
 
   bool _obscurePassword = true;
@@ -43,10 +48,10 @@ class _LoginState extends State<Login> {
               ),
               const SizedBox(height: 60),
               TextFormField(
-                controller: _controllerUsername,
+                controller: _controllerEmail,
                 keyboardType: TextInputType.name,
                 decoration: InputDecoration(
-                  labelText: "Username",
+                  labelText: "Email",
                   prefixIcon: const Icon(Icons.person_outline),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -105,16 +110,16 @@ class _LoginState extends State<Login> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
+                      final navigator = Navigator.of(context);
                       if (_formKey.currentState?.validate() ?? false) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return const Home();
-                            },
-                          ),
-                        );
+                        final token = await login();
+                        Store.secure.write(key: "jwt", value: token.token);
+                        navigator.pushReplacement(MaterialPageRoute(
+                          builder: (context) {
+                            return const Home();
+                          },
+                        ));
                       }
                     },
                     child: const Text("Login"),
@@ -149,10 +154,32 @@ class _LoginState extends State<Login> {
     );
   }
 
+  Future<Token> login() async {
+    final res = await http.post(
+      Uri.parse('http://localhost:3000/auth/login'),
+      body: jsonEncode({
+        'password': _controllerPassword.text,
+        'email': _controllerEmail.text
+      }),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+    if (res.statusCode == 200) {
+      // If the server did return a 201 CREATED response,
+      // then parse the JSON.
+      return Token.fromJson(jsonDecode(res.body));
+    } else {
+      // If the server did not return a 201 CREATED response,
+      // then throw an exception.
+      throw Exception('Failed to create album.');
+    }
+  }
+
   @override
   void dispose() {
     _focusNodePassword.dispose();
-    _controllerUsername.dispose();
+    _controllerEmail.dispose();
     _controllerPassword.dispose();
     super.dispose();
   }

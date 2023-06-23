@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/subspace/postcard.dart';
+import 'package:frontend/subspace/subspace.dart';
 
 import 'login.dart';
 
@@ -7,52 +9,12 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Login App"),
-        elevation: 0,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white),
-              ),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const Login();
-                      },
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.logout_rounded),
-              ),
-            ),
-          )
-        ],
-      ),
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Welcome 🎉",
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              "joe",
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-          ],
-        ),
-      ),
-    );
+    var list = List<PostCard>.empty(growable: true);
+    for (int x = 0; x < 10; x++) {
+      list.add(const PostCard(
+          topic: "joe biden", content: "joe biden", likes: 100, dislikes: 0));
+    }
+    return Subspace(
+        name: "home", discription: "joe biden's house", users: 0, items: list);
   }
 }

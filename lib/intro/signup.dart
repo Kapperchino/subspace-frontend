@@ -178,6 +178,7 @@ class _SignupState extends State<Signup> {
                       if (_formKey.currentState?.validate() ?? false) {
                         final token = await register();
                         Store.secure.write(key: "jwt", value: token.token);
+                        if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             width: 200,
