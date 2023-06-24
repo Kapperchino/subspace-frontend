@@ -2,8 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/models/token.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/appUser.dart';
+import '../models/appUserRes.dart';
 import '../stores/store.dart';
 
 class Signup extends StatefulWidget {
@@ -176,8 +179,7 @@ class _SignupState extends State<Signup> {
                     ),
                     onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
-                        final token = await register();
-                        Store.secure.write(key: "jwt", value: token.token);
+                        await register();
                         if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -218,7 +220,7 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  Future<Token> register() async {
+  Future<AppUserRes> register() async {
     final res = await http.post(
       Uri.parse('http://localhost:3000/auth/user'),
       body: jsonEncode({
@@ -233,7 +235,13 @@ class _SignupState extends State<Signup> {
     if (res.statusCode == 200) {
       // If the server did return a 201 CREATED response,
       // then parse the JSON.
-      return Token.fromJson(jsonDecode(res.body));
+      final user = AppUserRes.fromJson(jsonDecode(res.body));
+      await Store.secure.write(key: "jwt", value: user.token);
+      await GetStorage().write(
+          "user",
+          AppUser(
+              id: user.id, displayName: user.displayName, email: user.email));
+      return user;
     } else {
       // If the server did not return a 201 CREATED response,
       // then throw an exception.

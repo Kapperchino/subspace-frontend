@@ -1,7 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
-class Post extends StatelessWidget {
-  const Post(
+class PostWidget extends StatelessWidget {
+  const PostWidget(
       {super.key,
       required this.topic,
       required this.content,

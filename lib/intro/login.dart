@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/models/appUser.dart';
+import 'package:frontend/models/appUserRes.dart';
+import 'package:get_storage/get_storage.dart';
 
 import '../models/token.dart';
 import '../stores/store.dart';
@@ -113,8 +116,7 @@ class _LoginState extends State<Login> {
                     onPressed: () async {
                       final navigator = Navigator.of(context);
                       if (_formKey.currentState?.validate() ?? false) {
-                        final token = await login();
-                        Store.secure.write(key: "jwt", value: token.token);
+                        await login();
                         navigator.pushReplacement(MaterialPageRoute(
                           builder: (context) {
                             return const Home();
@@ -154,7 +156,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Future<Token> login() async {
+  Future<AppUserRes> login() async {
     final res = await http.post(
       Uri.parse('http://localhost:3000/auth/login'),
       body: jsonEncode({
@@ -168,7 +170,13 @@ class _LoginState extends State<Login> {
     if (res.statusCode == 200) {
       // If the server did return a 201 CREATED response,
       // then parse the JSON.
-      return Token.fromJson(jsonDecode(res.body));
+      final user = AppUserRes.fromJson(jsonDecode(res.body));
+      await Store.secure.write(key: "jwt", value: user.token);
+      await GetStorage().write(
+          "user",
+          AppUser(
+              id: user.id, displayName: user.displayName, email: user.email));
+      return user;
     } else {
       // If the server did not return a 201 CREATED response,
       // then throw an exception.
