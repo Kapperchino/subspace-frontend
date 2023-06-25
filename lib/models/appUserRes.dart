@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'appUserRes.g.dart';
@@ -10,7 +9,7 @@ class AppUserRes {
   @JsonKey(name: 'display_name')
   final String displayName;
   final String bio;
-  final String email;
+  final String email; 
   final String token;
 
   const AppUserRes({
