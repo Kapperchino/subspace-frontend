@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/models/signUp.dart';
 import 'package:frontend/models/token.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -221,13 +222,13 @@ class _SignupState extends State<Signup> {
   }
 
   Future<AppUserRes> register() async {
+    final req = SignUpRequest(
+        password: _controllerPassword.text,
+        displayName: _controllerDisplayName.text,
+        email: _controllerEmail.text);
     final res = await http.post(
       Uri.parse('http://localhost:3000/auth/user'),
-      body: jsonEncode({
-        'password': _controllerPassword.text,
-        'email': _controllerEmail.text,
-        'displayname': _controllerDisplayName.text
-      }),
+      body: jsonEncode(req.toJson()),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
