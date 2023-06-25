@@ -12,6 +12,8 @@ class Post {
   final int spaceId;
   @JsonKey(name: 'poster_id')
   final int posterId;
+  @JsonKey(name: 'poster_name')
+  final String posterName;
   final String topic;
   final String body;
   final String content;
@@ -27,6 +29,7 @@ class Post {
       required this.spaceId,
       required this.posterId,
       required this.topic,
+      required this.posterName,
       this.body = "",
       this.content = "",
       this.type = ContentType.text,

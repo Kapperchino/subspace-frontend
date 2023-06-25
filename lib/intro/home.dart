@@ -24,6 +24,8 @@ class Home extends StatelessWidget {
                 ?.map((val) => PostCard(
                     topic: val.topic,
                     content: val.content,
+                    userName: val.posterName,
+                    body: val.body,
                     likes: val.upVotes,
                     dislikes: val.downVotes))
                 .toList();

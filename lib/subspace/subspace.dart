@@ -22,7 +22,7 @@ class Subspace extends StatelessWidget {
       title: title,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text(title),
+          title:  Text(name),
         ),
         body: ListView.builder(
           // Let the ListView know how many items it needs to build.
@@ -32,10 +32,7 @@ class Subspace extends StatelessWidget {
           itemBuilder: (context, index) {
             final item = items[index];
 
-            return ListTile(
-              title: item.buildTitle(context),
-              subtitle: item.buildSubtitle(context),
-            );
+            return item;
           },
         ),
       ),

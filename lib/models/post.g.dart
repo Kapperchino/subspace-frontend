@@ -11,6 +11,7 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
       spaceId: json['space_id'] as int,
       posterId: json['poster_id'] as int,
       topic: json['topic'] as String,
+      posterName: json['poster_name'] as String,
       body: json['body'] as String? ?? "",
       content: json['content'] as String? ?? "",
       type: $enumDecodeNullable(_$ContentTypeEnumMap, json['type']) ??
@@ -24,6 +25,7 @@ Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
       'id': instance.id,
       'space_id': instance.spaceId,
       'poster_id': instance.posterId,
+      'poster_name': instance.posterName,
       'topic': instance.topic,
       'body': instance.body,
       'content': instance.content,
