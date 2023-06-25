@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/models/post.dart';
+import 'package:frontend/posts/post.dart';
 import 'package:frontend/posts/voteWidget.dart';
 
 class PostCard extends StatelessWidget {
@@ -13,49 +14,74 @@ class PostCard extends StatelessWidget {
       required this.likes,
       required this.body,
       required this.userName,
+      required this.spaceId,
+      required this.posterId,
       required this.dislikes,
-      required this.id});
+      required this.id,
+      required this.created});
 
   final String topic;
   final String body;
   final String userName;
   final String content;
+  final int spaceId;
   final int likes;
   final int dislikes;
+  final int posterId;
   final ContentType contentType;
   final int id;
+  final DateTime created;
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          VoteWidget(
-            likes: likes,
-            dislikes: dislikes,
-            postId: id,
-          ),
-          if (contentType == ContentType.text)
-            const SizedBox(width: 0, height: 0),
-          if (contentType == ContentType.picture)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.network(
-                content,
-                width: 120,
-                height: 120,
+        clipBehavior: Clip.hardEdge,
+        child: InkWell(
+          splashColor: Colors.blue.withAlpha(30),
+          onTap: () {
+            final navigator = Navigator.of(context);
+            navigator.pushReplacement(MaterialPageRoute(
+              builder: (context) {
+                return PostWidget(
+                  id: id,
+                  topic: topic,
+                  likes: likes,
+                  dislikes: dislikes,
+                  body: body,
+                  userName: userName,
+                );
+              },
+            ));
+            debugPrint('Card tapped.');
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              VoteWidget(
+                likes: likes,
+                dislikes: dislikes,
+                postId: id,
               ),
-            ),
-          Flexible(
-              child: ListTile(
-            titleAlignment: ListTileTitleAlignment.center,
-            title: Text(topic),
-            subtitle: Text(body.substring(0, min(500, body.length))),
-          )),
-        ],
-      ),
-    );
+              if (contentType == ContentType.text)
+                const SizedBox(width: 0, height: 0),
+              if (contentType == ContentType.picture)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.network(
+                    content,
+                    width: 120,
+                    height: 120,
+                  ),
+                ),
+              Flexible(
+                  child: ListTile(
+                titleAlignment: ListTileTitleAlignment.center,
+                title: Text(topic),
+                subtitle: Text(body.substring(0, min(500, body.length))),
+              )),
+            ],
+          ),
+        ));
   }
 
   Widget buildTitle(BuildContext context) => Text(topic);

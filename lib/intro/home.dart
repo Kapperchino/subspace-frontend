@@ -27,6 +27,9 @@ class Home extends StatelessWidget {
                     body: val.body,
                     contentType: val.type,
                     likes: val.upVotes,
+                    spaceId: val.spaceId,
+                    posterId: val.posterId,
+                    created: val.created,
                     id: val.id,
                     dislikes: val.downVotes))
                 .toList();
