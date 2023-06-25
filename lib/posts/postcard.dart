@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/models/post.dart';
+import 'package:frontend/posts/voteWidget.dart';
 
 class PostCard extends StatelessWidget {
   const PostCard(
@@ -10,7 +13,8 @@ class PostCard extends StatelessWidget {
       required this.likes,
       required this.body,
       required this.userName,
-      required this.dislikes});
+      required this.dislikes,
+      required this.id});
 
   final String topic;
   final String body;
@@ -19,6 +23,7 @@ class PostCard extends StatelessWidget {
   final int likes;
   final int dislikes;
   final ContentType contentType;
+  final int id;
 
   @override
   Widget build(BuildContext context) {
@@ -26,25 +31,11 @@ class PostCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Flexible(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_upward_outlined),
-                splashRadius: 20,
-                color: Colors.blue,
-                onPressed: () {},
-              ),
-              Text((likes + dislikes).toString()),
-              IconButton(
-                icon: const Icon(Icons.arrow_downward_rounded),
-                color: Colors.blue,
-                splashRadius: 20,
-                onPressed: () {},
-              ),
-            ],
-          )),
+          VoteWidget(
+            likes: likes,
+            dislikes: dislikes,
+            postId: id,
+          ),
           if (contentType == ContentType.text)
             const SizedBox(width: 0, height: 0),
           if (contentType == ContentType.picture)
@@ -60,7 +51,7 @@ class PostCard extends StatelessWidget {
               child: ListTile(
             titleAlignment: ListTileTitleAlignment.center,
             title: Text(topic),
-            subtitle: Text(body),
+            subtitle: Text(body.substring(0, min(500, body.length))),
           )),
         ],
       ),

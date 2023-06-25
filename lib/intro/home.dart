@@ -3,11 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/stores/store.dart';
-import 'package:frontend/subspace/post.dart';
-import 'package:frontend/subspace/postcard.dart';
 import 'package:frontend/subspace/subspace.dart';
 import 'package:http/http.dart' as http;
 
+import '../posts/postcard.dart';
 import 'login.dart';
 
 class Home extends StatelessWidget {
@@ -28,6 +27,7 @@ class Home extends StatelessWidget {
                     body: val.body,
                     contentType: val.type,
                     likes: val.upVotes,
+                    id: val.id,
                     dislikes: val.downVotes))
                 .toList();
             //TODO: add user count

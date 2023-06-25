@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/subspace/postcard.dart';
+
+import '../posts/postcard.dart';
 
 class Subspace extends StatelessWidget {
   const Subspace(
@@ -21,9 +22,6 @@ class Subspace extends StatelessWidget {
     return MaterialApp(
       title: title,
       home: Scaffold(
-        appBar: AppBar(
-          title:  Text(name),
-        ),
         body: ListView.builder(
           // Let the ListView know how many items it needs to build.
           itemCount: items.length,
