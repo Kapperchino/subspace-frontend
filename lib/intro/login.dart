@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:frontend/models/appUser.dart';
 import 'package:frontend/models/appUserRes.dart';
