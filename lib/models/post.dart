@@ -1,8 +1,14 @@
-
 import 'package:json_annotation/json_annotation.dart';
 part 'post.g.dart';
 
-enum ContentType { text, picture, video }
+enum ContentType {
+  @JsonValue("text")
+  text,
+  @JsonValue("picture")
+  picture,
+  @JsonValue("video")
+  video
+}
 
 @JsonSerializable()
 class Post {
@@ -21,6 +27,7 @@ class Post {
   @JsonKey(name: 'down_votes')
   final int downVotes;
   final DateTime created;
+  @JsonKey(name: 'content_type')
   final ContentType type;
 
   const Post(

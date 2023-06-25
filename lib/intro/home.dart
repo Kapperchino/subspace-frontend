@@ -26,6 +26,7 @@ class Home extends StatelessWidget {
                     content: val.content,
                     userName: val.posterName,
                     body: val.body,
+                    contentType: val.type,
                     likes: val.upVotes,
                     dislikes: val.downVotes))
                 .toList();

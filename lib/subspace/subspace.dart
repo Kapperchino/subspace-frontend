@@ -31,7 +31,6 @@ class Subspace extends StatelessWidget {
           // Convert each item into a widget based on the type of item it is.
           itemBuilder: (context, index) {
             final item = items[index];
-
             return item;
           },
         ),
