@@ -242,7 +242,7 @@ class _SignupState extends State<Signup> {
       await GetStorage().write(
           "user",
           AppUser(
-              id: user.id, displayName: user.displayName, email: user.email));
+              id: user.id, displayName: user.displayName, email: user.email).toJson());
       return user;
     } else {
       // If the server did not return a 201 CREATED response,
