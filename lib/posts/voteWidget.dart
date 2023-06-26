@@ -124,7 +124,7 @@ class _VoteState extends State<VoteWidget> {
   }
 
   Future<int> upVoteBackend(bool isUpvote) async {
-    final AppUser user = GetStorage().read("user");
+    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
     final token = await Store.secure.read(key: 'jwt');
     final res = await http.post(
       Uri.parse('http://localhost:3000/votes'),

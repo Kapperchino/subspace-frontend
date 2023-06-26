@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/appUser.dart';
 import 'package:frontend/models/appUserRes.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:go_router/go_router.dart';
 
 import '../models/token.dart';
 import '../stores/store.dart';
-import 'home.dart';
 import 'signup.dart';
 import 'package:http/http.dart' as http;
 
@@ -113,14 +113,9 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     onPressed: () async {
-                      final navigator = Navigator.of(context);
                       if (_formKey.currentState?.validate() ?? false) {
                         await login();
-                        navigator.pushReplacement(MaterialPageRoute(
-                          builder: (context) {
-                            return const Home();
-                          },
-                        ));
+                        context.go("/");
                       }
                     },
                     child: const Text("Login"),
@@ -132,15 +127,7 @@ class _LoginState extends State<Login> {
                       TextButton(
                         onPressed: () {
                           _formKey.currentState?.reset();
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return const Signup();
-                              },
-                            ),
-                          );
+                          context.go("/signup");
                         },
                         child: const Text("Signup"),
                       ),

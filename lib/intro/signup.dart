@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/signUp.dart';
 import 'package:frontend/models/token.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/appUser.dart';
@@ -197,7 +198,7 @@ class _SignupState extends State<Signup> {
 
                         _formKey.currentState?.reset();
 
-                        Navigator.pop(context);
+                        context.pop();
                       }
                     },
                     child: const Text("Register"),
@@ -207,7 +208,7 @@ class _SignupState extends State<Signup> {
                     children: [
                       const Text("Already have an account?"),
                       TextButton(
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () => context.go("/login"),
                         child: const Text("Login"),
                       ),
                     ],

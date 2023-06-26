@@ -6,6 +6,8 @@ import 'package:frontend/stores/store.dart';
 import 'package:frontend/subspace/subspace.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/space.dart';
+import '../models/spaceView.dart';
 import '../posts/postcard.dart';
 import 'login.dart';
 
@@ -14,13 +16,14 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Post>>(
+    return FutureBuilder<SpaceView>(
         future: getHomePage(),
-        builder: (context, AsyncSnapshot<List<Post>> snapshot) {
+        builder: (context, AsyncSnapshot<SpaceView> snapshot) {
           if (snapshot.hasData) {
-            final list = snapshot.data;
+            final space = snapshot.data!.space;
+            final list = snapshot.data!.posts;
             final posts = list
-                ?.map((val) => PostCard(
+                .map((val) => PostCard(
                     topic: val.topic,
                     content: val.content,
                     userName: val.posterName,
@@ -28,6 +31,8 @@ class Home extends StatelessWidget {
                     contentType: val.type,
                     likes: val.upVotes,
                     spaceId: val.spaceId,
+                    parentSpaceId: space.parentId,
+                    spaceName: space.name,
                     posterId: val.posterId,
                     created: val.created,
                     id: val.id,
@@ -35,20 +40,29 @@ class Home extends StatelessWidget {
                 .toList();
             //TODO: add user count
             return Subspace(
-                name: "home",
-                discription: "the home page",
+                name: space.name,
+                discription: space.description,
                 users: 0,
-                items: posts!);
+                items: posts);
           } else {
             return const CircularProgressIndicator();
           }
         });
   }
 
-  Future<List<Post>> getHomePage() async {
+  Future<SpaceView> getHomePage() async {
     final token = await Store.secure.read(key: 'jwt');
+    final spaceInfo = await http.get(
+      Uri.http("localhost:3000", '/spaces', {'name': 'root', 'parentId': '0'}),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    final space = Space.fromJson(jsonDecode(spaceInfo.body));
+    final spaceId = space.id;
     final res = await http.get(
-      Uri.http("localhost:3000", '/posts', {'spaceId': '1'}),
+      Uri.http("localhost:3000", '/posts', {'space': '$spaceId'}),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -58,14 +72,14 @@ class Home extends StatelessWidget {
       // If the server did return a 201 CREATED response,
       // then parse the JSON.
       if (res.body.isEmpty || res.body == 'null') {
-        return List<Post>.empty();
+        return SpaceView(space: space, posts: List.empty());
       }
       final List<dynamic> list = jsonDecode(res.body);
       var output = List<Post>.empty(growable: true);
       for (final json in list) {
         output.add(Post.fromJson(json));
       }
-      return output;
+      return SpaceView(space: space, posts: output);
     } else {
       // If the server did not return a 201 CREATED response,
       // then throw an exception.

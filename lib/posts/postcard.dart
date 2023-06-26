@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/post.dart';
 import 'package:frontend/posts/voteWidget.dart';
+import 'package:go_router/go_router.dart';
 
 class PostCard extends StatelessWidget {
   const PostCard(
@@ -17,6 +18,8 @@ class PostCard extends StatelessWidget {
       required this.spaceId,
       required this.posterId,
       required this.dislikes,
+      required this.parentSpaceId,
+      required this.spaceName,
       required this.id,
       required this.created});
 
@@ -25,6 +28,8 @@ class PostCard extends StatelessWidget {
   final String userName;
   final String content;
   final int spaceId;
+  final String spaceName;
+  final int parentSpaceId;
   final int likes;
   final int dislikes;
   final int posterId;
@@ -39,20 +44,7 @@ class PostCard extends StatelessWidget {
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
-            final navigator = Navigator.of(context);
-            navigator.pushReplacement(MaterialPageRoute(
-              builder: (context) {
-                return PostWidget(
-                  id: id,
-                  topic: topic,
-                  likes: likes,
-                  dislikes: dislikes,
-                  body: body,
-                  userName: userName,
-                );
-              },
-            ));
-            debugPrint('Card tapped.');
+            context.go("/s/$parentSpaceId/$spaceName/p/$id");
           },
           child: Row(
             mainAxisSize: MainAxisSize.min,

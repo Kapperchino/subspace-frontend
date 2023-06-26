@@ -13,17 +13,27 @@ class PostWidget extends StatelessWidget {
       required this.likes,
       required this.body,
       required this.userName,
+      required this.spaceId,
+      required this.posterId,
       required this.dislikes,
-      required this.id});
+      required this.parentSpaceId,
+      required this.spaceName,
+      required this.id,
+      required this.created});
 
   final String topic;
   final String body;
   final String userName;
   final String content;
+  final int spaceId;
+  final String spaceName;
+  final int parentSpaceId;
   final int likes;
   final int dislikes;
+  final int posterId;
   final ContentType contentType;
   final int id;
+  final DateTime created;
 
   @override
   Widget build(BuildContext context) {
