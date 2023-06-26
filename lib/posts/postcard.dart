@@ -39,41 +39,44 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        clipBehavior: Clip.hardEdge,
-        child: InkWell(
-          splashColor: Colors.blue.withAlpha(30),
-          onTap: () {
-            context.go("/s/$parentSpaceId/$spaceName/p/$id");
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              VoteWidget(
-                likes: likes,
-                dislikes: dislikes,
-                postId: id,
-              ),
-              if (contentType == ContentType.text)
-                const SizedBox(width: 0, height: 0),
-              if (contentType == ContentType.picture)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Image.network(
-                    content,
-                    width: 120,
-                    height: 120,
+    return Expanded(
+        child: Card(
+            clipBehavior: Clip.hardEdge,
+            child: InkWell(
+              splashColor: Colors.blue.withAlpha(30),
+              onTap: () {
+                context.go("/s/$parentSpaceId/$spaceName/p/$id");
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  VoteWidget(
+                    likes: likes,
+                    dislikes: dislikes,
+                    postId: id,
                   ),
-                ),
-              Flexible(
-                  child: ListTile(
-                titleAlignment: ListTileTitleAlignment.center,
-                title: Text(topic),
-                subtitle: Text(body.substring(0, min(500, body.length))),
-              )),
-            ],
-          ),
-        ));
+                  if (contentType == ContentType.text)
+                    const SizedBox(width: 0, height: 0),
+                  if (contentType == ContentType.picture)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.network(
+                        content,
+                        width: 120,
+                        height: 120,
+                      ),
+                    ),
+                  Expanded(
+                      child: ListTile(
+                    titleAlignment: ListTileTitleAlignment.center,
+                    title: Text(topic),
+                    subtitle: Text(body.substring(0, min(500, body.length))),
+                    subtitleTextStyle:
+                        TextStyle(overflow: TextOverflow.visible),
+                  )),
+                ],
+              ),
+            )));
   }
 
   Widget buildTitle(BuildContext context) => Text(topic);

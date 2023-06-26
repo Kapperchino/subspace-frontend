@@ -26,8 +26,16 @@ class Subspace extends StatelessWidget {
         // Provide a builder function. This is where the magic happens.
         // Convert each item into a widget based on the type of item it is.
         itemBuilder: (context, index) {
-          final item = items[index];
-          return item;
+          return Row(
+            children: [
+              Expanded(flex: 1, child: Container()),
+              ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 500, maxWidth: 1000),
+                child: Expanded (child: items[index]),
+              ),
+              Expanded(flex: 1, child: Container()),
+            ],
+          );
         },
       ),
     );
