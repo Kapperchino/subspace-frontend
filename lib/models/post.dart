@@ -15,6 +15,8 @@ class Post {
   final int id;
   @JsonKey(name: 'space_id')
   final int spaceId;
+  @JsonKey(name: 'space_picture')
+  final String spacePicture;
   @JsonKey(name: 'poster_id')
   final int posterId;
   @JsonKey(name: 'poster_name')
@@ -38,6 +40,7 @@ class Post {
       required this.posterName,
       this.body = "",
       this.content = "",
+      this.spacePicture = "",
       this.type = ContentType.text,
       required this.upVotes,
       required this.downVotes,

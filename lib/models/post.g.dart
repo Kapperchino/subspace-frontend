@@ -14,6 +14,7 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
       posterName: json['poster_name'] as String,
       body: json['body'] as String? ?? "",
       content: json['content'] as String? ?? "",
+      spacePicture: json['space_picture'] as String? ?? "",
       type: $enumDecodeNullable(_$ContentTypeEnumMap, json['content_type']) ??
           ContentType.text,
       upVotes: json['up_votes'] as int,
@@ -24,6 +25,7 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
 Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
       'id': instance.id,
       'space_id': instance.spaceId,
+      'space_picture': instance.spacePicture,
       'poster_id': instance.posterId,
       'poster_name': instance.posterName,
       'topic': instance.topic,

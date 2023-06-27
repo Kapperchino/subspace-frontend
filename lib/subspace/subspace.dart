@@ -17,8 +17,6 @@ class Subspace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const title = 'Mixed List';
-
     return Scaffold(
       body: CustomScrollView(slivers: <Widget>[
         const SliverAppBar(
