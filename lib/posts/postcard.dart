@@ -45,7 +45,7 @@ class PostCard extends StatelessWidget {
             child: InkWell(
               splashColor: Colors.blue.withAlpha(30),
               onTap: () {
-                context.go("/s/$parentSpaceId/$spaceName/p/$id");
+                context.push("/s/$parentSpaceId/$spaceName/p/$id");
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -72,7 +72,7 @@ class PostCard extends StatelessWidget {
                     title: Text(topic),
                     subtitle: Text(body.substring(0, min(500, body.length))),
                     subtitleTextStyle:
-                        TextStyle(overflow: TextOverflow.visible),
+                        const TextStyle(overflow: TextOverflow.visible),
                   )),
                 ],
               ),

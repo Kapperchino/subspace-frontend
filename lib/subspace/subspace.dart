@@ -30,8 +30,9 @@ class Subspace extends StatelessWidget {
             children: [
               Expanded(flex: 1, child: Container()),
               ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: 500, maxWidth: 1000),
-                child: Expanded (child: items[index]),
+                constraints:
+                    const BoxConstraints(minWidth: 500, maxWidth: 1000),
+                child: Expanded(child: items[index]),
               ),
               Expanded(flex: 1, child: Container()),
             ],

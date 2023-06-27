@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/voteWidget.dart';
+import 'package:go_router/go_router.dart';
 
 class PostWidget extends StatelessWidget {
   const PostWidget(
@@ -37,24 +38,34 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Text(topic),
-          if (contentType == ContentType.text)
-            const SizedBox(width: 0, height: 0),
-          if (contentType == ContentType.picture)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.network(
-                content,
-                width: 120,
-                height: 120,
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_outlined),
+          onPressed: () {
+            context.pop();
+          },
+        ),
+      ),
+      body: Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(topic),
+            if (contentType == ContentType.text)
+              const SizedBox(width: 0, height: 0),
+            if (contentType == ContentType.picture)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.network(
+                  content,
+                  width: 120,
+                  height: 120,
+                ),
               ),
-            ),
-          Text(body)
-        ],
+            Text(body)
+          ],
+        ),
       ),
     );
   }
