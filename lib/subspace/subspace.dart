@@ -20,25 +20,34 @@ class Subspace extends StatelessWidget {
     const title = 'Mixed List';
 
     return Scaffold(
-      body: ListView.builder(
-        // Let the ListView know how many items it needs to build.
-        itemCount: items.length,
-        // Provide a builder function. This is where the magic happens.
-        // Convert each item into a widget based on the type of item it is.
-        itemBuilder: (context, index) {
-          return Row(
-            children: [
-              Expanded(flex: 1, child: Container()),
-              ConstrainedBox(
-                constraints:
-                    const BoxConstraints(minWidth: 500, maxWidth: 1000),
-                child: Expanded(child: items[index]),
-              ),
-              Expanded(flex: 1, child: Container()),
-            ],
-          );
-        },
-      ),
+      body: CustomScrollView(slivers: <Widget>[
+        const SliverAppBar(
+          pinned: false,
+          snap: false,
+          floating: false,
+          expandedHeight: 160.0,
+          flexibleSpace: FlexibleSpaceBar(
+            title: Text('SliverAppBar'),
+            background: FlutterLogo(),
+          ),
+        ),
+        SliverList(
+          delegate:
+              SliverChildBuilderDelegate((BuildContext context, int index) {
+            return Row(
+              children: [
+                Expanded(flex: 1, child: Container()),
+                ConstrainedBox(
+                  constraints:
+                      const BoxConstraints(minWidth: 500, maxWidth: 1000),
+                  child: Expanded(child: items[index]),
+                ),
+                Expanded(flex: 1, child: Container()),
+              ],
+            );
+          }, childCount: items.length),
+        )
+      ]),
     );
   }
 }
