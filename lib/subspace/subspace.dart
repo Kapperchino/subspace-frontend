@@ -24,14 +24,14 @@ class Subspace extends StatelessWidget {
     final padding = max((width - 1000) / 2, 0.0);
     return Scaffold(
       body: CustomScrollView(slivers: <Widget>[
-        const SliverAppBar(
+        SliverAppBar(
           pinned: false,
           snap: false,
           floating: false,
           expandedHeight: 160.0,
           flexibleSpace: FlexibleSpaceBar(
-            title: Text('SliverAppBar'),
-            background: FlutterLogo(),
+            title: Text(name),
+            background: const FlutterLogo(),
           ),
         ),
         SliverList(

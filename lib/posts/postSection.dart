@@ -2,29 +2,34 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/models/post.dart';
-import 'package:frontend/posts/post.dart';
 import 'package:frontend/posts/voteWidget.dart';
 import 'package:go_router/go_router.dart';
 
-class CommentWidget extends StatelessWidget {
-  const CommentWidget(
+class PostSection extends StatelessWidget {
+  const PostSection(
       {super.key,
+      required this.topic,
       this.content = "",
       this.contentType = ContentType.text,
       required this.likes,
       required this.body,
       required this.userName,
+      required this.spaceId,
       required this.posterId,
       required this.dislikes,
-      required this.postId,
+      required this.parentSpaceId,
+      required this.spaceName,
       required this.id,
       required this.created});
 
+  final String topic;
   final String body;
   final String userName;
   final String content;
+  final int spaceId;
+  final String spaceName;
+  final int parentSpaceId;
   final int likes;
-  final int postId;
   final int dislikes;
   final int posterId;
   final ContentType contentType;
@@ -33,16 +38,12 @@ class CommentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return Flexible(
         child: Card(
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          VoteWidget(
-            likes: likes,
-            dislikes: dislikes,
-            postId: id,
-          ),
+          Text(topic),
           if (contentType == ContentType.text)
             const SizedBox(width: 0, height: 0),
           if (contentType == ContentType.picture)
@@ -54,14 +55,7 @@ class CommentWidget extends StatelessWidget {
                 height: 120,
               ),
             ),
-          Expanded(
-              flex: 8,
-              child: ListTile(
-                titleAlignment: ListTileTitleAlignment.center,
-                subtitle: Text(body.substring(0, min(500, body.length))),
-                subtitleTextStyle:
-                    const TextStyle(overflow: TextOverflow.visible),
-              )),
+          Text(body)
         ],
       ),
     ));

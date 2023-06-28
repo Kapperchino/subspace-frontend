@@ -48,7 +48,7 @@ class PostCard extends StatelessWidget {
                 context.push("/s/$parentSpaceId/$spaceName/p/$id");
               },
               child: Row(
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   VoteWidget(
                     likes: likes,
@@ -67,6 +67,7 @@ class PostCard extends StatelessWidget {
                       ),
                     ),
                   Expanded(
+                    flex: 8,
                       child: ListTile(
                     titleAlignment: ListTileTitleAlignment.center,
                     title: Text(topic),
