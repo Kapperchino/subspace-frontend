@@ -1,3 +1,6 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import '../posts/postcard.dart';
@@ -17,6 +20,8 @@ class Subspace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final padding = max((width - 1000) / 2, 0.0);
     return Scaffold(
       body: CustomScrollView(slivers: <Widget>[
         const SliverAppBar(
@@ -32,16 +37,9 @@ class Subspace extends StatelessWidget {
         SliverList(
           delegate:
               SliverChildBuilderDelegate((BuildContext context, int index) {
-            return Row(
-              children: [
-                Expanded(flex: 1, child: Container()),
-                ConstrainedBox(
-                  constraints:
-                      const BoxConstraints(minWidth: 500, maxWidth: 1000),
-                  child: Expanded(child: items[index]),
-                ),
-                Expanded(flex: 1, child: Container()),
-              ],
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: padding),
+              child: items[index],
             );
           }, childCount: items.length),
         )
