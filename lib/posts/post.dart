@@ -46,18 +46,23 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final padding = max((width - 1000) / 2, 0.0);
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_outlined),
-            onPressed: () {
-              context.pop();
-            },
+        body: CustomScrollView(
+      slivers: <Widget>[
+        SliverAppBar(
+          pinned: false,
+          snap: false,
+          floating: false,
+          expandedHeight: 160.0,
+          flexibleSpace: FlexibleSpaceBar(
+            title: Text(topic),
+            background: const FlutterLogo(),
           ),
         ),
-        body: Column(
-          children: [
-            PostSection(
+        SliverToBoxAdapter(
+            child: PostSection(
                 topic: topic,
                 likes: likes,
                 body: body,
@@ -68,20 +73,27 @@ class PostWidget extends StatelessWidget {
                 parentSpaceId: parentSpaceId,
                 spaceName: spaceName,
                 id: id,
-                created: created),
-            FutureBuilder<List<CommentWidget>>(
+                created: created)),
+        SliverList(delegate:
+            SliverChildBuilderDelegate((BuildContext context, int index) {
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: padding),
+            child: FutureBuilder<List<CommentWidget>>(
               future: getComments(),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final comments = snapshot.data!;
-                  return CommentSection(items: comments);
+                if (snapshot.hasData && index < snapshot.data!.length) {
+                  return snapshot.data![index];
+                } else if (snapshot.hasData) {
+                  return Container();
                 } else {
                   return const CircularProgressIndicator();
                 }
               },
-            )
-          ],
-        ));
+            ),
+          );
+        }))
+      ],
+    ));
   }
 
   Future<List<CommentWidget>> getComments() async {

@@ -15,14 +15,6 @@ class CommentSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final padding = max((width - 1000) / 2, 0.0);
-    return Flexible(
-        child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: padding),
-                child: Flexible(child: items[index]),
-              );
-            }));
+    return Expanded(child: Column(mainAxisSize: MainAxisSize.max,children: items,));
   }
 }

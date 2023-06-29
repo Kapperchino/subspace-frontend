@@ -33,8 +33,7 @@ class CommentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: Card(
+    return Card(
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
@@ -64,6 +63,6 @@ class CommentWidget extends StatelessWidget {
               )),
         ],
       ),
-    ));
+    );
   }
 }
