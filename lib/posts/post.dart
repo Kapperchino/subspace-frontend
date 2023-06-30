@@ -74,24 +74,17 @@ class PostWidget extends StatelessWidget {
                 spaceName: spaceName,
                 id: id,
                 created: created)),
-        SliverList(delegate:
-            SliverChildBuilderDelegate((BuildContext context, int index) {
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: padding),
-            child: FutureBuilder<List<CommentWidget>>(
-              future: getComments(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData && index < snapshot.data!.length) {
-                  return snapshot.data![index];
-                } else if (snapshot.hasData) {
-                  return Container();
-                } else {
-                  return const CircularProgressIndicator();
-                }
-              },
-            ),
-          );
-        }))
+        FutureBuilder<List<CommentWidget>>(
+          future: getComments(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return CommentSection(items: snapshot.data!);
+            } else {
+              return const SliverToBoxAdapter(
+                  child: CircularProgressIndicator.adaptive());
+            }
+          },
+        )
       ],
     ));
   }
