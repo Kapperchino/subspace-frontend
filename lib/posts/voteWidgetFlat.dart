@@ -9,8 +9,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/stores/store.dart';
 
-class VoteWidget extends StatefulWidget {
-  const VoteWidget(
+class VoteWidgetFlat extends StatefulWidget {
+  const VoteWidgetFlat(
       {super.key,
       required this.likes,
       required this.dislikes,
@@ -22,18 +22,18 @@ class VoteWidget extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _VoteState(likes: likes, dislikes: dislikes, postId: postId);
+    return _VoteFlatState(likes: likes, dislikes: dislikes, postId: postId);
   }
 }
 
-class _VoteState extends State<VoteWidget> {
+class _VoteFlatState extends State<VoteWidgetFlat> {
   int likes;
   int dislikes;
   final int postId;
   bool liked;
   bool disliked;
 
-  _VoteState(
+  _VoteFlatState(
       {required this.likes,
       required this.dislikes,
       required this.postId,
@@ -99,7 +99,7 @@ class _VoteState extends State<VoteWidget> {
   @override
   Widget build(BuildContext context) {
     return Flexible(
-        child: Column(
+        child: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         IconButton(

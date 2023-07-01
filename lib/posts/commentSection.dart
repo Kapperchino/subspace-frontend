@@ -14,7 +14,7 @@ class CommentSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 1000) / 2, 0.0);
+    final padding = max((width - 900) / 2, 0.0);
     return SliverList(
       delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
         return Padding(

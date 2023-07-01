@@ -33,7 +33,7 @@ class CommentWidget extends StatelessWidget {
   final ContentType contentType;
   final int id;
   final DateTime created;
-  List<CommentWidget>? children;
+  final List<CommentWidget> children;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class CommentWidget extends StatelessWidget {
               ),
             ),
           Expanded(
-              flex: 8,
+              flex: 9,
               child: ListTile(
                 titleAlignment: ListTileTitleAlignment.center,
                 subtitle: Text(body.substring(0, min(500, body.length))),
@@ -68,10 +68,10 @@ class CommentWidget extends StatelessWidget {
               )),
         ],
       ),
-      if (children != null)
+      if (children.isNotEmpty)
         Column(
             mainAxisSize: MainAxisSize.min,
-            children: children!
+            children: children
                 .map((e) => Padding(
                     padding: const EdgeInsets.only(left: 50),
                     child: Flexible(

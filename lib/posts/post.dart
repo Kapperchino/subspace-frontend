@@ -47,8 +47,6 @@ class PostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 1000) / 2, 0.0);
     return Scaffold(
         body: CustomScrollView(
       slivers: <Widget>[
@@ -57,6 +55,7 @@ class PostWidget extends StatelessWidget {
           snap: false,
           floating: false,
           expandedHeight: 160.0,
+          backgroundColor: Theme.of(context).colorScheme.background,
           flexibleSpace: FlexibleSpaceBar(
             title: Text(topic),
             background: const FlutterLogo(),
@@ -118,7 +117,7 @@ class PostWidget extends StatelessWidget {
           dislikes: comment.downVotes,
           id: comment.id,
           created: comment.created,
-          children: null,
+          children: List.empty(growable: true),
         );
       }).toList(growable: false);
       Map<int, CommentWidget> map = HashMap();
@@ -130,10 +129,7 @@ class PostWidget extends StatelessWidget {
         if (!map.containsKey(value.parentId)) {
           resList.add(value);
         } else {
-          if (map[value.parentId]!.children == null) {
-            map[value.parentId]!.children = List.empty(growable: true);
-          }
-          map[value.parentId]!.children!.add(value);
+          map[value.parentId]!.children.add(value);
         }
       });
 

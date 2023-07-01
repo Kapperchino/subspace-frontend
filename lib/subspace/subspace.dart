@@ -29,6 +29,7 @@ class Subspace extends StatelessWidget {
           snap: false,
           floating: false,
           expandedHeight: 160.0,
+          backgroundColor: Theme.of(context).colorScheme.background,
           flexibleSpace: FlexibleSpaceBar(
             title: Text(name),
             background: const FlutterLogo(),

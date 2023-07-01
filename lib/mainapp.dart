@@ -34,12 +34,14 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = const ColorScheme.light(
         secondary: Colors.black,
-        primaryContainer: Colors.white,
+        background: Colors.grey,
+        primaryContainer: Colors.white10,
         primary: Colors.blueGrey);
     return MaterialApp.router(
         theme: ThemeData(
             // Define the default brightness and colors.
-            colorScheme: theme),
+            colorScheme: theme,
+            useMaterial3: true),
         routerConfig: _router);
   }
 }
