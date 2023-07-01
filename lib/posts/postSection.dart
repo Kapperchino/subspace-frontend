@@ -46,6 +46,7 @@ class PostSection extends StatefulWidget {
 
 class _PostState extends State<PostSection> {
   bool started = false;
+  double commentHeight = 0.0;
 
   final String topic;
   final String body;
@@ -78,6 +79,7 @@ class _PostState extends State<PostSection> {
 
   void comment() {
     started = !started;
+    commentHeight = 108;
   }
 
   @override
@@ -133,20 +135,30 @@ class _PostState extends State<PostSection> {
             ],
           ),
         )),
-        if (started)
-          Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 4),
-              child: Flexible(
-                  child: Card(
-                      margin: EdgeInsets.symmetric(horizontal: padding),
-                      child: const TextField(
-                        maxLines: 3,
-                        minLines: 3,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Comment',
-                        ),
-                      ))))
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 300 ),
+          height: started ? 100 : 0,
+          curve: Curves.easeInOutCubicEmphasized,
+          padding: EdgeInsets.only(top: 12, right: padding, left: padding),
+          child: TextField(
+            autofocus: false,
+            maxLines: 3,
+            decoration: InputDecoration(
+              filled: true,
+              hintText: 'Comment',
+              contentPadding:
+                  const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
