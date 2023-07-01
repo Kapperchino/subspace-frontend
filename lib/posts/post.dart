@@ -59,6 +59,7 @@ class PostWidget extends StatelessWidget {
           flexibleSpace: FlexibleSpaceBar(
             title: Text(topic),
             background: const FlutterLogo(),
+            titlePadding: const EdgeInsets.all(50),
           ),
         ),
         SliverToBoxAdapter(
