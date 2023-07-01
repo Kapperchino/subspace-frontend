@@ -19,7 +19,7 @@ class CommentSection extends StatelessWidget {
       delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
         return Padding(
             padding: EdgeInsets.symmetric(horizontal: padding),
-            child: items[index]);
+            child: Flexible(child: items[index]));
       }, childCount: items.length),
     );
   }

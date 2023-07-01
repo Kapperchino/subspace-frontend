@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:math';
 
@@ -108,16 +109,35 @@ class PostWidget extends StatelessWidget {
       final List<CommentWidget> comments = list.map((e) {
         final comment = Comment.fromJson(e);
         return CommentWidget(
-            likes: comment.upVotes,
-            body: comment.body,
-            userName: comment.posterName,
-            posterId: comment.posterId,
-            postId: comment.postId,
-            dislikes: comment.downVotes,
-            id: comment.id,
-            created: comment.created);
+          likes: comment.upVotes,
+          body: comment.body,
+          userName: comment.posterName,
+          posterId: comment.posterId,
+          postId: comment.postId,
+          parentId: comment.parentId,
+          dislikes: comment.downVotes,
+          id: comment.id,
+          created: comment.created,
+          children: null,
+        );
       }).toList(growable: false);
-      return comments;
+      Map<int, CommentWidget> map = HashMap();
+      List<CommentWidget> resList = List.empty(growable: true);
+      for (var comment in comments) {
+        map[comment.id] = comment;
+      }
+      map.forEach((key, value) {
+        if (!map.containsKey(value.parentId)) {
+          resList.add(value);
+        } else {
+          if (map[value.parentId]!.children == null) {
+            map[value.parentId]!.children = List.empty(growable: true);
+          }
+          map[value.parentId]!.children!.add(value);
+        }
+      });
+
+      return resList;
     } else {
       // If the server did not return a 201 CREATED response,
       // then throw an exception.

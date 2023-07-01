@@ -13,6 +13,8 @@ class Comment {
   final int postId;
   final String body;
   final String content;
+  @JsonKey(name: 'parent_id')
+  final int parentId;
   @JsonKey(name: 'up_votes')
   final int upVotes;
   @JsonKey(name: 'down_votes')
@@ -29,6 +31,7 @@ class Comment {
       this.content = "",
       this.type = ContentType.text,
       required this.upVotes,
+      required this.parentId,
       required this.downVotes,
       required this.created,
       required this.postId});

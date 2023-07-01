@@ -15,6 +15,7 @@ Comment _$CommentFromJson(Map<String, dynamic> json) => Comment(
       type: $enumDecodeNullable(_$ContentTypeEnumMap, json['content_type']) ??
           ContentType.text,
       upVotes: json['up_votes'] as int,
+      parentId: json['parent_id'] as int,
       downVotes: json['down_votes'] as int,
       created: DateTime.parse(json['created'] as String),
       postId: json['post_id'] as int,
@@ -27,6 +28,7 @@ Map<String, dynamic> _$CommentToJson(Comment instance) => <String, dynamic>{
       'post_id': instance.postId,
       'body': instance.body,
       'content': instance.content,
+      'parent_id': instance.parentId,
       'up_votes': instance.upVotes,
       'down_votes': instance.downVotes,
       'created': instance.created.toIso8601String(),
