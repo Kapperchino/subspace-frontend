@@ -1,10 +1,17 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/models/commentRequest.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/voteWidget.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+
+import '../models/appUser.dart';
+import '../stores/store.dart';
 
 class PostSection extends StatefulWidget {
   const PostSection(
@@ -47,6 +54,7 @@ class PostSection extends StatefulWidget {
 class _PostState extends State<PostSection> {
   bool started = false;
   double commentHeight = 0.0;
+  final textController = TextEditingController();
 
   final String topic;
   final String body;
@@ -77,7 +85,8 @@ class _PostState extends State<PostSection> {
       this.id,
       this.created);
 
-  void comment() {
+  void comment() async {
+    //commenting
     started = !started;
     commentHeight = 108;
   }
@@ -123,7 +132,21 @@ class _PostState extends State<PostSection> {
                   Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          if (started) {
+                            if (textController.text.isNotEmpty) {
+                              final code =
+                                  await postComment(textController.text);
+                              textController.clear();
+                              if (code == 200) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('Comment posted')));
+                                }
+                              }
+                            }
+                          }
                           setState(() {
                             comment();
                           });
@@ -136,24 +159,25 @@ class _PostState extends State<PostSection> {
           ),
         )),
         AnimatedContainer(
-          duration: const Duration(milliseconds: 300 ),
+          duration: const Duration(milliseconds: 300),
           height: started ? 100 : 0,
           curve: Curves.easeInOutCubicEmphasized,
           padding: EdgeInsets.only(top: 12, right: padding, left: padding),
           child: TextField(
             autofocus: false,
             maxLines: 3,
+            controller: textController,
             decoration: InputDecoration(
               filled: true,
               hintText: 'Comment',
               contentPadding:
                   const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.white),
+                borderSide: BorderSide(color: Theme.of(context).cardColor),
                 borderRadius: BorderRadius.circular(10),
               ),
               enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.white),
+                borderSide: BorderSide(color: Theme.of(context).cardColor),
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
@@ -161,5 +185,23 @@ class _PostState extends State<PostSection> {
         ),
       ],
     );
+  }
+
+  Future<int> postComment(String comment) async {
+    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
+    final token = await Store.secure.read(key: 'jwt');
+    final res = await http.post(
+      Uri.parse('http://localhost:3000/comments'),
+      body: jsonEncode(CommentRequest(
+        postId: id,
+        posterId: user.id,
+        body: comment,
+      ).toJson()),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    return res.statusCode;
   }
 }
