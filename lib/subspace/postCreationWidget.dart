@@ -7,7 +7,13 @@ import 'package:frontend/posts/comment.dart';
 import '../posts/postcard.dart';
 
 class PostCreationWidget extends StatelessWidget {
-  const PostCreationWidget({super.key});
+  const PostCreationWidget(
+      {super.key,
+      required this.controllderBody,
+      required this.controllerTopic});
+
+  final TextEditingController controllderBody;
+  final TextEditingController controllerTopic;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +28,7 @@ class PostCreationWidget extends StatelessWidget {
                 child: TextField(
                   autofocus: false,
                   maxLines: 1,
+                  controller: controllerTopic,
                   decoration: InputDecoration(
                     filled: true,
                     hintText: 'Topic',
@@ -43,6 +50,7 @@ class PostCreationWidget extends StatelessWidget {
                 child: TextField(
               autofocus: false,
               maxLines: 3,
+              controller: controllderBody,
               decoration: InputDecoration(
                 filled: true,
                 hintText: 'Body',

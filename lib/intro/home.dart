@@ -42,6 +42,7 @@ class Home extends StatelessWidget {
             //TODO: add user count
             return Subspace(
                 name: space.name,
+                id: space.id,
                 discription: space.description,
                 users: 0,
                 items: posts);

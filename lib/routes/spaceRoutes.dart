@@ -54,6 +54,7 @@ class SpaceRoutes {
                   return Subspace(
                       name: spaceName!,
                       discription: space.description,
+                      id: space.id,
                       users: 0,
                       items: posts);
                 } else {

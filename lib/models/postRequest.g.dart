@@ -1,29 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'commentRequest.dart';
+part of 'postRequest.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-CommentRequest _$CommentRequestFromJson(Map<String, dynamic> json) =>
-    CommentRequest(
+PostRequest _$PostRequestFromJson(Map<String, dynamic> json) => PostRequest(
+      spaceId: json['space_id'] as int,
       posterId: json['poster_id'] as int,
-      body: json['body'] as String,
+      topic: json['topic'] as String,
+      body: json['body'] as String? ?? "",
       content: json['content'] as String? ?? "",
       type: $enumDecodeNullable(_$ContentTypeEnumMap, json['content_type']) ??
           ContentType.text,
-      parentId: json['parent_id'] as int? ?? 1,
-      postId: json['post_id'] as int,
     );
 
-Map<String, dynamic> _$CommentRequestToJson(CommentRequest instance) =>
+Map<String, dynamic> _$PostRequestToJson(PostRequest instance) =>
     <String, dynamic>{
+      'space_id': instance.spaceId,
       'poster_id': instance.posterId,
-      'post_id': instance.postId,
+      'topic': instance.topic,
       'body': instance.body,
       'content': instance.content,
-      'parent_id': instance.parentId,
       'content_type': _$ContentTypeEnumMap[instance.type]!,
     };
 
