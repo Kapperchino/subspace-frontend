@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/models/post.dart';
-import 'package:frontend/posts/post.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidget.dart';
 import 'package:go_router/go_router.dart';

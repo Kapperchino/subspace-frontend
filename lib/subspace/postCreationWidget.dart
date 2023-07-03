@@ -1,10 +1,7 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/posts/comment.dart';
 
-import '../posts/postcard.dart';
 
 class PostCreationWidget extends StatelessWidget {
   const PostCreationWidget(

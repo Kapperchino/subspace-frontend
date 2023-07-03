@@ -1,10 +1,9 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_storage/get_storage.dart';
 
 class Store {
-  static final secure = new FlutterSecureStorage();
+  static const secure = FlutterSecureStorage();
 
   static Future<String?> getJwt() {
     if (!kIsWeb) {

@@ -1,10 +1,7 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/posts/comment.dart';
-
-import '../posts/postcard.dart';
 
 class CommentSection extends StatelessWidget {
   const CommentSection({super.key, required this.items});

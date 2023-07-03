@@ -1,10 +1,5 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/models/post.dart';
-import 'package:frontend/posts/post.dart';
-import 'package:frontend/posts/voteWidget.dart';
-import 'package:go_router/go_router.dart';
 
 class PostMeta extends StatelessWidget {
   const PostMeta({
@@ -30,7 +25,7 @@ class PostMeta extends StatelessWidget {
           child: Align(
             alignment: Alignment.topLeft,
             child: TextButton(
-              child: Text('$userName'),
+              child: Text(userName),
               onPressed: () {},
             ),
           ),

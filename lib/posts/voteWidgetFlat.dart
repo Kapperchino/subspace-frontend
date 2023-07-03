@@ -1,9 +1,7 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/models/appUser.dart';
-import 'package:frontend/models/post.dart';
 import 'package:frontend/models/voteRequest.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;

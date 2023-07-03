@@ -5,10 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/commentRequest.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/postMeta.dart';
-import 'package:frontend/posts/voteWidget.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/appUser.dart';

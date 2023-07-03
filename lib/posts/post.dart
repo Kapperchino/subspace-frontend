@@ -1,6 +1,5 @@
 import 'dart:collection';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/models/comment.dart';
@@ -8,8 +7,6 @@ import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/comment.dart';
 import 'package:frontend/posts/commentSection.dart';
 import 'package:frontend/posts/postSection.dart';
-import 'package:frontend/posts/voteWidget.dart';
-import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
 import '../stores/store.dart';
