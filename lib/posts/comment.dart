@@ -2,12 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/models/post.dart';
+import 'package:frontend/posts/commentMeta.dart';
 import 'package:frontend/posts/post.dart';
 import 'package:frontend/posts/voteWidget.dart';
 import 'package:go_router/go_router.dart';
 
 class CommentWidget extends StatelessWidget {
-  CommentWidget(
+  const CommentWidget(
       {super.key,
       this.content = "",
       this.contentType = ContentType.text,
@@ -39,6 +40,7 @@ class CommentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
         child: Column(children: [
+      CommentMeta(userName: userName, posterId: posterId, created: created),
       Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[

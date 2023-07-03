@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/commentRequest.dart';
 import 'package:frontend/models/post.dart';
+import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidget.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:get_storage/get_storage.dart';
@@ -126,6 +127,11 @@ class _PostState extends State<PostSection> {
               Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
                   child: Text(body)),
+              PostMeta(
+                  userName: userName,
+                  posterId: posterId,
+                  created: created,
+                  spaceName: spaceName),
               Row(
                 children: [
                   VoteWidgetFlat(likes: likes, dislikes: dislikes, postId: id),
