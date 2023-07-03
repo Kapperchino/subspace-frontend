@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/stores/store.dart';
 import 'package:frontend/subspace/subspace.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/space.dart';
@@ -61,6 +64,9 @@ class Home extends StatelessWidget {
         'Authorization': 'Bearer $token',
       },
     );
+    if (spaceInfo.statusCode == 401) {
+      return Future.error(401);
+    }
     final space = Space.fromJson(jsonDecode(spaceInfo.body));
     final spaceId = space.id;
     final res = await http.get(

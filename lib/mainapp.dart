@@ -5,23 +5,23 @@ import 'package:frontend/routes/loginRoutes.dart';
 import 'package:frontend/routes/postRoutes.dart';
 import 'package:frontend/routes/spaceRoutes.dart';
 import 'package:frontend/stores/store.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 
 class MainApp extends StatelessWidget {
   MainApp({super.key});
-
   final _router = GoRouter(routes: <RouteBase>[
     GoRoute(
         path: '/',
         builder: (context, state) {
-          return FutureBuilder<String?>(
-              future: Store.secure.read(key: "jwt"),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return const Home();
-                }
-                return const Login();
-              });
+          String? expire = GetStorage().read("expire");
+          if (expire != null) {
+            final time = DateTime.parse(expire);
+            if (time.isAfter(DateTime.now())) {
+              return const Home();
+            }
+          }
+          return const Login();
         },
         routes: [
           SpaceRoutes().getSpaceRoute(),

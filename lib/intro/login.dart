@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/models/appUser.dart';
 import 'package:frontend/models/appUserRes.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import '../models/token.dart';
 import '../stores/store.dart';
@@ -31,7 +33,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -54,6 +56,7 @@ class _LoginState extends State<Login> {
                 keyboardType: TextInputType.name,
                 decoration: InputDecoration(
                   labelText: "Email",
+                  filled: true,
                   prefixIcon: const Icon(Icons.person_outline),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -78,6 +81,7 @@ class _LoginState extends State<Login> {
                 keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
                   labelText: "Password",
+                  filled: true,
                   prefixIcon: const Icon(Icons.password_outlined),
                   suffixIcon: IconButton(
                       onPressed: () {
@@ -157,11 +161,14 @@ class _LoginState extends State<Login> {
       // If the server did return a 201 CREATED response,
       // then parse the JSON.
       final user = AppUserRes.fromJson(jsonDecode(res.body));
+      DateTime expirationDate = JwtDecoder.getExpirationDate(user.token);
+      await Store.secure.delete(key: "jwt");
       await Store.secure.write(key: "jwt", value: user.token);
+      await GetStorage().write("expire", expirationDate.toIso8601String());
       await GetStorage().write(
           "user",
-          AppUser(
-              id: user.id, displayName: user.displayName, email: user.email).toJson());
+          AppUser(id: user.id, displayName: user.displayName, email: user.email)
+              .toJson());
       return user;
     } else {
       // If the server did not return a 201 CREATED response,
