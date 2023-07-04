@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-class PostCreationWidget extends StatelessWidget {
-  const PostCreationWidget(
+class PostLinkWidget extends StatelessWidget {
+  const PostLinkWidget(
       {super.key,
       required this.controllderBody,
       required this.controllerTopic});
@@ -49,7 +49,7 @@ class PostCreationWidget extends StatelessWidget {
               controller: controllderBody,
               decoration: InputDecoration(
                 filled: true,
-                hintText: 'Body',
+                hintText: 'Link',
                 contentPadding:
                     const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
                 focusedBorder: OutlineInputBorder(

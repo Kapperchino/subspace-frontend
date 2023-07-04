@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 
 import '../stores/store.dart';
 
-class PostWidget extends StatelessWidget {
+class PostWidget extends StatefulWidget {
   const PostWidget(
       {super.key,
       required this.topic,
@@ -41,6 +41,61 @@ class PostWidget extends StatelessWidget {
   final ContentType contentType;
   final int id;
   final DateTime created;
+
+  @override
+  State<PostWidget> createState() {
+    return _PostState(
+        topic: topic,
+        likes: likes,
+        body: body,
+        userName: userName,
+        spaceId: spaceId,
+        posterId: posterId,
+        dislikes: dislikes,
+        parentSpaceId: parentSpaceId,
+        spaceName: spaceName,
+        id: id,
+        created: created);
+  }
+}
+
+class _PostState extends State<PostWidget> {
+  _PostState(
+      {required this.topic,
+      this.content = "",
+      this.contentType = ContentType.text,
+      required this.likes,
+      required this.body,
+      required this.userName,
+      required this.spaceId,
+      required this.posterId,
+      required this.dislikes,
+      required this.parentSpaceId,
+      required this.spaceName,
+      required this.id,
+      required this.created});
+
+  final String topic;
+  final String body;
+  final String userName;
+  final String content;
+  final int spaceId;
+  final String spaceName;
+  final int parentSpaceId;
+  final int likes;
+  final int dislikes;
+  final int posterId;
+  final ContentType contentType;
+  final int id;
+  final DateTime created;
+
+  Future<List<CommentWidget>>? comments;
+
+  @override
+  void initState() {
+    super.initState();
+    comments = getComments();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +128,7 @@ class PostWidget extends StatelessWidget {
                 id: id,
                 created: created)),
         FutureBuilder<List<CommentWidget>>(
-          future: getComments(),
+          future: comments,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return CommentSection(items: snapshot.data!);
@@ -87,7 +142,7 @@ class PostWidget extends StatelessWidget {
     ));
   }
 
-  Future<List<CommentWidget>> getComments() async {
+  Future<List<CommentWidget>>? getComments() async {
     final token = await Store.secure.read(key: 'jwt');
     final res = await http.get(
       Uri.http("localhost:3000", '/comments', {'postId': '$id'}),
