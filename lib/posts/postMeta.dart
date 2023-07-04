@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class PostMeta extends StatelessWidget {
@@ -20,35 +19,35 @@ class PostMeta extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 5, left: 5),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: TextButton(
-              child: Text(userName),
-              onPressed: () {},
-            ),
-          ),
-        ),
-        if (spaceName != 'root')
-          Padding(
-            padding: const EdgeInsets.only(top: 5, left: 5),
+        Flexible(
             child: Align(
-              alignment: Alignment.topLeft,
-              child: TextButton(
-                child: Text('s/$spaceName'),
-                onPressed: () {},
-              ),
-            ),
-          ),
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 5, left: 5),
+                  child: TextButton(
+                    child: Text(userName),
+                    onPressed: () {},
+                  ),
+                ))),
+        if (spaceName != 'root')
+          Flexible(
+              child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 5, left: 5),
+                    child: TextButton(
+                      child: Text('s/$spaceName'),
+                      onPressed: () {},
+                    ),
+                  ))),
         const Spacer(),
-        Padding(
-          padding: const EdgeInsets.only(top: 5, right: 5),
-          child: Align(
-            alignment: Alignment.topRight,
-            child: Text("${getTime(created)} ago"),
-          ),
-        )
+        Flexible(
+            child: Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 5, right: 5),
+                  child: Text("${getTime(created)} ago"),
+                )))
       ],
     );
   }

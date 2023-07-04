@@ -146,26 +146,25 @@ class _SubSpaceState extends State<Subspace> {
             ),
           ),
         ),
-        SliverList(
-          delegate:
-              SliverChildBuilderDelegate((BuildContext context, int index) {
-            return FutureBuilder<List<PostCard>>(
-                future: items,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    if (index < snapshot.data!.length) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(horizontal: padding),
-                        child: snapshot.data![index],
-                      );
-                    }
-                    return const CircularProgressIndicator();
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                });
-          }, childCount: count),
-        )
+        SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: padding),
+            sliver: SliverList(
+              delegate:
+                  SliverChildBuilderDelegate((BuildContext context, int index) {
+                return FutureBuilder<List<PostCard>>(
+                    future: items,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        if (index < snapshot.data!.length) {
+                          return snapshot.data![index];
+                        }
+                        return const CircularProgressIndicator();
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
+                    });
+              }, childCount: count),
+            )),
       ]),
     );
   }

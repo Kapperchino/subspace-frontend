@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class CommentMeta extends StatelessWidget {
@@ -14,28 +13,29 @@ class CommentMeta extends StatelessWidget {
   final DateTime created;
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 5, left: 5),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: TextButton(
-              child: Text(userName),
-              onPressed: () {},
-            ),
-          ),
-        ),
+        Flexible(
+            child: Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 5, left: 5),
+                  child: TextButton(
+                    child: Text(userName),
+                    onPressed: () {},
+                  ),
+                ))),
         const Spacer(),
-        Padding(
-          padding: const EdgeInsets.only(top: 5, right: 5),
-          child: Align(
-            alignment: Alignment.topRight,
-            child: Text("${getTime(created)} ago"),
-          ),
-        )
+        Flexible(
+            child: Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 5, right: 5),
+                  child: Text("${getTime(created)} ago"),
+                )))
       ],
     );
   }

@@ -12,12 +12,13 @@ class CommentSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final padding = max((width - 900) / 2, 0.0);
-    return SliverList(
-      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-        return Padding(
-            padding: EdgeInsets.symmetric(horizontal: padding),
-            child: Flexible(child: items[index]));
-      }, childCount: items.length),
-    );
+    return SliverPadding(
+        padding: EdgeInsets.symmetric(horizontal: padding),
+        sliver: SliverList(
+          delegate:
+              SliverChildBuilderDelegate((BuildContext context, int index) {
+            return items[index];
+          }, childCount: items.length),
+        ));
   }
 }

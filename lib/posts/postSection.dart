@@ -103,14 +103,15 @@ class _PostState extends State<PostSection> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Padding(
+              Flexible(
+                  child: Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: Text(
                   topic,
                   style: Theme.of(context).textTheme.titleLarge,
                   textScaleFactor: 1.5,
                 ),
-              ),
+              )),
               if (contentType == ContentType.text)
                 const SizedBox(width: 0, height: 0),
               if (contentType == ContentType.picture)
@@ -122,41 +123,46 @@ class _PostState extends State<PostSection> {
                     height: 120,
                   ),
                 ),
-              Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-                  child: Text(body)),
-              PostMeta(
-                  userName: userName,
-                  posterId: posterId,
-                  created: created,
-                  spaceName: spaceName),
+              Flexible(
+                  child: Padding(
+                      padding:
+                          const EdgeInsets.only(left: 20, right: 20, top: 20),
+                      child: Text(body))),
+              Flexible(
+                  child: PostMeta(
+                      userName: userName,
+                      posterId: posterId,
+                      created: created,
+                      spaceName: spaceName)),
               Row(
                 children: [
                   VoteWidgetFlat(likes: likes, dislikes: dislikes, postId: id),
-                  Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if (started) {
-                            if (textController.text.isNotEmpty) {
-                              final code =
-                                  await postComment(textController.text);
-                              textController.clear();
-                              if (code == 200) {
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text('Comment posted')));
+                  const Spacer(flex: 6),
+                  Flexible(
+                      child: Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (started) {
+                                if (textController.text.isNotEmpty) {
+                                  final code =
+                                      await postComment(textController.text);
+                                  textController.clear();
+                                  if (code == 200) {
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                              content: Text('Comment posted')));
+                                    }
+                                  }
                                 }
                               }
-                            }
-                          }
-                          setState(() {
-                            comment();
-                          });
-                        },
-                        child: const Text('Comment'),
-                      )),
+                              setState(() {
+                                comment();
+                              });
+                            },
+                            child: const Text('Comment'),
+                          ))),
                 ],
               )
             ],

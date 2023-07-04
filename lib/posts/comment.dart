@@ -72,9 +72,9 @@ class CommentWidget extends StatelessWidget {
         Column(
             mainAxisSize: MainAxisSize.min,
             children: children
-                .map((e) => Padding(
-                    padding: const EdgeInsets.only(left: 50),
-                    child: Flexible(
+                .map((e) => Flexible(
+                        child: Padding(
+                      padding: const EdgeInsets.only(left: 50),
                       child: e,
                     )))
                 .toList())
