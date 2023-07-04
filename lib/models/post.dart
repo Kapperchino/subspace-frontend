@@ -7,7 +7,9 @@ enum ContentType {
   @JsonValue("picture")
   picture,
   @JsonValue("video")
-  video
+  video,
+  @JsonValue("unknown")
+  unknown
 }
 
 @JsonSerializable()
