@@ -15,7 +15,7 @@ COPY pubspec.yaml /home/developer/
 COPY lib/* /home/developer/lib/
 COPY ./ /home/developer
 
-ENV BASE_URL "https://subspace-alpha.fly.dev"
+ENV BASE_URL "https://subspace-backend.fly.dev"
 
 # Run basic check to download Dark SDK
 RUN flutter build web --dart-define=BASE_URL=$BASE_URL
