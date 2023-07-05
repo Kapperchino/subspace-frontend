@@ -138,32 +138,34 @@ class _PostState extends State<PostSection> {
               Row(
                 children: [
                   VoteWidgetFlat(likes: likes, dislikes: dislikes, postId: id),
-                  const Spacer(flex: 6),
                   Flexible(
-                      child: Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              if (started) {
-                                if (textController.text.isNotEmpty) {
-                                  final code =
-                                      await postComment(textController.text);
-                                  textController.clear();
-                                  if (code == 200) {
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content: Text('Comment posted')));
+                      child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  if (started) {
+                                    if (textController.text.isNotEmpty) {
+                                      final code = await postComment(
+                                          textController.text);
+                                      textController.clear();
+                                      if (code == 200) {
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                                  content:
+                                                      Text('Comment posted')));
+                                        }
+                                      }
                                     }
                                   }
-                                }
-                              }
-                              setState(() {
-                                comment();
-                              });
-                            },
-                            child: const Text('Comment'),
-                          ))),
+                                  setState(() {
+                                    comment();
+                                  });
+                                },
+                                child: const Text('Comment'),
+                              )))),
                 ],
               )
             ],

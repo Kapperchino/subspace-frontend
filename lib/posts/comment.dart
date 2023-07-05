@@ -68,6 +68,21 @@ class CommentWidget extends StatelessWidget {
               )),
         ],
       ),
+      Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Flexible(
+              child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10, bottom: 10),
+                    child: ElevatedButton(
+                      onPressed: () async {},
+                      child: const Text('Comment'),
+                    ),
+                  )))
+        ],
+      ),
       if (children.isNotEmpty)
         Column(
             mainAxisSize: MainAxisSize.min,
