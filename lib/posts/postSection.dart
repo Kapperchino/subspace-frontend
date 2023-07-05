@@ -9,6 +9,7 @@ import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
+import '../config.dart';
 import '../models/appUser.dart';
 import '../stores/store.dart';
 
@@ -201,7 +202,7 @@ class _PostState extends State<PostSection> {
     final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
     final token = await Store.secure.read(key: 'jwt');
     final res = await http.post(
-      Uri.parse('http://localhost:3000/comments'),
+      Uri.parse('${Config.baseUrl}/comments'),
       body: jsonEncode(CommentRequest(
         postId: id,
         posterId: user.id,

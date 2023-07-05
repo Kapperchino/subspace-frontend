@@ -5,6 +5,7 @@ import 'package:frontend/posts/post.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
+import '../config.dart';
 import '../models/post.dart';
 import '../stores/store.dart';
 
@@ -54,7 +55,7 @@ class PostRoutes {
   Future<Post> getPost(int id) async {
     final token = await Store.secure.read(key: 'jwt');
     final res = await http.get(
-      Uri.http("localhost:3000", '/posts/$id'),
+      Uri.parse('${Config.baseUrl}/posts/$id'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',

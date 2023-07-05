@@ -8,6 +8,7 @@ import 'package:frontend/subspace/postCreationWidget.dart';
 import 'package:frontend/subspace/postLinkWdiget.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../config.dart';
 import '../models/appUser.dart';
 import '../models/space.dart';
 import '../models/spaceView.dart';
@@ -197,8 +198,7 @@ class _SubSpaceState extends State<Subspace> {
   Future<SpaceView> getSpaceView(int parentId, String? spaceName) async {
     final token = await Store.secure.read(key: 'jwt');
     final spaceInfo = await http.get(
-      Uri.http("localhost:3000", '/spaces',
-          {'name': spaceName, 'parentId': '$parentId'}),
+      Uri.parse('${Config.baseUrl}/spaces?name=$spaceName&parentId=$parentId'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -208,7 +208,7 @@ class _SubSpaceState extends State<Subspace> {
     final spaceId = space.id;
     id = spaceId;
     final res = await http.get(
-      Uri.http("localhost:3000", '/posts', {'space': '$spaceId'}),
+      Uri.parse('${Config.baseUrl}/posts?space=$spaceId'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -238,7 +238,7 @@ class _SubSpaceState extends State<Subspace> {
     final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
     final token = await Store.secure.read(key: 'jwt');
     final res = await http.post(
-      Uri.parse('http://localhost:3000/posts'),
+      Uri.parse('${Config.baseUrl}/posts'),
       body: jsonEncode(PostRequest(
         content: content,
         topic: topic,

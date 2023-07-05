@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
+import '../config.dart';
 import '../models/appUser.dart';
 import '../models/appUserRes.dart';
 import '../stores/store.dart';
@@ -227,7 +228,7 @@ class _SignupState extends State<Signup> {
         displayName: _controllerDisplayName.text,
         email: _controllerEmail.text);
     final res = await http.post(
-      Uri.parse('http://localhost:3000/auth/user'),
+      Uri.parse('${Config.baseUrl}/auth/user'),
       body: jsonEncode(req.toJson()),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -240,8 +241,8 @@ class _SignupState extends State<Signup> {
       await Store.secure.write(key: "jwt", value: user.token);
       await GetStorage().write(
           "user",
-          AppUser(
-              id: user.id, displayName: user.displayName, email: user.email).toJson());
+          AppUser(id: user.id, displayName: user.displayName, email: user.email)
+              .toJson());
       return user;
     } else {
       // If the server did not return a 201 CREATED response,

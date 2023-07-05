@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
+import '../config.dart';
 import '../stores/store.dart';
 import 'package:http/http.dart' as http;
 
@@ -145,7 +146,7 @@ class _LoginState extends State<Login> {
 
   Future<AppUserRes> login() async {
     final res = await http.post(
-      Uri.parse('http://localhost:3000/auth/login'),
+      Uri.parse('${Config.baseUrl}/auth/login'),
       body: jsonEncode({
         'password': _controllerPassword.text,
         'email': _controllerEmail.text

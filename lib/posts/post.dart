@@ -9,6 +9,7 @@ import 'package:frontend/posts/commentSection.dart';
 import 'package:frontend/posts/postSection.dart';
 import 'package:http/http.dart' as http;
 
+import '../config.dart';
 import '../stores/store.dart';
 
 class PostWidget extends StatefulWidget {
@@ -145,7 +146,7 @@ class _PostState extends State<PostWidget> {
   Future<List<CommentWidget>>? getComments() async {
     final token = await Store.secure.read(key: 'jwt');
     final res = await http.get(
-      Uri.http("localhost:3000", '/comments', {'postId': '$id'}),
+      Uri.parse('${Config.baseUrl}/comments?postId=$id'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',

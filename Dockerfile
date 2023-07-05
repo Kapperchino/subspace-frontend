@@ -15,8 +15,10 @@ COPY pubspec.yaml /home/developer/
 COPY lib/* /home/developer/lib/
 COPY ./ /home/developer
 
+ENV BASE_URL "https://subspace-alpha.fly.dev"
+
 # Run basic check to download Dark SDK
-RUN flutter build web
+RUN flutter build web --dart-define=BASE_URL=$BASE_URL
 
 FROM golang:1.20-alpine as BuilderBackend
 
@@ -41,6 +43,6 @@ COPY --from=BuilderFrontEnd /home/developer/build/web /app/html
 
 ENV PORT 8080
 
-EXPOSE ${PORT}
+EXPOSE $PORT
 
 ENTRYPOINT ["./subspace"]

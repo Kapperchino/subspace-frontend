@@ -7,6 +7,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/stores/store.dart';
 
+import '../config.dart';
+
 class VoteWidget extends StatefulWidget {
   const VoteWidget(
       {super.key,
@@ -125,7 +127,7 @@ class _VoteState extends State<VoteWidget> {
     final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
     final token = await Store.secure.read(key: 'jwt');
     final res = await http.post(
-      Uri.parse('http://localhost:3000/votes'),
+      Uri.parse('${Config.baseUrl}/votes'),
       body: jsonEncode(VoteRequest(
               isUpvote: isUpvote,
               userId: user.id,
