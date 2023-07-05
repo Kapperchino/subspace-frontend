@@ -16,4 +16,4 @@ primary_region = "iad"
 
 [env]
  PORT="80"
- BASE_URL="https://subspace-alpha.fly.dev"
+ BASE_URL="https://subspace-backend.fly.dev"
