@@ -1,18 +1,15 @@
-import 'dart:collection';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/models/comment.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/models/post.dart';
-import 'package:frontend/posts/comment.dart';
 import 'package:frontend/posts/commentSection.dart';
+import 'package:frontend/posts/cubit/comment/commentBloc.dart';
+import 'package:frontend/posts/cubit/comment/commentEvent.dart';
 import 'package:frontend/posts/postSection.dart';
 import 'package:http/http.dart' as http;
 
-import '../config.dart';
-import '../stores/store.dart';
 
-class PostWidget extends StatefulWidget {
+class PostWidget extends StatelessWidget {
   const PostWidget(
       {super.key,
       required this.topic,
@@ -44,61 +41,6 @@ class PostWidget extends StatefulWidget {
   final DateTime created;
 
   @override
-  State<PostWidget> createState() {
-    return _PostState(
-        topic: topic,
-        likes: likes,
-        body: body,
-        userName: userName,
-        spaceId: spaceId,
-        posterId: posterId,
-        dislikes: dislikes,
-        parentSpaceId: parentSpaceId,
-        spaceName: spaceName,
-        id: id,
-        created: created);
-  }
-}
-
-class _PostState extends State<PostWidget> {
-  _PostState(
-      {required this.topic,
-      this.content = "",
-      this.contentType = ContentType.text,
-      required this.likes,
-      required this.body,
-      required this.userName,
-      required this.spaceId,
-      required this.posterId,
-      required this.dislikes,
-      required this.parentSpaceId,
-      required this.spaceName,
-      required this.id,
-      required this.created});
-
-  final String topic;
-  final String body;
-  final String userName;
-  final String content;
-  final int spaceId;
-  final String spaceName;
-  final int parentSpaceId;
-  final int likes;
-  final int dislikes;
-  final int posterId;
-  final ContentType contentType;
-  final int id;
-  final DateTime created;
-
-  Future<List<CommentWidget>>? comments;
-
-  @override
-  void initState() {
-    super.initState();
-    comments = getComments();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: CustomScrollView(
@@ -128,70 +70,13 @@ class _PostState extends State<PostWidget> {
                 spaceName: spaceName,
                 id: id,
                 created: created)),
-        FutureBuilder<List<CommentWidget>>(
-          future: comments,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return CommentSection(items: snapshot.data!);
-            } else {
-              return const SliverToBoxAdapter(
-                  child: CircularProgressIndicator.adaptive());
-            }
-          },
-        )
+        BlocProvider(
+            create: (_) => CommentBloc(httpClient: http.Client())
+              ..add((CommentsFetched(postId: id))),
+            child: CommentSection(
+              postId: id,
+            )),
       ],
     ));
-  }
-
-  Future<List<CommentWidget>>? getComments() async {
-    final token = await Store.secure.read(key: 'jwt');
-    final res = await http.get(
-      Uri.parse('${Config.baseUrl}/comments?postId=$id'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    if (res.statusCode == 200) {
-      // If the server did return a 201 CREATED response,
-      // then parse the JSON.
-      if (res.body.isEmpty || res.body == 'null') {
-        return List.empty();
-      }
-      final List<dynamic> list = jsonDecode(res.body);
-      final List<CommentWidget> comments = list.map((e) {
-        final comment = Comment.fromJson(e);
-        return CommentWidget(
-          likes: comment.upVotes,
-          body: comment.body,
-          userName: comment.posterName,
-          posterId: comment.posterId,
-          postId: comment.postId,
-          parentId: comment.parentId,
-          dislikes: comment.downVotes,
-          id: comment.id,
-          created: comment.created,
-          children: List.empty(growable: true),
-        );
-      }).toList(growable: false);
-      Map<int, CommentWidget> map = HashMap();
-      List<CommentWidget> resList = List.empty(growable: true);
-      for (var comment in comments) {
-        map[comment.id] = comment;
-      }
-      map.forEach((key, value) {
-        if (!map.containsKey(value.parentId)) {
-          resList.add(value);
-        } else {
-          map[value.parentId]!.children.add(value);
-        }
-      });
-
-      return resList;
-    } else {
-      // If the server did not return a 201 CREATED response,
-      // then throw an exception.
-      throw Exception('Failed to create album.');
-    }
   }
 }

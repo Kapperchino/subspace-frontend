@@ -7,65 +7,46 @@ import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidget.dart';
 import 'package:go_router/go_router.dart';
 
-class PostCard extends StatelessWidget {
-  const PostCard(
-      {super.key,
-      required this.topic,
-      this.content = "",
-      this.contentType = ContentType.text,
-      required this.likes,
-      required this.body,
-      required this.userName,
-      required this.spaceId,
-      required this.posterId,
-      required this.dislikes,
-      required this.parentSpaceId,
-      required this.spaceName,
-      required this.id,
-      required this.created});
+import '../models/postCardData.dart';
 
-  final String topic;
-  final String body;
-  final String userName;
-  final String content;
-  final int spaceId;
-  final String spaceName;
-  final int parentSpaceId;
-  final int likes;
-  final int dislikes;
-  final int posterId;
-  final ContentType contentType;
-  final int id;
-  final DateTime created;
+class PostCard extends StatelessWidget {
+  const PostCard({
+    super.key,
+    required this.data,
+  });
+
+  final PostCardData data;
 
   @override
   Widget build(BuildContext context) {
+    final post = data.post;
     return Card(
         clipBehavior: Clip.hardEdge,
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
-            context.push("/s/$parentSpaceId/$spaceName/p/$id");
+            context.push(
+                "/s/${data.parentSpaceId}/${data.spaceName}/p/${post.id}");
           },
           child: Column(children: [
             PostMeta(
-                userName: userName,
-                posterId: posterId,
-                created: created,
-                spaceName: spaceName),
+                userName: post.posterName,
+                posterId: post.posterId,
+                created: post.created,
+                spaceName: data.spaceName),
             Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 VoteWidget(
-                  likes: likes,
-                  dislikes: dislikes,
-                  postId: id,
+                  likes: post.upVotes,
+                  dislikes: post.downVotes,
+                  postId: post.id,
                 ),
-                if (contentType == ContentType.text)
+                if (post.type == ContentType.text)
                   const SizedBox(width: 0, height: 0),
-                if (contentType == ContentType.picture)
+                if (post.type == ContentType.picture)
                   FutureBuilder<Image>(
-                    future: getImage(content),
+                    future: getImage(post.content),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return ClipRRect(
@@ -81,8 +62,9 @@ class PostCard extends StatelessWidget {
                     flex: 8,
                     child: ListTile(
                       titleAlignment: ListTileTitleAlignment.center,
-                      title: Text(topic),
-                      subtitle: Text(body.substring(0, min(500, body.length))),
+                      title: Text(post.topic),
+                      subtitle: Text(
+                          post.body.substring(0, min(500, post.body.length))),
                       subtitleTextStyle:
                           const TextStyle(overflow: TextOverflow.visible),
                     )),
@@ -99,7 +81,7 @@ class PostCard extends StatelessWidget {
     }
     Metadata? metadata = await AnyLinkPreview.getMetadata(
       link: link,
-      cache: Duration(days: 7),
+      cache: const Duration(days: 7),
     );
     return Image.network(metadata!.image!);
   }

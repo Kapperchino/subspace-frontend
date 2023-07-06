@@ -2,16 +2,18 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/buttomLoader.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/models/postRequest.dart';
 import 'package:frontend/subspace/postCreationWidget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/subspace/postLinkWdiget.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../config.dart';
 import '../models/appUser.dart';
-import '../models/space.dart';
-import '../models/spaceView.dart';
+import '../posts/cubit/space/spaceBlock.dart';
+import '../posts/cubit/space/spaceState.dart';
 import '../posts/postcard.dart';
 import '../stores/store.dart';
 import 'package:http/http.dart' as http;
@@ -47,7 +49,6 @@ class _SubSpaceState extends State<Subspace> {
   @override
   void initState() {
     super.initState();
-    items = getPosts(parentId, name);
   }
 
   onClick() {
@@ -147,90 +148,37 @@ class _SubSpaceState extends State<Subspace> {
             ),
           ),
         ),
-        SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: padding),
-            sliver: SliverList(
-              delegate:
-                  SliverChildBuilderDelegate((BuildContext context, int index) {
-                return FutureBuilder<List<PostCard>>(
-                    future: items,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        if (index < snapshot.data!.length) {
-                          return snapshot.data![index];
+        BlocBuilder<SpaceBloc, SpaceState>(
+          builder: (context, state) {
+            switch (state.status) {
+              case SpaceStatus.failure:
+                return const SliverToBoxAdapter(
+                    child: Center(child: Text('failed to fetch posts')));
+              case SpaceStatus.success:
+                if (state.posts.isEmpty) {
+                  return const SliverToBoxAdapter(
+                      child: Center(child: Text('no posts')));
+                }
+                return SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: padding),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                        if (index >= state.posts.length) {
+                          return const SliverToBoxAdapter(
+                              child: BottomLoader());
                         }
-                        return const CircularProgressIndicator();
-                      } else {
-                        return const CircularProgressIndicator();
-                      }
-                    });
-              }, childCount: count),
-            )),
+                        return PostCard(data: state.posts[index]);
+                      }, childCount: state.posts.length),
+                    ));
+              case SpaceStatus.initial:
+                return const SliverToBoxAdapter(
+                    child: Center(child: CircularProgressIndicator()));
+            }
+          },
+        ),
       ]),
     );
-  }
-
-  Future<List<PostCard>> getPosts(int parentId, String? spaceName) async {
-    final spaceView = await getSpaceView(parentId, spaceName);
-    final space = spaceView.space;
-    final list = spaceView.posts;
-    setState(() {
-      count = list.length;
-    });
-    return list
-        .map((val) => PostCard(
-            topic: val.topic,
-            content: val.content,
-            userName: val.posterName,
-            body: val.body,
-            contentType: val.type,
-            likes: val.upVotes,
-            spaceId: val.spaceId,
-            parentSpaceId: space.parentId,
-            spaceName: space.name,
-            posterId: val.posterId,
-            created: val.created,
-            id: val.id,
-            dislikes: val.downVotes))
-        .toList();
-  }
-
-  Future<SpaceView> getSpaceView(int parentId, String? spaceName) async {
-    final token = await Store.secure.read(key: 'jwt');
-    final spaceInfo = await http.get(
-      Uri.parse('${Config.baseUrl}/spaces?name=$spaceName&parentId=$parentId'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    final space = Space.fromJson(jsonDecode(spaceInfo.body));
-    final spaceId = space.id;
-    id = spaceId;
-    final res = await http.get(
-      Uri.parse('${Config.baseUrl}/posts?space=$spaceId'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    if (res.statusCode == 200) {
-      // If the server did return a 201 CREATED response,
-      // then parse the JSON.
-      if (res.body.isEmpty || res.body == 'null') {
-        return SpaceView(space: space, posts: List.empty());
-      }
-      final List<dynamic> list = jsonDecode(res.body);
-      var output = List<Post>.empty(growable: true);
-      for (final json in list) {
-        output.add(Post.fromJson(json));
-      }
-      return SpaceView(space: space, posts: output);
-    } else {
-      // If the server did not return a 201 CREATED response,
-      // then throw an exception.
-      throw Exception('Failed to create album.');
-    }
   }
 
   Future<int> postPost(String body, String topic,

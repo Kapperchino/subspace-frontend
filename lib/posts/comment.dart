@@ -5,55 +5,38 @@ import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/commentMeta.dart';
 import 'package:frontend/posts/voteWidget.dart';
 
-class CommentWidget extends StatelessWidget {
-  const CommentWidget(
-      {super.key,
-      this.content = "",
-      this.contentType = ContentType.text,
-      required this.likes,
-      required this.body,
-      required this.userName,
-      required this.posterId,
-      required this.dislikes,
-      required this.postId,
-      required this.parentId,
-      required this.id,
-      required this.created,
-      required this.children});
+import '../models/CommentData.dart';
 
-  final String body;
-  final String userName;
-  final String content;
-  final int likes;
+class CommentWidget extends StatelessWidget {
+  const CommentWidget({super.key, required this.parentId, required this.data});
+
   final int parentId;
-  final int postId;
-  final int dislikes;
-  final int posterId;
-  final ContentType contentType;
-  final int id;
-  final DateTime created;
-  final List<CommentWidget> children;
+  final CommentData data;
 
   @override
   Widget build(BuildContext context) {
+    final comment = data.comment;
     return Card(
         child: Column(children: [
-      CommentMeta(userName: userName, posterId: posterId, created: created),
+      CommentMeta(
+          userName: comment.posterName,
+          posterId: comment.posterId,
+          created: comment.created),
       Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           VoteWidget(
-            likes: likes,
-            dislikes: dislikes,
-            postId: id,
+            likes: comment.upVotes,
+            dislikes: comment.downVotes,
+            postId: comment.postId,
           ),
-          if (contentType == ContentType.text)
+          if (comment.type == ContentType.text)
             const SizedBox(width: 0, height: 0),
-          if (contentType == ContentType.picture)
+          if (comment.type == ContentType.picture)
             ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
               child: Image.network(
-                content,
+                comment.content,
                 width: 120,
                 height: 120,
               ),
@@ -62,7 +45,8 @@ class CommentWidget extends StatelessWidget {
               flex: 9,
               child: ListTile(
                 titleAlignment: ListTileTitleAlignment.center,
-                subtitle: Text(body.substring(0, min(500, body.length))),
+                subtitle: Text(
+                    comment.body.substring(0, min(500, comment.body.length))),
                 subtitleTextStyle:
                     const TextStyle(overflow: TextOverflow.visible),
               )),
@@ -83,14 +67,17 @@ class CommentWidget extends StatelessWidget {
                   )))
         ],
       ),
-      if (children.isNotEmpty)
+      if (data.children.isNotEmpty)
         Column(
             mainAxisSize: MainAxisSize.min,
-            children: children
+            children: data.children
                 .map((e) => Flexible(
                         child: Padding(
                       padding: const EdgeInsets.only(left: 50),
-                      child: e,
+                      child: CommentWidget(
+                        data: e,
+                        parentId: data.comment.id,
+                      ),
                     )))
                 .toList())
     ]));

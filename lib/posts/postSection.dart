@@ -140,7 +140,7 @@ class _PostState extends State<PostSection> {
                   VoteWidgetFlat(likes: likes, dislikes: dislikes, postId: id),
                   Flexible(
                       child: Align(
-                          alignment: Alignment.centerRight,
+                        alignment: Alignment.centerRight,
                           child: Padding(
                               padding: const EdgeInsets.only(right: 10),
                               child: ElevatedButton(
