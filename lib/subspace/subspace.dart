@@ -5,9 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/models/postRequest.dart';
+import 'package:frontend/posts/cubit/posting/postingBloc.dart';
+import 'package:frontend/posts/cubit/posting/postingEvent.dart';
+import 'package:frontend/posts/cubit/posting/postingState.dart';
+import 'package:frontend/posts/cubit/space/spaceEvent.dart';
 import 'package:frontend/subspace/postCreationWidget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/subspace/postLinkWdiget.dart';
+import 'package:frontend/subspace/postingWidget.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../config.dart';
@@ -38,10 +43,6 @@ class _SubSpaceState extends State<Subspace> {
 
   final String name;
   final int parentId;
-  Future<List<PostCard>>? items;
-  int id = -1;
-  int count = 0;
-  bool started = false;
 
   final TextEditingController controllerTopic = TextEditingController();
   final TextEditingController controllerBody = TextEditingController();
@@ -49,10 +50,6 @@ class _SubSpaceState extends State<Subspace> {
   @override
   void initState() {
     super.initState();
-  }
-
-  onClick() {
-    started = !started;
   }
 
   @override
@@ -72,23 +69,18 @@ class _SubSpaceState extends State<Subspace> {
                 padding: EdgeInsets.only(right: padding, bottom: 10),
                 child: Align(
                   alignment: Alignment.bottomRight,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      if (started && controllerBody.text.isNotEmpty) {
-                        int code = await postPost(
-                            controllerBody.text, controllerTopic.text);
-                        controllerBody.clear();
-                        controllerTopic.clear();
-                        if (code == 200) {
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Post created')));
-                          }
-                        }
-                      }
-                      setState(() => onClick());
+                  child: BlocBuilder<SpaceBloc, SpaceState>(
+                    builder: (context, state) {
+                      return ElevatedButton(
+                        onPressed: () async {
+                          context.read<PostingBloc>().add(PostPressed(
+                              body: controllerBody.text,
+                              topic: controllerTopic.text,
+                              spaceId: state.spaceId));
+                        },
+                        child: const Text('Post'),
+                      );
                     },
-                    child: const Text('Post'),
                   ),
                 ),
               )),
@@ -100,53 +92,26 @@ class _SubSpaceState extends State<Subspace> {
           ),
         ),
         SliverToBoxAdapter(
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            height: started ? 190 : 0,
-            curve: Curves.easeInOutCubicEmphasized,
-            child: DefaultTabController(
-              length: 2,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TabBar(
-                    onTap: (value) {
-                      controllerBody.clear();
-                      controllerTopic.clear();
-                    },
-                    tabs: const [
-                      Tab(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.post_add_rounded),
-                            Text("Post")
-                          ],
-                        ),
-                      ),
-                      Tab(
-                          child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [Icon(Icons.link), Text("Link")],
-                      )),
-                    ],
-                  ),
-                  Flexible(
-                    child: TabBarView(
-                      children: [
-                        PostCreationWidget(
-                            controllderBody: controllerBody,
-                            controllerTopic: controllerTopic),
-                        PostLinkWidget(
-                            controllderBody: controllerBody,
-                            controllerTopic: controllerTopic),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
+            child: PostingWidget(
+          controllerBody: controllerBody,
+          controllerTopic: controllerTopic,
+        )),
+        BlocListener<PostingBloc, PostingState>(
+          listener: (context, state) {
+            if (state.status == PostingStatus.success) {
+              controllerBody.clear();
+              controllerTopic.clear();
+              BlocProvider.of<SpaceBloc>(context)
+                  .add(SpaceFetched(parentId: parentId, spaceName: name));
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: Colors.green,
+                  content: Text('Post created')));
+            } else if (state.status == PostingStatus.failure) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: Colors.red, content: Text('Error input')));
+            }
+          },
+          child: const SliverToBoxAdapter(child: SizedBox()),
         ),
         BlocBuilder<SpaceBloc, SpaceState>(
           builder: (context, state) {
@@ -179,26 +144,5 @@ class _SubSpaceState extends State<Subspace> {
         ),
       ]),
     );
-  }
-
-  Future<int> postPost(String body, String topic,
-      {String content = "", ContentType contentType = ContentType.text}) async {
-    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
-    final token = await Store.secure.read(key: 'jwt');
-    final res = await http.post(
-      Uri.parse('${Config.baseUrl}/posts'),
-      body: jsonEncode(PostRequest(
-        content: content,
-        topic: topic,
-        spaceId: id,
-        posterId: user.id,
-        body: body,
-      ).toJson()),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    return res.statusCode;
   }
 }

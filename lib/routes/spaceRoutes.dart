@@ -4,6 +4,7 @@ import 'package:frontend/routes/postRoutes.dart';
 import 'package:go_router/go_router.dart';
 
 import '../stores/store.dart';
+import '../subspace/spacePage.dart';
 import '../subspace/subspace.dart';
 
 class SpaceRoutes {
@@ -21,8 +22,8 @@ class SpaceRoutes {
         builder: (BuildContext context, GoRouterState state) {
           final spaceName = state.pathParameters['subSpace'];
           final parentId = int.parse(state.pathParameters['parentSpace']!);
-          return Subspace(
-            name: spaceName!,
+          return SpacePage(
+            spaceName: spaceName!,
             parentId: parentId,
           );
         }

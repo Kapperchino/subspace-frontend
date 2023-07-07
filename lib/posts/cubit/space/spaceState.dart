@@ -8,21 +8,22 @@ final class SpaceState extends Equatable {
       {this.status = SpaceStatus.initial,
       this.posts = const <PostCardData>[],
       this.hasReachedMax = false,
-      this.posting = false});
+      this.spaceId = -1});
 
   final SpaceStatus status;
   final List<PostCardData> posts;
   final bool hasReachedMax;
-  final bool posting;
+  final int spaceId;
 
-  SpaceState copyWith({
-    SpaceStatus? status,
-    List<PostCardData>? posts,
-    bool? hasReachedMax,
-  }) {
+  SpaceState copyWith(
+      {SpaceStatus? status,
+      List<PostCardData>? posts,
+      bool? hasReachedMax,
+      int? spaceId}) {
     return SpaceState(
       status: status ?? this.status,
       posts: posts ?? this.posts,
+      spaceId: spaceId ?? this.spaceId,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
     );
   }
