@@ -8,9 +8,12 @@ sealed class CommentingEvent extends Equatable {
 }
 
 final class CommentPressed extends CommentingEvent {
-  final String comment;
   final int postId;
   final int parentId;
-  const CommentPressed(
-      {required this.comment, required this.postId, this.parentId = 1});
+  const CommentPressed({required this.postId, this.parentId = 1});
+}
+
+final class CommentChanged extends CommentingEvent {
+  final String comment;
+  const CommentChanged({required this.comment});
 }

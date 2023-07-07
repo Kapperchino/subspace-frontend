@@ -3,16 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/posts/cubit/commenting/commentingBloc.dart';
+import 'package:frontend/posts/cubit/commenting/commentingEvent.dart';
 import 'package:frontend/posts/cubit/commenting/commentingState.dart';
-
 
 class CommentingWidget extends StatelessWidget {
   const CommentingWidget({
     super.key,
-    required this.controllerComment,
   });
-
-  final TextEditingController controllerComment;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +28,9 @@ class CommentingWidget extends StatelessWidget {
         child: TextField(
           autofocus: false,
           maxLines: 3,
-          controller: controllerComment,
+          onChanged: (comment) => context
+              .read<CommentingBloc>()
+              .add(CommentChanged(comment: comment)),
           decoration: InputDecoration(
             filled: true,
             hintText: 'Comment',

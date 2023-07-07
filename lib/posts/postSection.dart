@@ -16,8 +16,7 @@ import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'cubit/commenting/commentingEvent.dart';
 
 class PostSection extends StatelessWidget {
-  PostSection({super.key, required this.id, required this.spaceName});
-  final textController = TextEditingController();
+  const PostSection({super.key, required this.id, required this.spaceName});
   final int id;
   final String spaceName;
 
@@ -84,7 +83,6 @@ class PostSection extends StatelessWidget {
                                     onPressed: () async {
                                       context.read<CommentingBloc>().add(
                                           CommentPressed(
-                                              comment: textController.text,
                                               postId: id));
                                     },
                                     child: const Text('Comment'),
@@ -94,14 +92,10 @@ class PostSection extends StatelessWidget {
                 ],
               ),
             )),
-            Flexible(
-                child: CommentingWidget(
-              controllerComment: textController,
-            )),
+            const Flexible(child: CommentingWidget()),
             BlocListener<CommentingBloc, CommentingState>(
               listener: (context, state) {
                 if (state.status == CommentingStaus.success) {
-                  textController.clear();
                   BlocProvider.of<CommentBloc>(context)
                       .add(CommentsFetched(postId: id));
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

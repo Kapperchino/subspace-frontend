@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/posts/comment.dart';
 import 'package:frontend/posts/cubit/comment/commentBloc.dart';
 import 'package:frontend/posts/cubit/comment/commentState.dart';
+import 'package:frontend/posts/cubit/commenting/commentingBloc.dart';
+import 'package:http/http.dart' as http;
 
 class CommentSection extends StatelessWidget {
   const CommentSection({super.key, required this.postId});
@@ -29,9 +31,13 @@ class CommentSection extends StatelessWidget {
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                  return CommentWidget(
-                      parentId: state.comments[index].comment.parentId,
-                      data: state.comments[index]);
+                  return BlocProvider(
+                    create: (_) => CommentingBloc(
+                        httpClient: http.Client(), parentId: 1, postId: postId),
+                    child: CommentWidget(
+                        parentId: state.comments[index].comment.parentId,
+                        data: state.comments[index]),
+                  );
                 }, childCount: state.comments.length),
               ));
         case CommentsStatus.initial:

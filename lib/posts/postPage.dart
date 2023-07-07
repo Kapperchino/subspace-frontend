@@ -23,7 +23,8 @@ class PostPage extends StatelessWidget {
               create: (_) => CommentBloc(httpClient: http.Client())
                 ..add(CommentsFetched(postId: id))),
           BlocProvider(
-              create: (_) => CommentingBloc(httpClient: http.Client())),
+              create: (_) => CommentingBloc(
+                  httpClient: http.Client(), postId: id, parentId: 1)),
           BlocProvider(
               create: (_) => PostBloc(httpClient: http.Client())
                 ..add(PostFetched(postId: id)))

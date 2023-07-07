@@ -23,14 +23,36 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class CommentingBloc extends Bloc<CommentingEvent, CommentingState> {
-  CommentingBloc({required this.httpClient}) : super(const CommentingState()) {
+  CommentingBloc(
+      {required this.httpClient,
+      required this.postId,
+      required this.parentId,
+      required this.posterId,
+      this.isPostComment = true})
+      : super(CommentingState(posterId: posterId)) {
     on<CommentPressed>(
       onCommentSubmitted,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<CommentChanged>(
+      onCommentChanged,
+    );
   }
 
   final http.Client httpClient;
+  final int postId;
+  final int parentId;
+  final int posterId;
+  final bool isPostComment;
+
+  Future<void> onCommentChanged(
+    CommentChanged event,
+    Emitter<CommentingState> emit,
+  ) async {
+    return emit(
+      state.copyWith(comment: event.comment),
+    );
+  }
 
   Future<void> onCommentSubmitted(
     CommentPressed event,
@@ -39,34 +61,27 @@ class CommentingBloc extends Bloc<CommentingEvent, CommentingState> {
     if (state.status == CommentingStaus.closed ||
         state.status == CommentingStaus.success) {
       return emit(
-        state.copyWith(
-          status: CommentingStaus.started,
-        ),
+        state.copyWith(status: CommentingStaus.started),
       );
     }
     if (state.status == CommentingStaus.failure) {
-      if (event.comment.isEmpty) {
-        return emit(state.copyWith(
-          status: CommentingStaus.closed,
-        ));
+      if (state.comment.isEmpty) {
+        return emit(state.copyWith(status: CommentingStaus.closed));
       }
     }
     if (state.status == CommentingStaus.started ||
         state.status == CommentingStaus.failure) {
-      if (event.comment.isEmpty) {
-        return emit(state.copyWith(
-          status: CommentingStaus.closed,
-        ));
+      if (state.comment.isEmpty) {
+        return emit(state.copyWith(status: CommentingStaus.closed));
       }
       final int res =
-          await postComment(event.comment, event.postId, event.parentId);
+          await postComment(state.comment, event.postId, event.parentId);
       if (res != 200) {
         return emit(state.copyWith(
-          status: CommentingStaus.failure,
-        ));
+            status: CommentingStaus.failure, comment: state.comment));
       }
       return emit(
-        state.copyWith(status: CommentingStaus.success),
+        state.copyWith(status: CommentingStaus.success, comment: ""),
       );
     }
   }
