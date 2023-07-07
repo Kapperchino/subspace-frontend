@@ -27,9 +27,8 @@ class CommentingBloc extends Bloc<CommentingEvent, CommentingState> {
       {required this.httpClient,
       required this.postId,
       required this.parentId,
-      required this.posterId,
       this.isPostComment = true})
-      : super(CommentingState(posterId: posterId)) {
+      : super(const CommentingState()) {
     on<CommentPressed>(
       onCommentSubmitted,
       transformer: throttleDroppable(throttleDuration),
@@ -42,7 +41,6 @@ class CommentingBloc extends Bloc<CommentingEvent, CommentingState> {
   final http.Client httpClient;
   final int postId;
   final int parentId;
-  final int posterId;
   final bool isPostComment;
 
   Future<void> onCommentChanged(
