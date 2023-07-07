@@ -2,8 +2,16 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/models/commentRequest.dart';
 import 'package:frontend/models/post.dart';
+import 'package:frontend/posts/commentingWidget.dart';
+import 'package:frontend/posts/cubit/comment/commentBloc.dart';
+import 'package:frontend/posts/cubit/comment/commentEvent.dart';
+import 'package:frontend/posts/cubit/commenting/commentingBloc.dart';
+import 'package:frontend/posts/cubit/commenting/commentingState.dart';
+import 'package:frontend/posts/cubit/post/postBloc.dart';
+import 'package:frontend/posts/cubit/post/postState.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:get_storage/get_storage.dart';
@@ -12,209 +20,112 @@ import 'package:http/http.dart' as http;
 import '../config.dart';
 import '../models/appUser.dart';
 import '../stores/store.dart';
+import 'cubit/commenting/commentingEvent.dart';
 
-class PostSection extends StatefulWidget {
-  const PostSection(
-      {super.key,
-      required this.topic,
-      this.content = "",
-      this.contentType = ContentType.text,
-      required this.likes,
-      required this.body,
-      required this.userName,
-      required this.spaceId,
-      required this.posterId,
-      required this.dislikes,
-      required this.parentSpaceId,
-      required this.spaceName,
-      required this.id,
-      required this.created});
-
-  final String topic;
-  final String body;
-  final String userName;
-  final String content;
-  final int spaceId;
-  final String spaceName;
-  final int parentSpaceId;
-  final int likes;
-  final int dislikes;
-  final int posterId;
-  final ContentType contentType;
-  final int id;
-  final DateTime created;
-
-  @override
-  State<PostSection> createState() {
-    return _PostState(topic, body, userName, content, spaceId, spaceName,
-        parentSpaceId, likes, dislikes, posterId, contentType, id, created);
-  }
-}
-
-class _PostState extends State<PostSection> {
-  bool started = false;
-  double commentHeight = 0.0;
+class PostSection extends StatelessWidget {
+  PostSection({super.key, required this.id, required this.spaceName});
   final textController = TextEditingController();
-
-  final String topic;
-  final String body;
-  final String userName;
-  final String content;
-  final int spaceId;
-  final String spaceName;
-  final int parentSpaceId;
-  final int likes;
-  final int dislikes;
-  final int posterId;
-  final ContentType contentType;
   final int id;
-  final DateTime created;
-
-  _PostState(
-      this.topic,
-      this.body,
-      this.userName,
-      this.content,
-      this.spaceId,
-      this.spaceName,
-      this.parentSpaceId,
-      this.likes,
-      this.dislikes,
-      this.posterId,
-      this.contentType,
-      this.id,
-      this.created);
-
-  void comment() async {
-    //commenting
-    started = !started;
-    commentHeight = 108;
-  }
+  final String spaceName;
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final padding = max((width - 1000) / 2, 0.0);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Flexible(
-            child: Card(
-          margin: EdgeInsets.symmetric(horizontal: padding),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Flexible(
-                  child: Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Text(
-                  topic,
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textScaleFactor: 1.5,
-                ),
-              )),
-              if (contentType == ContentType.text)
-                const SizedBox(width: 0, height: 0),
-              if (contentType == ContentType.picture)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Image.network(
-                    content,
-                    width: 120,
-                    height: 120,
-                  ),
-                ),
-              Flexible(
-                  child: Padding(
-                      padding:
-                          const EdgeInsets.only(left: 20, right: 20, top: 20),
-                      child: Text(body))),
-              Flexible(
-                  child: PostMeta(
-                      userName: userName,
-                      posterId: posterId,
-                      created: created,
-                      spaceName: spaceName)),
-              Row(
-                children: [
-                  VoteWidgetFlat(likes: likes, dislikes: dislikes, postId: id),
+    return BlocBuilder<PostBloc, PostState>(builder: (context, state) {
+      if (state.status == PostStatus.success) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+                child: Card(
+              margin: EdgeInsets.symmetric(horizontal: padding),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
                   Flexible(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                          child: Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  if (started) {
-                                    if (textController.text.isNotEmpty) {
-                                      final code = await postComment(
-                                          textController.text);
-                                      textController.clear();
-                                      if (code == 200) {
-                                        if (context.mounted) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(const SnackBar(
-                                                  content:
-                                                      Text('Comment posted')));
-                                        }
-                                      }
-                                    }
-                                  }
-                                  setState(() {
-                                    comment();
-                                  });
-                                },
-                                child: const Text('Comment'),
-                              )))),
+                      child: Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Text(
+                      state.post!.topic,
+                      style: Theme.of(context).textTheme.titleLarge,
+                      textScaleFactor: 1.5,
+                    ),
+                  )),
+                  if (state.post!.type == ContentType.text)
+                    const SizedBox(width: 0, height: 0),
+                  if (state.post!.type == ContentType.picture)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.network(
+                        state.post!.content,
+                        width: 600,
+                        height: 600,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  Flexible(
+                      child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, top: 20),
+                          child: Text(state.post!.body))),
+                  Flexible(
+                      child: PostMeta(
+                          userName: state.post!.posterName,
+                          posterId: state.post!.posterId,
+                          created: state.post!.created,
+                          spaceName: spaceName)),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      VoteWidgetFlat(
+                          likes: state.post!.upVotes,
+                          dislikes: state.post!.downVotes,
+                          postId: id),
+                      Flexible(
+                          child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      context.read<CommentingBloc>().add(
+                                          CommentPressed(
+                                              comment: textController.text,
+                                              postId: id));
+                                    },
+                                    child: const Text('Comment'),
+                                  )))),
+                    ],
+                  ),
                 ],
-              )
-            ],
-          ),
-        )),
-        AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          height: started ? 100 : 0,
-          curve: Curves.easeInOutCubicEmphasized,
-          padding: EdgeInsets.only(top: 12, right: padding, left: padding),
-          child: TextField(
-            autofocus: false,
-            maxLines: 3,
-            controller: textController,
-            decoration: InputDecoration(
-              filled: true,
-              hintText: 'Comment',
-              contentPadding:
-                  const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Theme.of(context).cardColor),
-                borderRadius: BorderRadius.circular(10),
               ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Theme.of(context).cardColor),
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Future<int> postComment(String comment) async {
-    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
-    final token = await Store.secure.read(key: 'jwt');
-    final res = await http.post(
-      Uri.parse('${Config.baseUrl}/comments'),
-      body: jsonEncode(CommentRequest(
-        postId: id,
-        posterId: user.id,
-        body: comment,
-      ).toJson()),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-    );
-    return res.statusCode;
+            )),
+            Flexible(
+                child: CommentingWidget(
+              controllerComment: textController,
+            )),
+            BlocListener<CommentingBloc, CommentingState>(
+              listener: (context, state) {
+                if (state.status == CommentingStaus.success) {
+                  textController.clear();
+                  BlocProvider.of<CommentBloc>(context)
+                      .add(CommentsFetched(postId: id));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      backgroundColor: Colors.green,
+                      content: Text('Comment created')));
+                } else if (state.status == CommentingStaus.failure) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      backgroundColor: Colors.red,
+                      content: Text('Error input')));
+                }
+              },
+              child: const SizedBox(),
+            )
+          ],
+        );
+      }
+      return const CircularProgressIndicator.adaptive();
+    });
   }
 }

@@ -1,0 +1,71 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:bloc/bloc.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:frontend/models/post.dart';
+import 'package:frontend/models/postCardData.dart';
+import 'package:frontend/posts/cubit/post/postEvent.dart';
+import 'package:frontend/posts/cubit/post/postState.dart';
+import 'package:frontend/posts/cubit/space/spaceEvent.dart';
+import 'package:frontend/posts/cubit/space/spaceState.dart';
+import 'package:http/http.dart' as http;
+import 'package:stream_transform/stream_transform.dart';
+
+import '../../../config.dart';
+import '../../../models/space.dart';
+import '../../../stores/store.dart';
+
+const _postLimit = 20;
+const throttleDuration = Duration(milliseconds: 100);
+
+EventTransformer<E> throttleDroppable<E>(Duration duration) {
+  return (events, mapper) {
+    return droppable<E>().call(events.throttle(duration), mapper);
+  };
+}
+
+class PostBloc extends Bloc<PostEvent, PostState> {
+  PostBloc({required this.httpClient}) : super(PostState()) {
+    on<PostFetched>(
+      _onPostFetched,
+      transformer: throttleDroppable(throttleDuration),
+    );
+  }
+
+  final http.Client httpClient;
+
+  Future<void> _onPostFetched(
+    PostFetched event,
+    Emitter<PostState> emit,
+  ) async {
+    try {
+      final post = await getPost(event.postId);
+      final state = PostState(status: PostStatus.success);
+      state.post = post;
+      return emit(state);
+    } catch (_) {
+      emit(PostState(status: PostStatus.failure));
+    }
+  }
+
+  Future<Post> getPost(int id) async {
+    final token = await Store.secure.read(key: 'jwt');
+    final res = await http.get(
+      Uri.parse('${Config.baseUrl}/posts/$id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (res.statusCode == 200) {
+      // If the server did return a 201 CREATED response,
+      // then parse the JSON.
+      return Post.fromJson(jsonDecode(res.body));
+    } else {
+      // If the server did not return a 201 CREATED response,
+      // then throw an exception.
+      throw Exception('Failed to create album.');
+    }
+  }
+}
