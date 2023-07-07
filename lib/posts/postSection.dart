@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/models/commentRequest.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/commentingWidget.dart';
 import 'package:frontend/posts/cubit/comment/commentBloc.dart';
@@ -14,12 +12,7 @@ import 'package:frontend/posts/cubit/post/postBloc.dart';
 import 'package:frontend/posts/cubit/post/postState.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart' as http;
 
-import '../config.dart';
-import '../models/appUser.dart';
-import '../stores/store.dart';
 import 'cubit/commenting/commentingEvent.dart';
 
 class PostSection extends StatelessWidget {

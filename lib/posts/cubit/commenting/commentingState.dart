@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:frontend/models/CommentData.dart';
 
 enum CommentingStaus { closed, started, success, failure }
 

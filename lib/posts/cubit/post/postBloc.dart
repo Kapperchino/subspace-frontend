@@ -4,16 +4,12 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/models/post.dart';
-import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/posts/cubit/post/postEvent.dart';
 import 'package:frontend/posts/cubit/post/postState.dart';
-import 'package:frontend/posts/cubit/space/spaceEvent.dart';
-import 'package:frontend/posts/cubit/space/spaceState.dart';
 import 'package:http/http.dart' as http;
 import 'package:stream_transform/stream_transform.dart';
 
 import '../../../config.dart';
-import '../../../models/space.dart';
 import '../../../stores/store.dart';
 
 const _postLimit = 20;

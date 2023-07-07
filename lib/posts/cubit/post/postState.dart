@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:frontend/models/postCardData.dart';
 
 import '../../../models/post.dart';
 

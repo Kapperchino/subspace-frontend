@@ -3,17 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/posts/cubit/commenting/commentingBloc.dart';
-import 'package:frontend/posts/cubit/commenting/commentingEvent.dart';
 import 'package:frontend/posts/cubit/commenting/commentingState.dart';
-import 'package:frontend/posts/cubit/posting/postingBloc.dart';
-import 'package:frontend/posts/cubit/posting/postingState.dart';
-import 'package:frontend/subspace/postCreationWidget.dart';
-import 'package:frontend/subspace/postLinkWdiget.dart';
-import 'package:frontend/subspace/subspace.dart';
-import 'package:http/http.dart' as http;
 
-import '../posts/cubit/space/spaceBlock.dart';
-import '../posts/cubit/space/spaceEvent.dart';
 
 class CommentingWidget extends StatelessWidget {
   const CommentingWidget({

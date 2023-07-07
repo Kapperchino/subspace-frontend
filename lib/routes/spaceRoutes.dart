@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 
 import '../stores/store.dart';
 import '../subspace/spacePage.dart';
-import '../subspace/subspace.dart';
 
 class SpaceRoutes {
   GoRoute getSpaceRoute() {

@@ -1,27 +1,17 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
-import 'package:frontend/models/post.dart';
-import 'package:frontend/models/postRequest.dart';
 import 'package:frontend/posts/cubit/posting/postingBloc.dart';
 import 'package:frontend/posts/cubit/posting/postingEvent.dart';
 import 'package:frontend/posts/cubit/posting/postingState.dart';
 import 'package:frontend/posts/cubit/space/spaceEvent.dart';
-import 'package:frontend/subspace/postCreationWidget.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/subspace/postLinkWdiget.dart';
 import 'package:frontend/subspace/postingWidget.dart';
-import 'package:get_storage/get_storage.dart';
 
-import '../config.dart';
-import '../models/appUser.dart';
 import '../posts/cubit/space/spaceBlock.dart';
 import '../posts/cubit/space/spaceState.dart';
 import '../posts/postcard.dart';
-import '../stores/store.dart';
-import 'package:http/http.dart' as http;
 
 class Subspace extends StatefulWidget {
   const Subspace({super.key, required this.name, required this.parentId});

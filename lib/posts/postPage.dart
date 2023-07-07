@@ -3,14 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/posts/cubit/comment/commentEvent.dart';
 import 'package:frontend/posts/cubit/post/postBloc.dart';
 import 'package:frontend/posts/cubit/post/postEvent.dart';
-import 'package:frontend/posts/cubit/posting/postingBloc.dart';
 import 'package:frontend/posts/post.dart';
-import 'package:frontend/subspace/subspace.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/post.dart';
-import '../posts/cubit/space/spaceBlock.dart';
-import '../posts/cubit/space/spaceEvent.dart';
 import 'cubit/comment/commentBloc.dart';
 import 'cubit/commenting/commentingBloc.dart';
 

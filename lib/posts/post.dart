@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/commentSection.dart';
-import 'package:frontend/posts/cubit/comment/commentBloc.dart';
-import 'package:frontend/posts/cubit/comment/commentEvent.dart';
-import 'package:frontend/posts/cubit/commenting/commentingBloc.dart';
 import 'package:frontend/posts/postSection.dart';
-import 'package:http/http.dart' as http;
 
 class PostWidget extends StatelessWidget {
   const PostWidget({super.key, required this.id, required this.spaceName});
