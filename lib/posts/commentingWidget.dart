@@ -31,7 +31,10 @@ class CommentingWidget extends StatelessWidget {
         builder: (context, state) {
       return AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        height: state.status != CommentingStaus.closed ? 100 : 0,
+        height: state.status == CommentingStaus.started ||
+                state.status == CommentingStaus.failure
+            ? 100
+            : 0,
         curve: Curves.easeInOutCubicEmphasized,
         padding: EdgeInsets.only(top: 12, right: padding, left: padding),
         child: TextField(

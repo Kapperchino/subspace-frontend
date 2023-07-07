@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/posts/cubit/comment/commentEvent.dart';
 import 'package:frontend/posts/cubit/post/postBloc.dart';
 import 'package:frontend/posts/cubit/post/postEvent.dart';
 import 'package:frontend/posts/cubit/posting/postingBloc.dart';
@@ -23,7 +24,9 @@ class PostPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [
-          BlocProvider(create: (_) => CommentBloc(httpClient: http.Client())),
+          BlocProvider(
+              create: (_) => CommentBloc(httpClient: http.Client())
+                ..add(CommentsFetched(postId: id))),
           BlocProvider(
               create: (_) => CommentingBloc(httpClient: http.Client())),
           BlocProvider(

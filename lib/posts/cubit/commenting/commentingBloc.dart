@@ -67,11 +67,6 @@ class CommentingBloc extends Bloc<CommentingEvent, CommentingState> {
           status: CommentingStaus.closed,
         ));
       }
-      if (event.comment.isEmpty) {
-        return emit(state.copyWith(
-          status: CommentingStaus.failure,
-        ));
-      }
       final int res =
           await postComment(event.comment, event.postId, event.parentId);
       if (res != 200) {

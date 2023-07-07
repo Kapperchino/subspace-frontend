@@ -38,16 +38,14 @@ class CommentBloc extends Bloc<CommentEvent, CommentsState> {
   ) async {
     if (state.hasReachedMax) return;
     try {
-      if (state.status == CommentsStatus.initial) {
-        final comments = await getComments(event.postId);
-        return emit(
-          state.copyWith(
-            status: CommentsStatus.success,
-            comments: comments,
-            hasReachedMax: false,
-          ),
-        );
-      }
+      final comments = await getComments(event.postId);
+      return emit(
+        state.copyWith(
+          status: CommentsStatus.success,
+          comments: comments,
+          hasReachedMax: false,
+        ),
+      );
     } catch (_) {
       emit(state.copyWith(status: CommentsStatus.failure));
     }
