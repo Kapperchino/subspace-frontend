@@ -45,7 +45,7 @@ class PostCard extends StatelessWidget {
                   const SizedBox(width: 0, height: 0),
                 if (post.type == ContentType.picture ||
                     post.type == ContentType.link)
-                  FutureBuilder<Image>(
+                  FutureBuilder<Widget>(
                     future: getImage(post.content),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
@@ -90,7 +90,7 @@ class PostCard extends StatelessWidget {
         ));
   }
 
-  Future<Image> getImage(String link) async {
+  Future<Widget> getImage(String link) async {
     final contentType = getUrlType(link);
     if (contentType == ContentType.picture) {
       return Image.network(
@@ -104,7 +104,10 @@ class PostCard extends StatelessWidget {
       link: link,
       cache: const Duration(days: 7),
     );
-    return Image.network(metadata!.image!,
+    if (metadata!.image == null) {
+      return const SizedBox();
+    }
+    return Image.network(metadata.image!,
         width: 100, height: 100, fit: BoxFit.fill);
   }
 
