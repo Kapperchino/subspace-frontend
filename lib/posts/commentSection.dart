@@ -33,7 +33,10 @@ class CommentSection extends StatelessWidget {
                     (BuildContext context, int index) {
                   return BlocProvider(
                     create: (_) => CommentingBloc(
-                        httpClient: http.Client(), parentId: 1, postId: postId),
+                        httpClient: http.Client(),
+                        parentId: 1,
+                        postId: postId,
+                        isPostComment: false),
                     child: CommentWidget(
                         parentId: state.comments[index].comment.parentId,
                         data: state.comments[index]),

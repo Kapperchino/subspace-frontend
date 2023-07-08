@@ -24,8 +24,11 @@ class CommentingWidget extends StatelessWidget {
             ? 100
             : 0,
         curve: Curves.easeInOutCubicEmphasized,
-        padding: EdgeInsets.only(top: 12, right: padding, left: padding),
-        child: TextField(
+        padding: EdgeInsets.only(
+            top: 12,
+            right: state.isPostComment ? padding : 10,
+            left: state.isPostComment ? padding : 10),
+        child: Expanded(child:TextField(
           autofocus: false,
           maxLines: 3,
           onChanged: (comment) => context
@@ -46,7 +49,7 @@ class CommentingWidget extends StatelessWidget {
             ),
           ),
         ),
-      );
+      ));
     });
   }
 }
