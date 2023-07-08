@@ -52,13 +52,19 @@ class CommentWidget extends StatelessWidget {
             ),
           Expanded(
               flex: 9,
-              child: ListTile(
-                titleAlignment: ListTileTitleAlignment.center,
-                subtitle: Text(
-                    comment.body.substring(0, min(500, comment.body.length))),
-                subtitleTextStyle:
-                    const TextStyle(overflow: TextOverflow.visible),
-              )),
+              child: Align(
+                  alignment: Alignment.topLeft,
+                  child: ListTile(
+                    subtitle: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Text(
+                          comment.body
+                              .substring(0, min(500, comment.body.length)),
+                          textAlign: TextAlign.left,
+                        )),
+                    subtitleTextStyle:
+                        const TextStyle(overflow: TextOverflow.visible),
+                  ))),
         ],
       ),
       Row(
@@ -83,8 +89,9 @@ class CommentWidget extends StatelessWidget {
       BlocListener<CommentingBloc, CommentingState>(
         listener: (context, state) {
           if (state.status == CommentingStaus.success) {
-            context.read<CommentBloc>().add(
-                CommentsFetched(postId: comment.postId));
+            context
+                .read<CommentBloc>()
+                .add(CommentsFetched(postId: comment.postId));
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 backgroundColor: Colors.green,
                 content: Text('Comment created')));

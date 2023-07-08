@@ -57,10 +57,10 @@ class PostSection extends StatelessWidget {
                       ),
                     ),
                   Flexible(
-                      child: Padding(
+                      child:Align(alignment: Alignment.topLeft,child: Padding(
                           padding: const EdgeInsets.only(
                               left: 20, right: 20, top: 20),
-                          child: Text(state.post!.body))),
+                          child: Text(state.post!.body,textAlign: TextAlign.left,)))),
                   Flexible(
                       child: PostMeta(
                           userName: state.post!.posterName,
