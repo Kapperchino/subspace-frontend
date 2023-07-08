@@ -72,6 +72,9 @@ class CommentingBloc extends Bloc<CommentingEvent, CommentingState> {
       if (state.comment.isEmpty) {
         return emit(state.copyWith(status: CommentingStaus.closed));
       }
+      if (state.comment.length >= 40000) {
+        return emit(state.copyWith(status: CommentingStaus.failure));
+      }
       final int res =
           await postComment(state.comment, event.postId, event.parentId);
       if (res != 200) {

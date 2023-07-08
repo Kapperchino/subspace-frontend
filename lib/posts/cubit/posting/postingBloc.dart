@@ -64,6 +64,11 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
           status: PostingStatus.failure,
         ));
       }
+      if (event.body.length >= 60000 || event.topic.length >= 6000) {
+        return emit(state.copyWith(
+          status: PostingStatus.failure,
+        ));
+      }
       final int res = await postPost(event.body, event.topic, event.spaceId);
       if (res != 200) {
         return emit(state.copyWith(
