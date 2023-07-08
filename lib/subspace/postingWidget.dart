@@ -5,16 +5,16 @@ import 'package:frontend/posts/cubit/posting/postingState.dart';
 import 'package:frontend/subspace/postCreationWidget.dart';
 import 'package:frontend/subspace/postLinkWdiget.dart';
 
-
 class PostingWidget extends StatelessWidget {
-  const PostingWidget({
-    super.key,
-    required this.controllerTopic,
-    required this.controllerBody,
-  });
+  const PostingWidget(
+      {super.key,
+      required this.controllerTopic,
+      required this.controllerBody,
+      required this.controllerLink});
 
   final TextEditingController controllerTopic;
   final TextEditingController controllerBody;
+  final TextEditingController controllerLink;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class PostingWidget extends StatelessWidget {
         duration: const Duration(milliseconds: 300),
         height: state.status == PostingStatus.started ||
                 state.status == PostingStatus.failure
-            ? 190
+            ? 250
             : 0,
         curve: Curves.easeInOutCubicEmphasized,
         child: DefaultTabController(
@@ -57,6 +57,7 @@ class PostingWidget extends StatelessWidget {
                         controllderBody: controllerBody,
                         controllerTopic: controllerTopic),
                     PostLinkWidget(
+                        controllerLink: controllerLink,
                         controllderBody: controllerBody,
                         controllerTopic: controllerTopic),
                   ],

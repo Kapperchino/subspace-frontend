@@ -45,7 +45,7 @@ class PostCreationWidget extends StatelessWidget {
             Flexible(
                 child: TextField(
               autofocus: false,
-              maxLines: 3,
+              maxLines: 6,
               controller: controllderBody,
               decoration: InputDecoration(
                 filled: true,

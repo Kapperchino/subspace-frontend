@@ -62,11 +62,14 @@ class PostCard extends StatelessWidget {
                     flex: 8,
                     child: ListTile(
                       titleAlignment: ListTileTitleAlignment.center,
-                      title: Text(post.topic),
-                      subtitle: Text(
-                          post.body.substring(0, min(500, post.body.length))),
+                      title: Text(
+                        post.topic,
+                        maxLines: 2,
+                        overflow: TextOverflow.fade,
+                      ),
+                      subtitle: Text(post.body, maxLines: 4),
                       subtitleTextStyle:
-                          const TextStyle(overflow: TextOverflow.visible),
+                          const TextStyle(overflow: TextOverflow.fade),
                     )),
               ],
             )

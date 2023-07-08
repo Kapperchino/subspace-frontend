@@ -29,12 +29,64 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
       onPostSubmitted,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<LinkPostPressed>(
+      onLinkSubmitted,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   final http.Client httpClient;
 
   Future<void> onPostSubmitted(
     PostPressed event,
+    Emitter<PostingState> emit,
+  ) async {
+    if (state.status == PostingStatus.closed ||
+        state.status == PostingStatus.success) {
+      return emit(
+        state.copyWith(
+          status: PostingStatus.started,
+        ),
+      );
+    }
+    if (state.status == PostingStatus.failure) {
+      if (event.body.isEmpty || event.topic.isEmpty) {
+        return emit(state.copyWith(
+          status: PostingStatus.closed,
+        ));
+      }
+    }
+    if (state.status == PostingStatus.started ||
+        state.status == PostingStatus.failure) {
+      if (event.body.isEmpty && event.topic.isEmpty) {
+        return emit(state.copyWith(
+          status: PostingStatus.closed,
+        ));
+      }
+      if (event.body.isEmpty || event.topic.isEmpty) {
+        return emit(state.copyWith(
+          status: PostingStatus.failure,
+        ));
+      }
+      if (event.body.length >= 60000 || event.topic.length >= 6000) {
+        return emit(state.copyWith(
+          status: PostingStatus.failure,
+        ));
+      }
+      final int res = await postPost(event.body, event.topic, event.spaceId);
+      if (res != 200) {
+        return emit(state.copyWith(
+          status: PostingStatus.failure,
+        ));
+      }
+      return emit(
+        state.copyWith(status: PostingStatus.success),
+      );
+    }
+  }
+
+  Future<void> onLinkSubmitted(
+    LinkPostPressed event,
     Emitter<PostingState> emit,
   ) async {
     if (state.status == PostingStatus.closed ||

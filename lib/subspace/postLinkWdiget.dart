@@ -6,10 +6,12 @@ class PostLinkWidget extends StatelessWidget {
   const PostLinkWidget(
       {super.key,
       required this.controllderBody,
-      required this.controllerTopic});
+      required this.controllerTopic,
+      required this.controllerLink});
 
   final TextEditingController controllderBody;
   final TextEditingController controllerTopic;
+  final TextEditingController controllerLink;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +44,30 @@ class PostLinkWidget extends StatelessWidget {
                     ),
                   ),
                 )),
+            Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: Flexible(
+                    child: TextField(
+                  autofocus: false,
+                  maxLines: 1,
+                  controller: controllderBody,
+                  decoration: InputDecoration(
+                    filled: true,
+                    hintText: 'Link',
+                    contentPadding: const EdgeInsets.only(
+                        left: 14.0, bottom: 8.0, top: 8.0),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).cardColor),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).cardColor),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ))),
             Flexible(
                 child: TextField(
               autofocus: false,
@@ -49,7 +75,7 @@ class PostLinkWidget extends StatelessWidget {
               controller: controllderBody,
               decoration: InputDecoration(
                 filled: true,
-                hintText: 'Link',
+                hintText: 'Body',
                 contentPadding:
                     const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
                 focusedBorder: OutlineInputBorder(

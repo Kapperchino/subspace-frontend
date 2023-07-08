@@ -36,6 +36,7 @@ class _SubSpaceState extends State<Subspace> {
 
   final TextEditingController controllerTopic = TextEditingController();
   final TextEditingController controllerBody = TextEditingController();
+  final TextEditingController controllerLink = TextEditingController();
 
   @override
   void initState() {
@@ -85,6 +86,7 @@ class _SubSpaceState extends State<Subspace> {
             child: PostingWidget(
           controllerBody: controllerBody,
           controllerTopic: controllerTopic,
+          controllerLink: controllerLink,
         )),
         BlocListener<PostingBloc, PostingState>(
           listener: (context, state) {
