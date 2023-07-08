@@ -67,6 +67,7 @@ class _SubSpaceState extends State<Subspace> {
                           context.read<PostingBloc>().add(PostPressed(
                               body: controllerBody.text,
                               topic: controllerTopic.text,
+                              content: controllerLink.text,
                               spaceId: state.spaceId));
                         },
                         child: const Text('Post'),
@@ -90,9 +91,11 @@ class _SubSpaceState extends State<Subspace> {
         )),
         BlocListener<PostingBloc, PostingState>(
           listener: (context, state) {
+            ScaffoldMessenger.of(context).clearSnackBars();
             if (state.status == PostingStatus.success) {
               controllerBody.clear();
               controllerTopic.clear();
+              controllerLink.clear();
               BlocProvider.of<SpaceBloc>(context)
                   .add(SpaceFetched(parentId: parentId, spaceName: name));
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

@@ -30,4 +30,6 @@ const _$ContentTypeEnumMap = {
   ContentType.text: 'text',
   ContentType.picture: 'picture',
   ContentType.video: 'video',
+  ContentType.link: 'link',
+  ContentType.unknown: 'unknown',
 };

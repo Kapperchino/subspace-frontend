@@ -88,6 +88,7 @@ class CommentWidget extends StatelessWidget {
       const Flexible(child: CommentingWidget()),
       BlocListener<CommentingBloc, CommentingState>(
         listener: (context, state) {
+                      ScaffoldMessenger.of(context).clearSnackBars();
           if (state.status == CommentingStaus.success) {
             context
                 .read<CommentBloc>()

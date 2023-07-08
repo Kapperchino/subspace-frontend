@@ -2,14 +2,18 @@ import 'package:equatable/equatable.dart';
 
 enum PostingStatus { closed, started, success, failure }
 
-final class PostingState extends Equatable {
-  const PostingState({this.status = PostingStatus.closed});
-  final PostingStatus status;
+enum PostingMode { text, link }
 
-  PostingState copyWith({PostingStatus? status}) {
-    return PostingState(status: status ?? this.status);
+final class PostingState extends Equatable {
+  const PostingState(
+      {this.status = PostingStatus.closed, this.mode = PostingMode.text});
+  final PostingStatus status;
+  final PostingMode mode;
+
+  PostingState copyWith({PostingStatus? status, PostingMode? mode}) {
+    return PostingState(status: status ?? this.status, mode: mode ?? this.mode);
   }
 
   @override
-  List<Object> get props => [status];
+  List<Object> get props => [status, mode];
 }

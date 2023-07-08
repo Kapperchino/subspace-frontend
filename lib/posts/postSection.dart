@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/models/post.dart';
@@ -12,6 +13,7 @@ import 'package:frontend/posts/cubit/post/postBloc.dart';
 import 'package:frontend/posts/cubit/post/postState.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'cubit/commenting/commentingEvent.dart';
 
@@ -56,11 +58,48 @@ class PostSection extends StatelessWidget {
                         fit: BoxFit.fill,
                       ),
                     ),
+                  if (state.post!.type == ContentType.link)
+                    Flexible(
+                        child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 200),
+                            child: AnyLinkPreview(
+                                link: state.post!.content,
+                                displayDirection:
+                                    UIDirection.uiDirectionVertical,
+                                showMultimedia: true,
+                                bodyMaxLines: 5,
+                                bodyTextOverflow: TextOverflow.ellipsis,
+                                bodyStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 12),
+                                previewHeight: 500,
+                                errorBody: 'Error!',
+                                errorTitle: 'Error!',
+                                errorWidget: Container(
+                                  color: Colors.grey[300],
+                                  child: const Text('Oops!'),
+                                ),
+                                backgroundColor: Theme.of(context).cardColor,
+                                borderRadius: 12,
+                                onTap: () async {
+                                  final Uri url =
+                                      Uri.parse(state.post!.content);
+                                  if (!await launchUrl(url)) {
+                                    throw Exception('Could not launch $url');
+                                  }
+                                }
+                                // This disables tap event
+                                ))),
                   Flexible(
-                      child:Align(alignment: Alignment.topLeft,child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 20, right: 20, top: 20),
-                          child: Text(state.post!.body,textAlign: TextAlign.left,)))),
+                      child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20, right: 20, top: 20),
+                              child: Text(
+                                state.post!.body,
+                                textAlign: TextAlign.left,
+                              )))),
                   Flexible(
                       child: PostMeta(
                           userName: state.post!.posterName,
@@ -81,9 +120,9 @@ class PostSection extends StatelessWidget {
                                   padding: const EdgeInsets.only(right: 10),
                                   child: ElevatedButton(
                                     onPressed: () async {
-                                      context.read<CommentingBloc>().add(
-                                          CommentPressed(
-                                              postId: id));
+                                      context
+                                          .read<CommentingBloc>()
+                                          .add(CommentPressed(postId: id));
                                     },
                                     child: const Text('Comment'),
                                   )))),
@@ -95,6 +134,7 @@ class PostSection extends StatelessWidget {
             const Flexible(child: CommentingWidget()),
             BlocListener<CommentingBloc, CommentingState>(
               listener: (context, state) {
+                ScaffoldMessenger.of(context).clearSnackBars();
                 if (state.status == CommentingStaus.success) {
                   BlocProvider.of<CommentBloc>(context)
                       .add(CommentsFetched(postId: id));

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/posts/cubit/posting/postingBloc.dart';
+import 'package:frontend/posts/cubit/posting/postingEvent.dart';
 import 'package:frontend/posts/cubit/posting/postingState.dart';
 import 'package:frontend/subspace/postCreationWidget.dart';
 import 'package:frontend/subspace/postLinkWdiget.dart';
+import 'package:get_storage/get_storage.dart';
 
 class PostingWidget extends StatelessWidget {
   const PostingWidget(
@@ -33,8 +35,25 @@ class PostingWidget extends StatelessWidget {
             children: [
               TabBar(
                 onTap: (value) {
-                  controllerBody.clear();
-                  controllerTopic.clear();
+                  if (value == 0 && state.mode == PostingMode.link) {
+                    controllerBody.clear();
+                    controllerTopic.clear();
+                    controllerLink.clear();
+                  } else if (value == 1 && state.mode == PostingMode.text) {
+                    controllerBody.clear();
+                    controllerTopic.clear();
+                    controllerLink.clear();
+                  }
+                  switch (value) {
+                    case 0:
+                      context
+                          .read<PostingBloc>()
+                          .add(const ModeChanged(PostingMode.text));
+                    case 1:
+                      context
+                          .read<PostingBloc>()
+                          .add(const ModeChanged(PostingMode.link));
+                  }
                 },
                 tabs: const [
                   Tab(

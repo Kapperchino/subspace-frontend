@@ -21,63 +21,66 @@ class PostLinkWidget extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: padding),
         child: Card(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: TextField(
-                  autofocus: false,
-                  maxLines: 1,
-                  controller: controllerTopic,
-                  decoration: InputDecoration(
-                    filled: true,
-                    hintText: 'Topic',
-                    contentPadding: const EdgeInsets.only(
-                        left: 14.0, bottom: 8.0, top: 8.0),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Theme.of(context).cardColor),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Theme.of(context).cardColor),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                )),
-            Padding(
-                padding: const EdgeInsets.only(bottom: 5),
-                child: Flexible(
+            Expanded(
+                child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     child: TextField(
-                  autofocus: false,
-                  maxLines: 1,
-                  controller: controllderBody,
-                  decoration: InputDecoration(
-                    filled: true,
-                    hintText: 'Link',
-                    contentPadding: const EdgeInsets.only(
-                        left: 14.0, bottom: 8.0, top: 8.0),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Theme.of(context).cardColor),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Theme.of(context).cardColor),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ))),
+                      autofocus: false,
+                      maxLines: 1,
+                      controller: controllerTopic,
+                      decoration: InputDecoration(
+                        filled: true,
+                        hintText: 'Topic',
+                        contentPadding: const EdgeInsets.only(
+                            left: 14.0, bottom: 8.0, top: 8.0),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Theme.of(context).cardColor),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Theme.of(context).cardColor),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ))),
             Flexible(
+                child: Padding(
+                    padding: const EdgeInsets.only(bottom: 5),
+                    child: Flexible(
+                        child: TextField(
+                      autofocus: false,
+                      maxLines: 1,
+                      controller: controllerLink,
+                      decoration: InputDecoration(
+                        filled: true,
+                        hintText: 'Link',
+                        contentPadding: const EdgeInsets.only(
+                            left: 14.0, bottom: 8.0, top: 8.0),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Theme.of(context).cardColor),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Theme.of(context).cardColor),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    )))),
+            Flexible(
+              flex: 2,
                 child: TextField(
               autofocus: false,
-              maxLines: 3,
+              maxLines: 5,
               controller: controllderBody,
               decoration: InputDecoration(
                 filled: true,
                 hintText: 'Body',
                 contentPadding:
-                    const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                    const EdgeInsets.only(left: 14.0, top: 8.0),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Theme.of(context).cardColor),
                   borderRadius: BorderRadius.circular(10),

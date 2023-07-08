@@ -1,11 +1,10 @@
-import 'dart:math';
-
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidget.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/postCardData.dart';
 
@@ -44,15 +43,29 @@ class PostCard extends StatelessWidget {
                 ),
                 if (post.type == ContentType.text)
                   const SizedBox(width: 0, height: 0),
-                if (post.type == ContentType.picture)
+                if (post.type == ContentType.picture ||
+                    post.type == ContentType.link)
                   FutureBuilder<Image>(
                     future: getImage(post.content),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: snapshot.data,
-                        );
+                        return Flexible(
+                            child: InkWell(
+                          onTap: () async {
+                            if (post.type == ContentType.link) {
+                              final Uri url = Uri.parse(post.content);
+                              if (!await launchUrl(url)) {
+                                throw Exception('Could not launch $url');
+                              }
+                            }
+                          },
+                          child: Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: snapshot.data,
+                              )),
+                        ));
                       } else {
                         return const CircularProgressIndicator();
                       }
@@ -80,13 +93,19 @@ class PostCard extends StatelessWidget {
   Future<Image> getImage(String link) async {
     final contentType = getUrlType(link);
     if (contentType == ContentType.picture) {
-      return Image.network(link);
+      return Image.network(
+        link,
+        width: 100,
+        height: 100,
+        fit: BoxFit.fill,
+      );
     }
     Metadata? metadata = await AnyLinkPreview.getMetadata(
       link: link,
       cache: const Duration(days: 7),
     );
-    return Image.network(metadata!.image!);
+    return Image.network(metadata!.image!,
+        width: 100, height: 100, fit: BoxFit.fill);
   }
 
   ContentType getUrlType(String url) {

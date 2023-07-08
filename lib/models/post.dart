@@ -8,6 +8,8 @@ enum ContentType {
   picture,
   @JsonValue("video")
   video,
+  @JsonValue("link")
+  link,
   @JsonValue("unknown")
   unknown
 }
