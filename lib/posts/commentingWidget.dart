@@ -28,7 +28,7 @@ class CommentingWidget extends StatelessWidget {
             top: 12,
             right: state.isPostComment ? padding : 10,
             left: state.isPostComment ? padding : 10),
-        child: Expanded(child:TextField(
+        child: TextField(
           autofocus: false,
           maxLines: 3,
           onChanged: (comment) => context
@@ -49,7 +49,7 @@ class CommentingWidget extends StatelessWidget {
             ),
           ),
         ),
-      ));
+      );
     });
   }
 }
