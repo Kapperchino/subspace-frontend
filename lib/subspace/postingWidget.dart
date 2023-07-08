@@ -25,7 +25,7 @@ class PostingWidget extends StatelessWidget {
         duration: const Duration(milliseconds: 300),
         height: state.status == PostingStatus.started ||
                 state.status == PostingStatus.failure
-            ? 250
+            ? 300
             : 0,
         curve: Curves.easeInOutCubicEmphasized,
         child: DefaultTabController(
@@ -69,8 +69,9 @@ class PostingWidget extends StatelessWidget {
                   )),
                 ],
               ),
-              Flexible(
+              Expanded(
                 child: TabBarView(
+                  clipBehavior: Clip.antiAlias,
                   children: [
                     PostCreationWidget(
                         controllderBody: controllerBody,
