@@ -20,11 +20,11 @@ class PostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final post = data.post;
     return Card(
-        clipBehavior: Clip.hardEdge,
+        clipBehavior: Clip. hardEdge,
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
-            context.push(
+            context.go(
                 "/s/${data.parentSpaceId}/${data.spaceName}/p/${post.id}");
           },
           child: Column(children: [
