@@ -2,7 +2,7 @@ import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/postMeta.dart';
-import 'package:frontend/posts/voteWidget.dart';
+import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -36,13 +36,8 @@ class PostCard extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                VoteWidget(
-                  likes: post.upVotes,
-                  dislikes: post.downVotes,
-                  postId: post.id,
-                ),
                 if (post.type == ContentType.text)
-                  const SizedBox(width: 0, height: 0),
+                  const SizedBox(width: 30, height: 0),
                 if (post.type == ContentType.picture ||
                     post.type == ContentType.link)
                   FutureBuilder<Widget>(
@@ -84,6 +79,16 @@ class PostCard extends StatelessWidget {
                       subtitleTextStyle:
                           const TextStyle(overflow: TextOverflow.fade),
                     )),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                VoteWidgetFlat(
+                  likes: post.upVotes,
+                  dislikes: post.downVotes,
+                  postId: post.id,
+                ),
               ],
             )
           ]),
