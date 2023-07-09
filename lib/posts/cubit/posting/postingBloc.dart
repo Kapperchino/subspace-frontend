@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:any_link_preview/any_link_preview.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/posts/cubit/posting/postingEvent.dart';
@@ -9,6 +10,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'dart:html' as html;
 
 import '../../../config.dart';
 import '../../../models/appUser.dart';
@@ -106,27 +108,22 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
 
   Future<ContentType> getContentType(String url) async {
     try {
-      final res = await http.get(Uri.parse(url));
-      if (res.statusCode == 200) {
-        final data = res.bodyBytes;
-        final mime = lookupMimeType('', headerBytes: data);
-        if (mime == null) {
-          return ContentType.link;
-        }
-        if (mime.contains("image")) {
-          return ContentType.picture;
-        }
-        if (mime.contains("video")) {
-          return ContentType.video;
-        }
+      final mime = lookupMimeType(url);
+      if (mime == null) {
         return ContentType.link;
       }
-    } catch (_) {
+      if (mime.contains("image")) {
+        return ContentType.picture;
+      }
+      if (mime.contains("video")) {
+        return ContentType.video;
+      }
+      return ContentType.link;
+    } catch (e) {
       emit(state.copyWith(
         status: PostingStatus.failure,
       ));
     }
-
     return ContentType.unknown;
   }
 

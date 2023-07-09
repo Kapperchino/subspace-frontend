@@ -64,7 +64,7 @@ class PostSection extends StatelessWidget {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 200),
                             child: AnyLinkPreview(
-                                link: state.post!.content,
+                                link: "https://subspace-cors.fly.dev/${state.post!.content}",
                                 displayDirection:
                                     UIDirection.uiDirectionVertical,
                                 showMultimedia: true,

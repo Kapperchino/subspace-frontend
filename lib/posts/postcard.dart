@@ -100,7 +100,7 @@ class PostCard extends StatelessWidget {
       );
     }
     Metadata? metadata = await AnyLinkPreview.getMetadata(
-      link: link,
+      link: "https://subspace-cors.fly.dev/$link",
       cache: const Duration(days: 7),
     );
     if (metadata!.image == null) {
