@@ -1,4 +1,5 @@
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/postMeta.dart';
@@ -20,12 +21,12 @@ class PostCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final post = data.post;
     return Card(
-        clipBehavior: Clip. hardEdge,
+        clipBehavior: Clip.hardEdge,
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
-            context.go(
-                "/s/${data.parentSpaceId}/${data.spaceName}/p/${post.id}");
+            context
+                .go("/s/${data.parentSpaceId}/${data.spaceName}/p/${post.id}");
           },
           child: Column(children: [
             PostMeta(
@@ -104,14 +105,18 @@ class PostCard extends StatelessWidget {
         fit: BoxFit.fill,
       );
     }
+    var urlPrefix = "";
+    if (kIsWeb) {
+      urlPrefix = "https://subspace-cors.fly.dev/";
+    }
     Metadata? metadata = await AnyLinkPreview.getMetadata(
-      link: "https://subspace-cors.fly.dev/$link",
+      link: "$urlPrefix$link",
       cache: const Duration(days: 7),
     );
-    if (metadata!.image == null) {
+    if (metadata?.image == null) {
       return const SizedBox();
     }
-    return Image.network(metadata.image!,
+    return Image.network(metadata!.image!,
         width: 100, height: 100, fit: BoxFit.fill);
   }
 }

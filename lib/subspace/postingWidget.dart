@@ -6,6 +6,7 @@ import 'package:frontend/posts/cubit/posting/postingBloc.dart';
 import 'package:frontend/posts/cubit/posting/postingEvent.dart';
 import 'package:frontend/posts/cubit/posting/postingState.dart';
 import 'package:frontend/subspace/postCreationWidget.dart';
+import 'package:frontend/subspace/postFileWidget.dart';
 import 'package:frontend/subspace/postLinkWdiget.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -31,7 +32,7 @@ class PostingWidget extends StatelessWidget {
             : 0,
         curve: Curves.easeInOutCubicEmphasized,
         child: DefaultTabController(
-          length: 2,
+          length: 3,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -54,6 +55,10 @@ class PostingWidget extends StatelessWidget {
                     case 1:
                       context
                           .read<PostingBloc>()
+                          .add(const ModeChanged(PostingMode.upload));
+                    case 2:
+                      context
+                          .read<PostingBloc>()
                           .add(const ModeChanged(PostingMode.link));
                   }
                 },
@@ -67,6 +72,14 @@ class PostingWidget extends StatelessWidget {
                   Tab(
                       child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.add_photo_alternate_rounded),
+                      Text("Photo")
+                    ],
+                  )),
+                  Tab(
+                      child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [Icon(Icons.link), Text("Link")],
                   )),
                 ],
@@ -76,6 +89,9 @@ class PostingWidget extends StatelessWidget {
                   clipBehavior: Clip.antiAlias,
                   children: [
                     PostCreationWidget(
+                        controllderBody: controllerBody,
+                        controllerTopic: controllerTopic),
+                    PostFileWidget(
                         controllderBody: controllerBody,
                         controllerTopic: controllerTopic),
                     PostLinkWidget(

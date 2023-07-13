@@ -10,6 +10,8 @@ class PostRequest {
   final int posterId;
   final String topic;
   final String body;
+  @JsonKey(name: 'is_upload', defaultValue: false)
+  final bool isUpload;
   final String content;
   @JsonKey(name: 'content_type')
   final ContentType type;
@@ -17,6 +19,7 @@ class PostRequest {
   const PostRequest({
     required this.spaceId,
     required this.posterId,
+    this.isUpload = false,
     required this.topic,
     this.body = "",
     this.content = "",

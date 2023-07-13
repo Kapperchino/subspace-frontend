@@ -9,6 +9,7 @@ part of 'postRequest.dart';
 PostRequest _$PostRequestFromJson(Map<String, dynamic> json) => PostRequest(
       spaceId: json['space_id'] as int,
       posterId: json['poster_id'] as int,
+      isUpload: json['is_upload'] as bool? ?? false,
       topic: json['topic'] as String,
       body: json['body'] as String? ?? "",
       content: json['content'] as String? ?? "",
@@ -22,6 +23,7 @@ Map<String, dynamic> _$PostRequestToJson(PostRequest instance) =>
       'poster_id': instance.posterId,
       'topic': instance.topic,
       'body': instance.body,
+      'is_upload': instance.isUpload,
       'content': instance.content,
       'content_type': _$ContentTypeEnumMap[instance.type]!,
     };

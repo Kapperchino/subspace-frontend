@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/models/post.dart';
@@ -28,6 +29,10 @@ class PostSection extends StatelessWidget {
     final padding = max((width - 1000) / 2, 0.0);
     return BlocBuilder<PostBloc, PostState>(builder: (context, state) {
       if (state.status == PostStatus.success) {
+        var urlPrefix = "";
+        if (kIsWeb) {
+          urlPrefix = "https://subspace-cors.fly.dev/";
+        }
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -61,14 +66,13 @@ class PostSection extends StatelessWidget {
                   if (state.post!.type == ContentType.link)
                     Flexible(
                         child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 200),
+                            padding: const EdgeInsets.symmetric(horizontal: 50),
                             child: AnyLinkPreview(
-                                link: "https://subspace-cors.fly.dev/${state.post!.content}",
+                                link: "$urlPrefix${state.post!.content}",
                                 displayDirection:
                                     UIDirection.uiDirectionVertical,
                                 showMultimedia: true,
-                                bodyMaxLines: 5,
+                                bodyMaxLines: 3,
                                 bodyTextOverflow: TextOverflow.ellipsis,
                                 bodyStyle: const TextStyle(
                                     color: Colors.grey, fontSize: 12),

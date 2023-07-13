@@ -8,9 +8,9 @@ import 'package:frontend/posts/cubit/posting/postingEvent.dart';
 import 'package:frontend/posts/cubit/posting/postingState.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'dart:html' as html;
 
 import '../../../config.dart';
 import '../../../models/appUser.dart';
@@ -33,9 +33,17 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
       transformer: throttleDroppable(throttleDuration),
     );
     on<ModeChanged>((event, emit) => onModeChange(event, emit));
+    on<FileChanged>((event, emit) => onFileChange(event, emit));
   }
 
   final http.Client httpClient;
+
+  void onFileChange(
+    FileChanged event,
+    Emitter<PostingState> emit,
+  ) {
+    return emit(state.copyWith(file: event.file));
+  }
 
   void onModeChange(
     ModeChanged event,
@@ -80,28 +88,50 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
           status: PostingStatus.failure,
         ));
       }
-      if (state.mode == PostingMode.link) {
-        final type = await getContentType(event.content);
-        final int res = await postPost(event.body, event.topic, event.spaceId,
-            content: event.content, contentType: type);
-        if (res != 200) {
-          return emit(state.copyWith(
-            status: PostingStatus.failure,
-          ));
-        }
-        return emit(
-          state.copyWith(status: PostingStatus.success),
-        );
-      } else if (state.mode == PostingMode.text) {
-        final int res = await postPost(event.body, event.topic, event.spaceId);
-        if (res != 200) {
-          return emit(state.copyWith(
-            status: PostingStatus.failure,
-          ));
-        }
-        return emit(
-          state.copyWith(status: PostingStatus.success),
-        );
+      switch (state.mode) {
+        case PostingMode.link:
+          {
+            final type = await getContentType(event.content);
+            final int res = await postPost(
+                event.body, event.topic, event.spaceId,
+                content: event.content, contentType: type);
+            if (res != 200) {
+              return emit(state.copyWith(
+                status: PostingStatus.failure,
+              ));
+            }
+            return emit(
+              state.copyWith(status: PostingStatus.success),
+            );
+          }
+        case PostingMode.text:
+          {
+            final int res =
+                await postPost(event.body, event.topic, event.spaceId);
+            if (res != 200) {
+              return emit(state.copyWith(
+                status: PostingStatus.failure,
+              ));
+            }
+            return emit(
+              state.copyWith(status: PostingStatus.success),
+            );
+          }
+        case PostingMode.upload:
+          {
+            final type = await getContentType(state.file!.path);
+            final int res = await postPost(
+                event.body, event.topic, event.spaceId,
+                content: event.content, contentType: type);
+            if (res != 200) {
+              return emit(state.copyWith(
+                status: PostingStatus.failure,
+              ));
+            }
+            return emit(
+              state.copyWith(status: PostingStatus.success),
+            );
+          }
       }
     }
   }
@@ -131,21 +161,40 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
       {String content = "", ContentType contentType = ContentType.text}) async {
     final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
     final token = await Store.secure.read(key: 'jwt');
+    final json = jsonEncode(PostRequest(
+      content: content,
+      type: contentType,
+      topic: topic,
+      spaceId: spaceId,
+      posterId: user.id,
+      isUpload: state.mode == PostingMode.upload,
+      body: body,
+    ).toJson());
     final res = await http.post(
       Uri.parse('${Config.baseUrl}/posts'),
-      body: jsonEncode(PostRequest(
-        content: content,
-        type: contentType,
-        topic: topic,
-        spaceId: spaceId,
-        posterId: user.id,
-        body: body,
-      ).toJson()),
+      body: json,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
       },
     );
-    return res.statusCode;
+
+    if (res.statusCode != 200) {
+      return res.statusCode;
+    }
+
+    if (state.mode != PostingMode.upload) {
+      return res.statusCode;
+    }
+
+    final response = jsonDecode(res.body);
+    final presigned = response['presigned'];
+
+    String? mimeStr = lookupMimeType(state.file!.path);
+    Uri uri = Uri.parse(presigned);
+    final photoRes = await http.put(uri,
+        body: await state.file?.readAsBytes(),
+        headers: {"Content-Type": mimeStr!});
+    return photoRes.statusCode;
   }
 }
