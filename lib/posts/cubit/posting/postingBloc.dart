@@ -92,7 +92,7 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
       switch (state.mode) {
         case PostingMode.link:
           {
-            final type = await getContentType(event.content);
+            final type = await getContentTypeUrl(event.content);
             final int res = await postPost(
                 event.body, event.topic, event.spaceId,
                 content: event.content, contentType: type);
@@ -120,7 +120,7 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
           }
         case PostingMode.upload:
           {
-            final type = await getContentType(state.file!.path);
+            final type = await getContentType();
             final int res = await postPost(
                 event.body, event.topic, event.spaceId,
                 content: event.content, contentType: type);
@@ -137,7 +137,28 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
     }
   }
 
-  Future<ContentType> getContentType(String url) async {
+  Future<ContentType> getContentTypeUrl(String url) async {
+    try {
+      String? mime = lookupMimeType(url);
+      if (mime == null) {
+        return ContentType.link;
+      }
+      if (mime.contains("image")) {
+        return ContentType.picture;
+      }
+      if (mime.contains("video")) {
+        return ContentType.video;
+      }
+      return ContentType.link;
+    } catch (e) {
+      emit(state.copyWith(
+        status: PostingStatus.failure,
+      ));
+    }
+    return ContentType.unknown;
+  }
+
+  Future<ContentType> getContentType() async {
     try {
       String? mime;
       if (state.file!.mimeType != null) {

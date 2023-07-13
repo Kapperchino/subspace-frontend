@@ -38,15 +38,9 @@ class PostingWidget extends StatelessWidget {
             children: [
               TabBar(
                 onTap: (value) {
-                  if (value == 0 && state.mode == PostingMode.link) {
-                    controllerBody.clear();
-                    controllerTopic.clear();
-                    controllerLink.clear();
-                  } else if (value == 1 && state.mode == PostingMode.text) {
-                    controllerBody.clear();
-                    controllerTopic.clear();
-                    controllerLink.clear();
-                  }
+                  controllerBody.clear();
+                  controllerTopic.clear();
+                  controllerLink.clear();
                   switch (value) {
                     case 0:
                       context
