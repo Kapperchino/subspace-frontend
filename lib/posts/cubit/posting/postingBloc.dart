@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter/foundation.dart';
 import 'package:frontend/posts/cubit/posting/postingEvent.dart';
 import 'package:frontend/posts/cubit/posting/postingState.dart';
 import 'package:get_storage/get_storage.dart';
@@ -138,7 +139,12 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
 
   Future<ContentType> getContentType(String url) async {
     try {
-      final mime = lookupMimeType(url);
+      String? mime;
+      if (state.file!.mimeType != null) {
+        mime = state.file!.mimeType;
+      } else if (kIsWeb) {
+        mime = lookupMimeType(state.file!.path);
+      }
       if (mime == null) {
         return ContentType.link;
       }
@@ -190,7 +196,12 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
     final response = jsonDecode(res.body);
     final presigned = response['presigned'];
 
-    String? mimeStr = lookupMimeType(state.file!.path);
+    String? mimeStr;
+    if (state.file!.mimeType != null) {
+      mimeStr = state.file!.mimeType;
+    } else if (kIsWeb) {
+      mimeStr = lookupMimeType(state.file!.path);
+    }
     Uri uri = Uri.parse(presigned);
     final photoRes = await http.put(uri,
         body: await state.file?.readAsBytes(),
