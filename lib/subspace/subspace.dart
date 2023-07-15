@@ -62,6 +62,8 @@ class _SubSpaceState extends State<Subspace> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
                         padding: EdgeInsets.only(left: padding, bottom: 10),
@@ -73,7 +75,7 @@ class _SubSpaceState extends State<Subspace> {
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.only(left: padding, bottom: 10),
+                        padding: const EdgeInsets.only(left: 5, bottom: 10),
                         alignment: Alignment.bottomLeft,
                         child: BlocBuilder<SpaceBloc, SpaceState>(
                           builder: (context, state) {
