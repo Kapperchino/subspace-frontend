@@ -48,6 +48,7 @@ dependencies:
   mime: ^1.0.4
   url_launcher: ^6.1.12
   image_picker: ^1.0.1
+  dropdown_button2: ^2.1.4
 
 dev_dependencies:
   flutter_test:

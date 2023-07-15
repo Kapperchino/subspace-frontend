@@ -8,6 +8,8 @@ import 'package:frontend/posts/cubit/posting/postingState.dart';
 import 'package:frontend/posts/cubit/space/spaceEvent.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/subspace/postingWidget.dart';
+import 'package:frontend/subspace/sortPostsDaysWidget.dart';
+import 'package:frontend/subspace/sortPostsWidget.dart';
 
 import '../posts/cubit/space/spaceBlock.dart';
 import '../posts/cubit/space/spaceState.dart';
@@ -56,25 +58,50 @@ class _SubSpaceState extends State<Subspace> {
           expandedHeight: 160.0,
           bottom: PreferredSize(
               preferredSize: const Size.fromHeight(10),
-              child: Padding(
-                padding: EdgeInsets.only(right: padding, bottom: 10),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: BlocBuilder<SpaceBloc, SpaceState>(
-                    builder: (context, state) {
-                      return ElevatedButton(
-                        onPressed: () async {
-                          context.read<PostingBloc>().add(PostPressed(
-                              body: controllerBody.text,
-                              topic: controllerTopic.text,
-                              content: controllerLink.text,
-                              spaceId: state.spaceId));
-                        },
-                        child: const Text('Post'),
-                      );
-                    },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(left: padding, bottom: 10),
+                        alignment: Alignment.bottomLeft,
+                        child: BlocBuilder<SpaceBloc, SpaceState>(
+                          builder: (context, state) {
+                            return const SortPostsWidget();
+                          },
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(left: padding, bottom: 10),
+                        alignment: Alignment.bottomLeft,
+                        child: BlocBuilder<SpaceBloc, SpaceState>(
+                          builder: (context, state) {
+                            return const SortPostsDaysWidget();
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                  Container(
+                    padding: EdgeInsets.only(right: padding, bottom: 10),
+                    alignment: Alignment.bottomRight,
+                    child: BlocBuilder<SpaceBloc, SpaceState>(
+                      builder: (context, state) {
+                        return ElevatedButton(
+                          onPressed: () async {
+                            context.read<PostingBloc>().add(PostPressed(
+                                body: controllerBody.text,
+                                topic: controllerTopic.text,
+                                content: controllerLink.text,
+                                spaceId: state.spaceId));
+                          },
+                          child: const Text('Post'),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               )),
           backgroundColor: Theme.of(context).colorScheme.background,
           flexibleSpace: FlexibleSpaceBar(

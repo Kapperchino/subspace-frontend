@@ -35,9 +35,59 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
       _onPostFetched,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<SpaceSortChanged>(
+      _onSortChange,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<DaysSortChanged>(
+      _onDaysChange,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   final http.Client httpClient;
+
+  Future<void> _onDaysChange(
+    DaysSortChanged event,
+    Emitter<SpaceState> emit,
+  ) async {
+    try {
+      final posts = await getPosts(state.parentId, state.spaceName,
+          sort: state.sortState, days: event.sortDays);
+      return emit(
+        state.copyWith(
+          days: event.sortDays,
+          status: SpaceStatus.success,
+          posts: posts.data,
+          spaceId: posts.spaceId,
+          hasReachedMax: false,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(status: SpaceStatus.failure));
+    }
+  }
+
+  Future<void> _onSortChange(
+    SpaceSortChanged event,
+    Emitter<SpaceState> emit,
+  ) async {
+    try {
+      final posts = await getPosts(state.parentId, state.spaceName,
+          sort: event.sortState);
+      return emit(
+        state.copyWith(
+          sortState: event.sortState,
+          status: SpaceStatus.success,
+          posts: posts.data,
+          spaceId: posts.spaceId,
+          hasReachedMax: false,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(status: SpaceStatus.failure));
+    }
+  }
 
   Future<void> _onPostFetched(
     SpaceFetched event,
@@ -51,6 +101,8 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
           status: SpaceStatus.success,
           posts: posts.data,
           spaceId: posts.spaceId,
+          parentId: event.parentId,
+          spaceName: event.spaceName,
           hasReachedMax: false,
         ),
       );
@@ -59,8 +111,21 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
     }
   }
 
-  Future<Pair> getPosts(int parentId, String? spaceName) async {
+  Future<Pair> getPosts(int parentId, String? spaceName,
+      {SortState sort = SortState.latest,
+      SortDays days = SortDays.week}) async {
     final token = await Store.secure.read(key: 'jwt');
+    var intDays = 7;
+    switch (days) {
+      case SortDays.month:
+        intDays = 30;
+      case SortDays.halfYear:
+        intDays = 180;
+      case SortDays.year:
+        intDays = 365;
+      case SortDays.week:
+        intDays = 7;
+    }
     final spaceInfo = await http.get(
       Uri.parse('${Config.baseUrl}/spaces?name=$spaceName&parentId=$parentId'),
       headers: <String, String>{
@@ -71,7 +136,7 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
     final space = Space.fromJson(jsonDecode(spaceInfo.body));
     final spaceId = space.id;
     final res = await http.get(
-      Uri.parse('${Config.baseUrl}/posts?space=$spaceId'),
+      Uri.parse('${Config.baseUrl}/posts?space=$spaceId&sort=${sort.name}&days=$intDays'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',

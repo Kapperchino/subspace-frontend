@@ -3,29 +3,48 @@ import 'package:frontend/models/postCardData.dart';
 
 enum SpaceStatus { initial, success, failure }
 
+enum SortState { latest, popular }
+
+enum SortDays { week, month, halfYear, year }
+
 final class SpaceState extends Equatable {
   const SpaceState(
       {this.status = SpaceStatus.initial,
+      this.sortState = SortState.latest,
       this.posts = const <PostCardData>[],
+      this.sortDays = SortDays.month,
       this.hasReachedMax = false,
-      this.spaceId = -1});
+      this.spaceId = -1,
+      this.parentId = -1,
+      this.spaceName = ""});
 
   final SpaceStatus status;
   final List<PostCardData> posts;
   final bool hasReachedMax;
+  final SortState sortState;
+  final SortDays sortDays;
   final int spaceId;
+  final int parentId;
+  final String spaceName;
 
   SpaceState copyWith(
-      {SpaceStatus? status,
+      {SortDays? days,
+      SpaceStatus? status,
       List<PostCardData>? posts,
       bool? hasReachedMax,
-      int? spaceId}) {
+      int? spaceId,
+      SortState? sortState,
+      int? parentId,
+      String? spaceName}) {
     return SpaceState(
-      status: status ?? this.status,
-      posts: posts ?? this.posts,
-      spaceId: spaceId ?? this.spaceId,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-    );
+        status: status ?? this.status,
+        posts: posts ?? this.posts,
+        spaceId: spaceId ?? this.spaceId,
+        hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+        sortState: sortState ?? this.sortState,
+        parentId: parentId ?? this.parentId,
+        spaceName: spaceName ?? this.spaceName,
+        sortDays: days ?? sortDays);
   }
 
   @override
@@ -34,5 +53,6 @@ final class SpaceState extends Equatable {
   }
 
   @override
-  List<Object> get props => [status, posts, hasReachedMax];
+  List<Object> get props =>
+      [status, posts, hasReachedMax, sortState, spaceId, parentId, spaceName];
 }
