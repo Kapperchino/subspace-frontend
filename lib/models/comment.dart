@@ -1,8 +1,9 @@
 import 'package:frontend/models/post.dart';
+import 'package:frontend/models/vote.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'comment.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class Comment {
   final int id;
   @JsonKey(name: 'poster_id')
@@ -22,6 +23,8 @@ class Comment {
   final DateTime created;
   @JsonKey(name: 'content_type')
   final ContentType type;
+  @JsonKey(name: 'vote')
+  final Vote? vote;
 
   const Comment(
       {required this.id,
@@ -34,7 +37,8 @@ class Comment {
       required this.parentId,
       required this.downVotes,
       required this.created,
-      required this.postId});
+      required this.postId,
+      required this.vote});
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return _$CommentFromJson(json);

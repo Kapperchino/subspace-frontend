@@ -16,7 +16,13 @@ import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../models/voteRequest.dart';
+import '../util/votesUtil.dart';
 import 'cubit/commenting/commentingEvent.dart';
+import 'cubit/vote/voteBloc.dart';
+import 'package:http/http.dart' as http;
+
+import 'cubit/vote/voteEvent.dart';
 
 class PostSection extends StatelessWidget {
   const PostSection({super.key, required this.id, required this.spaceName});
@@ -113,10 +119,18 @@ class PostSection extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      VoteWidgetFlat(
-                          likes: state.post!.upVotes,
-                          dislikes: state.post!.downVotes,
-                          postId: id),
+                      BlocProvider(
+                        create: (_) => VoteBloc(
+                          httpClient: http.Client(),
+                          type: VoteType.post,
+                        )..add(InitEvent(
+                            id,
+                            state.post!.upVotes,
+                            state.post!.downVotes,
+                            VotesUtil.getStatus(state.post!.vote),
+                            VoteType.post)),
+                        child: const VoteWidgetFlat(),
+                      ),
                       Flexible(
                           child: Align(
                               alignment: Alignment.centerRight,

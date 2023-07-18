@@ -1,3 +1,4 @@
+import 'package:frontend/models/vote.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'post.g.dart';
 
@@ -14,7 +15,7 @@ enum ContentType {
   unknown
 }
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class Post {
   final int id;
   @JsonKey(name: 'space_id')
@@ -35,6 +36,8 @@ class Post {
   final DateTime created;
   @JsonKey(name: 'content_type')
   final ContentType type;
+  @JsonKey(name: 'vote')
+  final Vote? vote;
 
   const Post(
       {required this.id,
@@ -48,7 +51,8 @@ class Post {
       this.type = ContentType.text,
       required this.upVotes,
       required this.downVotes,
-      required this.created});
+      required this.created,
+      required this.vote});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return _$PostFromJson(json);

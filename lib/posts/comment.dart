@@ -3,10 +3,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/models/post.dart';
+import 'package:frontend/models/voteRequest.dart';
 import 'package:frontend/posts/commentMeta.dart';
 import 'package:frontend/posts/cubit/comment/commentBloc.dart';
 import 'package:frontend/posts/cubit/comment/commentEvent.dart';
-import 'package:frontend/posts/voteWidget.dart';
+import 'package:frontend/posts/cubit/vote/voteBloc.dart';
+import 'package:frontend/posts/cubit/vote/voteEvent.dart';
+import 'package:frontend/posts/voteWidgetFlat.dart';
+import 'package:frontend/util/votesUtil.dart';
 
 import '../models/CommentData.dart';
 import 'commentingWidget.dart';
@@ -34,11 +38,6 @@ class CommentWidget extends StatelessWidget {
       Row(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          VoteWidget(
-            likes: comment.upVotes,
-            dislikes: comment.downVotes,
-            postId: comment.postId,
-          ),
           if (comment.type == ContentType.text)
             const SizedBox(width: 0, height: 0),
           if (comment.type == ContentType.picture)
@@ -70,6 +69,18 @@ class CommentWidget extends StatelessWidget {
       Row(
         mainAxisSize: MainAxisSize.max,
         children: [
+          BlocProvider(
+            create: (_) => VoteBloc(
+              httpClient: http.Client(),
+              type: VoteType.comment,
+            )..add(InitEvent(
+                data.comment.id,
+                data.comment.upVotes,
+                data.comment.downVotes,
+                VotesUtil.getStatus(data.comment.vote),
+                VoteType.comment)),
+            child: const VoteWidgetFlat(),
+          ),
           Flexible(
               child: Align(
                   alignment: Alignment.centerRight,
@@ -88,7 +99,7 @@ class CommentWidget extends StatelessWidget {
       const Flexible(child: CommentingWidget()),
       BlocListener<CommentingBloc, CommentingState>(
         listener: (context, state) {
-                      ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).clearSnackBars();
           if (state.status == CommentingStaus.success) {
             context
                 .read<CommentBloc>()

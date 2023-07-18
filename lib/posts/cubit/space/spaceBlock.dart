@@ -7,10 +7,12 @@ import 'package:frontend/models/post.dart';
 import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/posts/cubit/space/spaceEvent.dart';
 import 'package:frontend/posts/cubit/space/spaceState.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:stream_transform/stream_transform.dart';
 
 import '../../../config.dart';
+import '../../../models/appUser.dart';
 import '../../../models/space.dart';
 import '../../../stores/store.dart';
 
@@ -133,10 +135,12 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
         'Authorization': 'Bearer $token',
       },
     );
+    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
     final space = Space.fromJson(jsonDecode(spaceInfo.body));
     final spaceId = space.id;
     final res = await http.get(
-      Uri.parse('${Config.baseUrl}/posts?space=$spaceId&sort=${sort.name}&days=$intDays'),
+      Uri.parse(
+          '${Config.baseUrl}/posts?space=$spaceId&sort=${sort.name}&days=$intDays&userId=${user.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',

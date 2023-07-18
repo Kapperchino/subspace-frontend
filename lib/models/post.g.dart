@@ -20,22 +20,36 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
       upVotes: json['up_votes'] as int,
       downVotes: json['down_votes'] as int,
       created: DateTime.parse(json['created'] as String),
+      vote: json['vote'] == null
+          ? null
+          : Vote.fromJson(json['vote'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
-      'id': instance.id,
-      'space_id': instance.spaceId,
-      'space_picture': instance.spacePicture,
-      'poster_id': instance.posterId,
-      'poster_name': instance.posterName,
-      'topic': instance.topic,
-      'body': instance.body,
-      'content': instance.content,
-      'up_votes': instance.upVotes,
-      'down_votes': instance.downVotes,
-      'created': instance.created.toIso8601String(),
-      'content_type': _$ContentTypeEnumMap[instance.type]!,
-    };
+Map<String, dynamic> _$PostToJson(Post instance) {
+  final val = <String, dynamic>{
+    'id': instance.id,
+    'space_id': instance.spaceId,
+    'space_picture': instance.spacePicture,
+    'poster_id': instance.posterId,
+    'poster_name': instance.posterName,
+    'topic': instance.topic,
+    'body': instance.body,
+    'content': instance.content,
+    'up_votes': instance.upVotes,
+    'down_votes': instance.downVotes,
+    'created': instance.created.toIso8601String(),
+    'content_type': _$ContentTypeEnumMap[instance.type]!,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('vote', instance.vote);
+  return val;
+}
 
 const _$ContentTypeEnumMap = {
   ContentType.text: 'text',

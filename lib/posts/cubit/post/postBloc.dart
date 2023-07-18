@@ -6,10 +6,12 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/cubit/post/postEvent.dart';
 import 'package:frontend/posts/cubit/post/postState.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:stream_transform/stream_transform.dart';
 
 import '../../../config.dart';
+import '../../../models/appUser.dart';
 import '../../../stores/store.dart';
 
 const _postLimit = 20;
@@ -47,8 +49,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   Future<Post> getPost(int id) async {
     final token = await Store.secure.read(key: 'jwt');
+    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
     final res = await http.get(
-      Uri.parse('${Config.baseUrl}/posts/$id'),
+      Uri.parse('${Config.baseUrl}/posts/$id?userId=${user.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',

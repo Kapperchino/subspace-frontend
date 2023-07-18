@@ -1,6 +1,7 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
@@ -8,6 +9,12 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/postCardData.dart';
+import '../models/voteRequest.dart';
+import '../util/votesUtil.dart';
+import 'cubit/vote/voteBloc.dart';
+import 'package:http/http.dart' as http;
+
+import 'cubit/vote/voteEvent.dart';
 
 class PostCard extends StatelessWidget {
   const PostCard({
@@ -46,23 +53,24 @@ class PostCard extends StatelessWidget {
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Flexible(
+                            flex: 5,
                             child: InkWell(
-                          onTap: () async {
-                            if (post.type == ContentType.link) {
-                              final Uri url = Uri.parse(post.content);
-                              if (!await launchUrl(url)) {
-                                throw Exception('Could not launch $url');
-                              }
-                            }
-                          },
-                          child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, bottom: 10),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: snapshot.data,
-                              )),
-                        ));
+                              onTap: () async {
+                                if (post.type == ContentType.link) {
+                                  final Uri url = Uri.parse(post.content);
+                                  if (!await launchUrl(url)) {
+                                    throw Exception('Could not launch $url');
+                                  }
+                                }
+                              },
+                              child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10, bottom: 10),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: snapshot.data,
+                                  )),
+                            ));
                       } else {
                         return const CircularProgressIndicator();
                       }
@@ -86,10 +94,17 @@ class PostCard extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                VoteWidgetFlat(
-                  likes: post.upVotes,
-                  dislikes: post.downVotes,
-                  postId: post.id,
+                BlocProvider(
+                  create: (_) => VoteBloc(
+                    httpClient: http.Client(),
+                    type: VoteType.post,
+                  )..add(InitEvent(
+                      data.post.id,
+                      data.post.upVotes,
+                      data.post.downVotes,
+                      VotesUtil.getStatus(data.post.vote),
+                      VoteType.post)),
+                  child: const VoteWidgetFlat(),
                 ),
               ],
             )

@@ -7,10 +7,12 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/models/CommentData.dart';
 import 'package:frontend/posts/cubit/comment/commentEvent.dart';
 import 'package:frontend/posts/cubit/comment/commentState.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:stream_transform/stream_transform.dart';
 
 import '../../../config.dart';
+import '../../../models/appUser.dart';
 import '../../../models/comment.dart';
 import '../../../stores/store.dart';
 
@@ -53,8 +55,9 @@ class CommentBloc extends Bloc<CommentEvent, CommentsState> {
 
   Future<List<CommentData>>? getComments(int postId) async {
     final token = await Store.secure.read(key: 'jwt');
+    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
     final res = await http.get(
-      Uri.parse('${Config.baseUrl}/comments?postId=$postId'),
+      Uri.parse('${Config.baseUrl}/comments?postId=$postId&userId=${user.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',

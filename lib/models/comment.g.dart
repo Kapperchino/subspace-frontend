@@ -19,21 +19,35 @@ Comment _$CommentFromJson(Map<String, dynamic> json) => Comment(
       downVotes: json['down_votes'] as int,
       created: DateTime.parse(json['created'] as String),
       postId: json['post_id'] as int,
+      vote: json['vote'] == null
+          ? null
+          : Vote.fromJson(json['vote'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$CommentToJson(Comment instance) => <String, dynamic>{
-      'id': instance.id,
-      'poster_id': instance.posterId,
-      'poster_name': instance.posterName,
-      'post_id': instance.postId,
-      'body': instance.body,
-      'content': instance.content,
-      'parent_id': instance.parentId,
-      'up_votes': instance.upVotes,
-      'down_votes': instance.downVotes,
-      'created': instance.created.toIso8601String(),
-      'content_type': _$ContentTypeEnumMap[instance.type]!,
-    };
+Map<String, dynamic> _$CommentToJson(Comment instance) {
+  final val = <String, dynamic>{
+    'id': instance.id,
+    'poster_id': instance.posterId,
+    'poster_name': instance.posterName,
+    'post_id': instance.postId,
+    'body': instance.body,
+    'content': instance.content,
+    'parent_id': instance.parentId,
+    'up_votes': instance.upVotes,
+    'down_votes': instance.downVotes,
+    'created': instance.created.toIso8601String(),
+    'content_type': _$ContentTypeEnumMap[instance.type]!,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('vote', instance.vote);
+  return val;
+}
 
 const _$ContentTypeEnumMap = {
   ContentType.text: 'text',
