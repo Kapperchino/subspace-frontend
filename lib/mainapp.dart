@@ -26,7 +26,8 @@ class MainApp extends StatelessWidget {
           SpaceRoutes().getSpaceRoute(),
           AuthRoute().getSignupRoute(),
           AuthRoute().getLoginRoute(),
-          CreateRoutes().getPostCreationRoute()
+          CreateRoutes().getPostCreationRoute(),
+          CreateRoutes().getSpaceCreationRoute()
         ]),
   ]);
 

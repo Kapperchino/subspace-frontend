@@ -65,13 +65,13 @@ class _SubSpaceState extends State<Subspace> {
               ),
               child: Container(),
             ),
-            ListTile(
-              title: const Text('Create Subspace'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-              },
-            ),
+            BlocBuilder<SpaceBloc, SpaceState>(
+                builder: (context, state) => ListTile(
+                      title: const Text('Create Subspace'),
+                      onTap: () {
+                        context.push("/create/space/${state.spaceId}");
+                      },
+                    )),
           ],
         ),
       ),

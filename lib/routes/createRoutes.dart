@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/posts/cubit/spaceCreation/spaceCreationBloc.dart';
 import 'package:frontend/posts/postPage.dart';
 import 'package:frontend/subspace/postCreationWidget.dart';
 import 'package:frontend/subspace/postingWidget.dart';
@@ -36,6 +37,36 @@ class CreateRoutes {
                 create: (_) => PostingBloc(httpClient: http.Client()),
                 child: PostingWidget(
                   spaceId: spaceId,
+                ),
+              ));
+        });
+  }
+
+  GoRoute getSpaceCreationRoute() {
+    return GoRoute(
+        path: 'create/space/:parentId',
+        redirect: (context, state) async {
+          final jwt = await Store.secure.read(key: "jwt");
+          if (jwt == null) {
+            return '/login';
+          }
+          return null;
+        },
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          final parentId = int.parse(state.pathParameters['parentId']!);
+          return CustomTransitionPage<void>(
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                late final Animation<double> _animation = CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeInOutSine,
+                );
+                return ScaleTransition(scale: _animation, child: child);
+              },
+              child: BlocProvider(
+                create: (_) => SpaceCreationBloc(httpClient: http.Client()),
+                child: SubspaceCreationWidget(
+                  parentId: parentId,
                 ),
               ));
         });
