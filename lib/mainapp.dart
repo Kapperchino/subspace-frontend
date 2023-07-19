@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/intro/home.dart';
 import 'package:frontend/intro/login.dart';
+import 'package:frontend/routes/createRoutes.dart';
 import 'package:frontend/routes/loginRoutes.dart';
 import 'package:frontend/routes/spaceRoutes.dart';
 import 'package:get_storage/get_storage.dart';
@@ -24,7 +25,8 @@ class MainApp extends StatelessWidget {
         routes: [
           SpaceRoutes().getSpaceRoute(),
           AuthRoute().getSignupRoute(),
-          AuthRoute().getLoginRoute()
+          AuthRoute().getLoginRoute(),
+          CreateRoutes().getPostCreationRoute()
         ]),
   ]);
 

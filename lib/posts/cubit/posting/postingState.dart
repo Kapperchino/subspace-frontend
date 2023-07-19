@@ -9,7 +9,7 @@ enum PostingMode { text, link, upload }
 
 final class PostingState extends Equatable {
   const PostingState(
-      {this.status = PostingStatus.closed,
+      {this.status = PostingStatus.started,
       this.mode = PostingMode.text,
       this.file});
   final PostingStatus status;

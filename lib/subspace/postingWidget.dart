@@ -9,96 +9,155 @@ import 'package:frontend/subspace/postCreationWidget.dart';
 import 'package:frontend/subspace/postFileWidget.dart';
 import 'package:frontend/subspace/postLinkWdiget.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:go_router/go_router.dart';
 
-class PostingWidget extends StatelessWidget {
-  const PostingWidget(
-      {super.key,
-      required this.controllerTopic,
-      required this.controllerBody,
-      required this.controllerLink});
+class PostingWidget extends StatefulWidget {
+  final int spaceId;
+  const PostingWidget({super.key, required this.spaceId});
 
-  final TextEditingController controllerTopic;
-  final TextEditingController controllerBody;
-  final TextEditingController controllerLink;
+  @override
+  State<StatefulWidget> createState() {
+    return _PostingState(spaceId);
+  }
+}
+
+class _PostingState extends State<PostingWidget> {
+  final TextEditingController controllerTopic = TextEditingController();
+  final TextEditingController controllerBody = TextEditingController();
+  final TextEditingController controllerLink = TextEditingController();
+  final int spaceId;
+
+  _PostingState(this.spaceId);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PostingBloc, PostingState>(builder: (context, state) {
-      return AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        height: state.status == PostingStatus.started ||
-                state.status == PostingStatus.failure
-            ? 300
-            : 0,
-        curve: Curves.easeInOutCubicEmphasized,
-        child: DefaultTabController(
-          length: 3,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TabBar(
-                onTap: (value) {
-                  controllerBody.clear();
-                  controllerTopic.clear();
-                  controllerLink.clear();
-                  switch (value) {
-                    case 0:
-                      context
-                          .read<PostingBloc>()
-                          .add(const ModeChanged(PostingMode.text));
-                    case 1:
-                      context
-                          .read<PostingBloc>()
-                          .add(const ModeChanged(PostingMode.upload));
-                    case 2:
-                      context
-                          .read<PostingBloc>()
-                          .add(const ModeChanged(PostingMode.link));
-                  }
+    final width = MediaQuery.of(context).size.width;
+    final padding = max((width - 1000) / 2, 0.0);
+    return Scaffold(
+        body: CustomScrollView(slivers: <Widget>[
+      SliverAppBar(
+        pinned: false,
+        snap: false,
+        floating: false,
+        expandedHeight: 160.0,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(10),
+          child: Container(
+              padding: EdgeInsets.only(right: padding, bottom: 10),
+              alignment: Alignment.bottomRight,
+              child: ElevatedButton(
+                onPressed: () async {
+                  context.read<PostingBloc>().add(PostPressed(
+                      body: controllerBody.text,
+                      topic: controllerTopic.text,
+                      content: controllerLink.text,
+                      spaceId: spaceId));
                 },
-                tabs: const [
-                  Tab(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Icon(Icons.post_add_rounded), Text("Post")],
+                child: const Text('Post'),
+              )),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.background,
+        flexibleSpace: const FlexibleSpaceBar(
+          title: Text("Create Post"),
+          background: FlutterLogo(),
+          titlePadding: EdgeInsets.all(50),
+        ),
+      ),
+      BlocListener<PostingBloc, PostingState>(
+        listener: (context, state) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          if (state.status == PostingStatus.success) {
+            controllerBody.clear();
+            controllerTopic.clear();
+            controllerLink.clear();
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                backgroundColor: Colors.green, content: Text('Post created')));
+            context.pop();
+          } else if (state.status == PostingStatus.failure) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                backgroundColor: Colors.red, content: Text('Error input')));
+          }
+        },
+        child: const SliverToBoxAdapter(child: SizedBox()),
+      ),
+      BlocBuilder<PostingBloc, PostingState>(builder: (context, state) {
+        return DefaultTabController(
+            length: 3,
+            child: SliverToBoxAdapter(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TabBar(
+                    onTap: (value) {
+                      controllerBody.clear();
+                      controllerTopic.clear();
+                      controllerLink.clear();
+                      switch (value) {
+                        case 0:
+                          context
+                              .read<PostingBloc>()
+                              .add(const ModeChanged(PostingMode.text));
+                        case 1:
+                          context
+                              .read<PostingBloc>()
+                              .add(const ModeChanged(PostingMode.upload));
+                        case 2:
+                          context
+                              .read<PostingBloc>()
+                              .add(const ModeChanged(PostingMode.link));
+                      }
+                    },
+                    tabs: const [
+                      Tab(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.post_add_rounded),
+                            Text("Post")
+                          ],
+                        ),
+                      ),
+                      Tab(
+                          child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add_photo_alternate_rounded),
+                          Text("Photo")
+                        ],
+                      )),
+                      Tab(
+                          child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [Icon(Icons.link), Text("Link")],
+                      )),
+                    ],
+                  ),
+                  ConstrainedBox(
+                    constraints:
+                        BoxConstraints.loose(const Size.fromHeight(300)),
+                    child: TabBarView(
+                      clipBehavior: Clip.hardEdge,
+                      children: [
+                        PostCreationWidget(
+                            controllderBody: controllerBody,
+                            controllerTopic: controllerTopic),
+                        PostFileWidget(
+                            controllderBody: controllerBody,
+                            controllerTopic: controllerTopic),
+                        PostLinkWidget(
+                            controllerLink: controllerLink,
+                            controllderBody: controllerBody,
+                            controllerTopic: controllerTopic),
+                      ],
                     ),
                   ),
-                  Tab(
-                      child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.add_photo_alternate_rounded),
-                      Text("Photo")
-                    ],
-                  )),
-                  Tab(
-                      child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [Icon(Icons.link), Text("Link")],
-                  )),
                 ],
               ),
-              Expanded(
-                child: TabBarView(
-                  clipBehavior: Clip.antiAlias,
-                  children: [
-                    PostCreationWidget(
-                        controllderBody: controllerBody,
-                        controllerTopic: controllerTopic),
-                    PostFileWidget(
-                        controllderBody: controllerBody,
-                        controllerTopic: controllerTopic),
-                    PostLinkWidget(
-                        controllerLink: controllerLink,
-                        controllderBody: controllerBody,
-                        controllerTopic: controllerTopic),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      );
-    });
+            ));
+      })
+    ]));
   }
 }

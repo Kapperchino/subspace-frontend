@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/subspace/postingWidget.dart';
 import 'package:frontend/subspace/sortPostsDaysWidget.dart';
 import 'package:frontend/subspace/sortPostsWidget.dart';
+import 'package:go_router/go_router.dart';
 
 import '../posts/cubit/space/spaceBlock.dart';
 import '../posts/cubit/space/spaceState.dart';
@@ -50,6 +51,30 @@ class _SubSpaceState extends State<Subspace> {
     final width = MediaQuery.of(context).size.width;
     final padding = max((width - 1000) / 2, 0.0);
     return Scaffold(
+      endDrawer: Drawer(
+        // Add a ListView to the drawer. This ensures the user can scroll
+        // through the options in the drawer if there isn't enough vertical
+        // space to fit everything.
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.background,
+              ),
+              child: Container(),
+            ),
+            ListTile(
+              title: const Text('Create Subspace'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+          ],
+        ),
+      ),
       body: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
           pinned: false,
@@ -92,11 +117,11 @@ class _SubSpaceState extends State<Subspace> {
                       builder: (context, state) {
                         return ElevatedButton(
                           onPressed: () async {
-                            context.read<PostingBloc>().add(PostPressed(
-                                body: controllerBody.text,
-                                topic: controllerTopic.text,
-                                content: controllerLink.text,
-                                spaceId: state.spaceId));
+                            context
+                                .push("/create/space/${state.spaceId}/post")
+                                .then((value) => context.read<SpaceBloc>().add(
+                                    SpaceFetched(
+                                        parentId: parentId, spaceName: name)));
                           },
                           child: const Text('Post'),
                         );
@@ -111,31 +136,6 @@ class _SubSpaceState extends State<Subspace> {
             background: const FlutterLogo(),
             titlePadding: const EdgeInsets.all(50),
           ),
-        ),
-        SliverToBoxAdapter(
-            child: PostingWidget(
-          controllerBody: controllerBody,
-          controllerTopic: controllerTopic,
-          controllerLink: controllerLink,
-        )),
-        BlocListener<PostingBloc, PostingState>(
-          listener: (context, state) {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            if (state.status == PostingStatus.success) {
-              controllerBody.clear();
-              controllerTopic.clear();
-              controllerLink.clear();
-              BlocProvider.of<SpaceBloc>(context)
-                  .add(SpaceFetched(parentId: parentId, spaceName: name));
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  backgroundColor: Colors.green,
-                  content: Text('Post created')));
-            } else if (state.status == PostingStatus.failure) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  backgroundColor: Colors.red, content: Text('Error input')));
-            }
-          },
-          child: const SliverToBoxAdapter(child: SizedBox()),
         ),
         BlocBuilder<SpaceBloc, SpaceState>(
           builder: (context, state) {
