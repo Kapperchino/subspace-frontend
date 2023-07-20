@@ -22,7 +22,9 @@ class CreateRoutes {
             if (time.isBefore(DateTime.now())) {
               return "/login";
             }
+            return null;
           }
+          return "/login";
         },
         pageBuilder: (BuildContext context, GoRouterState state) {
           final spaceId = int.parse(state.pathParameters['id']!);

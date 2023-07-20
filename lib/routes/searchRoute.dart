@@ -20,7 +20,9 @@ class SearchRoutes {
             if (time.isBefore(DateTime.now())) {
               return "/login";
             }
+            return null;
           }
+          return "/login";
         },
         pageBuilder: (BuildContext context, GoRouterState state) {
           final term = state.pathParameters['term']!;

@@ -32,8 +32,8 @@ class PostCard extends StatelessWidget {
         child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
-            context
-                .go("/s/${data.parentSpaceId}/${data.spaceName}/p/${post.id}");
+            context.push(
+                "/s/${data.parentSpaceId}/${data.spaceName}/p/${post.id}");
           },
           child: Column(children: [
             PostMeta(

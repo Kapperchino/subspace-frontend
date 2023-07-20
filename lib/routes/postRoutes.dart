@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:frontend/posts/postPage.dart';
 import 'package:get_storage/get_storage.dart';
@@ -17,7 +16,9 @@ class PostRoutes {
             if (time.isBefore(DateTime.now())) {
               return "/login";
             }
+            return null;
           }
+          return "/login";
         },
         builder: (BuildContext context, GoRouterState state) {
           final id = state.pathParameters['id'];

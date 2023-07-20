@@ -117,7 +117,7 @@ class _LoginState extends State<Login> {
                     onPressed: () async {
                       if (_formKey.currentState?.validate() ?? false) {
                         await login();
-                        context.go("/s/1/SubSpace");
+                        context.go("/");
                       }
                     },
                     child: const Text("Login"),

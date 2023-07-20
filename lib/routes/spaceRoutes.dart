@@ -17,7 +17,9 @@ class SpaceRoutes {
             if (time.isBefore(DateTime.now())) {
               return "/login";
             }
+            return null;
           }
+          return "/login";
         },
         routes: [PostRoutes().getPostRoute()],
         builder: (BuildContext context, GoRouterState state) {
