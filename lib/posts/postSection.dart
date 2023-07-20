@@ -63,7 +63,7 @@ class PostSection extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: Image.network(
-                        state.post!.content,
+                        "$urlPrefix${state.post!.content}",
                         width: 600,
                         height: 600,
                         fit: BoxFit.fill,

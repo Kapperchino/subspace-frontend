@@ -115,17 +115,17 @@ class PostCard extends StatelessWidget {
   }
 
   Future<Widget> getImage(String link, ContentType type) async {
+    var urlPrefix = "";
+    if (kIsWeb) {
+      urlPrefix = "https://subspace-cors.fly.dev/";
+    }
     if (type == ContentType.picture) {
       return Image.network(
-        link,
+        "$urlPrefix$link",
         width: 100,
         height: 100,
         fit: BoxFit.fill,
       );
-    }
-    var urlPrefix = "";
-    if (kIsWeb) {
-      urlPrefix = "https://subspace-cors.fly.dev/";
     }
     Metadata? metadata = await AnyLinkPreview.getMetadata(
       link: "$urlPrefix$link",
