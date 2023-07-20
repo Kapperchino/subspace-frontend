@@ -29,7 +29,7 @@ class PostMeta extends StatelessWidget {
                     onPressed: () {},
                   ),
                 ))),
-        if (spaceName != 'root')
+        if (spaceName != 'SubSpace')
           Flexible(
               child: Align(
                   alignment: Alignment.topLeft,

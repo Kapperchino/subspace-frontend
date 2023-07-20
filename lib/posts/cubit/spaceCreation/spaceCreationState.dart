@@ -1,7 +1,5 @@
-import 'dart:io';
 
 import 'package:equatable/equatable.dart';
-import 'package:image_picker/image_picker.dart';
 
 enum SpaceCreationStatus { started, success, failure }
 

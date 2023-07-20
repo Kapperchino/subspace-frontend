@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/intro/login.dart';
 import 'package:frontend/posts/cubit/spaceCreation/spaceCreationBloc.dart';
-import 'package:frontend/posts/postPage.dart';
-import 'package:frontend/subspace/postCreationWidget.dart';
 import 'package:frontend/subspace/postingWidget.dart';
 import 'package:frontend/subspace/subspaceCreationWidget.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 
 import '../posts/cubit/posting/postingBloc.dart';
@@ -14,13 +14,15 @@ import 'package:http/http.dart' as http;
 class CreateRoutes {
   GoRoute getPostCreationRoute() {
     return GoRoute(
-        path: 'create/space/:id/post',
+        path: '/create/space/:id/post',
         redirect: (context, state) async {
-          final jwt = await Store.secure.read(key: "jwt");
-          if (jwt == null) {
-            return '/login';
+          String? expire = GetStorage().read("expire");
+          if (expire != null) {
+            final time = DateTime.parse(expire);
+            if (time.isBefore(DateTime.now())) {
+              return "/login";
+            }
           }
-          return null;
         },
         pageBuilder: (BuildContext context, GoRouterState state) {
           final spaceId = int.parse(state.pathParameters['id']!);
@@ -44,7 +46,7 @@ class CreateRoutes {
 
   GoRoute getSpaceCreationRoute() {
     return GoRoute(
-        path: 'create/space/:parentId',
+        path: '/create/space/:parentId',
         redirect: (context, state) async {
           final jwt = await Store.secure.read(key: "jwt");
           if (jwt == null) {

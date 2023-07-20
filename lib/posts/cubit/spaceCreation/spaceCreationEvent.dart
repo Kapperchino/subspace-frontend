@@ -1,7 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:frontend/models/post.dart';
-import 'package:frontend/posts/cubit/posting/postingState.dart';
-import 'package:image_picker/image_picker.dart';
 
 sealed class SpaceCreationEvent extends Equatable {
   const SpaceCreationEvent();

@@ -4,12 +4,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:frontend/models/post.dart';
-import 'package:frontend/models/postCardData.dart';
-import 'package:frontend/models/vote.dart';
 import 'package:frontend/models/votesMeta.dart';
-import 'package:frontend/posts/cubit/space/spaceEvent.dart';
-import 'package:frontend/posts/cubit/space/spaceState.dart';
 import 'package:frontend/posts/cubit/vote/voteEvent.dart';
 import 'package:frontend/posts/cubit/vote/voteState.dart';
 import 'package:get_storage/get_storage.dart';
@@ -18,7 +13,6 @@ import 'package:stream_transform/stream_transform.dart';
 
 import '../../../config.dart';
 import '../../../models/appUser.dart';
-import '../../../models/space.dart';
 import '../../../models/voteRequest.dart';
 import '../../../stores/store.dart';
 

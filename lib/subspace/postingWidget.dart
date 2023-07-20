@@ -8,7 +8,6 @@ import 'package:frontend/posts/cubit/posting/postingState.dart';
 import 'package:frontend/subspace/postCreationWidget.dart';
 import 'package:frontend/subspace/postFileWidget.dart';
 import 'package:frontend/subspace/postLinkWdiget.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 
 class PostingWidget extends StatefulWidget {
@@ -39,7 +38,7 @@ class _PostingState extends State<PostingWidget> {
         pinned: false,
         snap: false,
         floating: false,
-        expandedHeight: 160.0,
+        expandedHeight: 200.0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(10),
           child: Container(

@@ -17,7 +17,7 @@ class PostWidget extends StatelessWidget {
           pinned: false,
           snap: false,
           floating: false,
-          expandedHeight: 160.0,
+          expandedHeight: 200.0,
           backgroundColor: Theme.of(context).colorScheme.background,
           flexibleSpace: FlexibleSpaceBar(
             title: Text(spaceName),

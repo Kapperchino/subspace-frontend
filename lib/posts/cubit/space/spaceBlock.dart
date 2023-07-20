@@ -140,7 +140,7 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
     final spaceId = space.id;
     final res = await http.get(
       Uri.parse(
-          '${Config.baseUrl}/posts?space=$spaceId&sort=${sort.name}&days=$intDays&userId=${user.id}'),
+          '${Config.baseUrl}/posts/spaces/$spaceId?sort=${sort.name}&days=$intDays&userId=${user.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',

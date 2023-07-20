@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:frontend/models/voteRequest.dart';
-import 'package:frontend/posts/cubit/space/spaceState.dart';
 import 'package:frontend/posts/cubit/vote/voteState.dart';
 
 sealed class VoteEvent extends Equatable {

@@ -1,17 +1,10 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/models/appUser.dart';
-import 'package:frontend/models/voteRequest.dart';
 import 'package:frontend/posts/cubit/vote/voteBloc.dart';
 import 'package:frontend/posts/cubit/vote/voteEvent.dart';
 import 'package:frontend/posts/cubit/vote/voteState.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart' as http;
-import 'package:frontend/stores/store.dart';
 
-import '../config.dart';
 
 class VoteWidgetFlat extends StatelessWidget {
   const VoteWidgetFlat({super.key});

@@ -2,12 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
-import 'package:frontend/posts/cubit/posting/postingBloc.dart';
-import 'package:frontend/posts/cubit/posting/postingEvent.dart';
-import 'package:frontend/posts/cubit/posting/postingState.dart';
 import 'package:frontend/posts/cubit/space/spaceEvent.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/subspace/postingWidget.dart';
 import 'package:frontend/subspace/sortPostsDaysWidget.dart';
 import 'package:frontend/subspace/sortPostsWidget.dart';
 import 'package:go_router/go_router.dart';
@@ -36,10 +32,6 @@ class _SubSpaceState extends State<Subspace> {
 
   final String name;
   final int parentId;
-
-  final TextEditingController controllerTopic = TextEditingController();
-  final TextEditingController controllerBody = TextEditingController();
-  final TextEditingController controllerLink = TextEditingController();
 
   @override
   void initState() {
@@ -80,7 +72,7 @@ class _SubSpaceState extends State<Subspace> {
           pinned: false,
           snap: false,
           floating: false,
-          expandedHeight: 160.0,
+          expandedHeight: 200.0,
           bottom: PreferredSize(
               preferredSize: const Size.fromHeight(10),
               child: Row(
@@ -90,23 +82,34 @@ class _SubSpaceState extends State<Subspace> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        padding: EdgeInsets.only(left: padding, bottom: 10),
-                        alignment: Alignment.bottomLeft,
-                        child: BlocBuilder<SpaceBloc, SpaceState>(
-                          builder: (context, state) {
-                            return const SortPostsWidget();
-                          },
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(left: 5, bottom: 10),
-                        alignment: Alignment.bottomLeft,
-                        child: BlocBuilder<SpaceBloc, SpaceState>(
-                          builder: (context, state) {
-                            return const SortPostsDaysWidget();
-                          },
-                        ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding:
+                                    EdgeInsets.only(left: padding, bottom: 10),
+                                alignment: Alignment.topLeft,
+                                child: BlocBuilder<SpaceBloc, SpaceState>(
+                                  builder: (context, state) {
+                                    return const SortPostsWidget();
+                                  },
+                                ),
+                              ),
+                              Container(
+                                padding:
+                                    const EdgeInsets.only(left: 5, bottom: 10),
+                                alignment: Alignment.bottomLeft,
+                                child: BlocBuilder<SpaceBloc, SpaceState>(
+                                  builder: (context, state) {
+                                    return const SortPostsDaysWidget();
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -135,6 +138,36 @@ class _SubSpaceState extends State<Subspace> {
             title: Text(name),
             background: const FlutterLogo(),
             titlePadding: const EdgeInsets.all(50),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Container(
+            padding: EdgeInsets.only(left: padding + 5, bottom: 5),
+            alignment: Alignment.bottomLeft,
+            child: ConstrainedBox(
+              constraints:
+                  const BoxConstraints.tightFor(width: 300, height: 40),
+              child: TextField(
+                autofocus: false,
+                maxLines: 1,
+                onSubmitted: (value) => context.push("/search/$value"),
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  hintText: 'Search',
+                  contentPadding:
+                      const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).cardColor),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).cardColor),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
         BlocBuilder<SpaceBloc, SpaceState>(

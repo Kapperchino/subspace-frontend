@@ -1,34 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/intro/home.dart';
-import 'package:frontend/intro/login.dart';
 import 'package:frontend/routes/createRoutes.dart';
 import 'package:frontend/routes/loginRoutes.dart';
+import 'package:frontend/routes/searchRoute.dart';
 import 'package:frontend/routes/spaceRoutes.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 
 class MainApp extends StatelessWidget {
   MainApp({super.key});
-  final _router = GoRouter(routes: <RouteBase>[
-    GoRoute(
-        path: '/',
-        builder: (context, state) {
-          String? expire = GetStorage().read("expire");
-          if (expire != null) {
-            final time = DateTime.parse(expire);
-            if (time.isAfter(DateTime.now())) {
-              return const Home();
-            }
-          }
-          return const Login();
-        },
-        routes: [
-          SpaceRoutes().getSpaceRoute(),
-          AuthRoute().getSignupRoute(),
-          AuthRoute().getLoginRoute(),
-          CreateRoutes().getPostCreationRoute(),
-          CreateRoutes().getSpaceCreationRoute()
-        ]),
+  final _router =
+      GoRouter(initialLocation: "/s/1/SubSpace", routes: <RouteBase>[
+    SpaceRoutes().getSpaceRoute(),
+    AuthRoute().getSignupRoute(),
+    AuthRoute().getLoginRoute(),
+    CreateRoutes().getPostCreationRoute(),
+    CreateRoutes().getSpaceCreationRoute(),
+    SearchRoutes().getSearchRoute()
   ]);
 
   @override

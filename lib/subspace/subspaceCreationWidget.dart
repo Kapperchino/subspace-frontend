@@ -2,16 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/posts/cubit/posting/postingBloc.dart';
-import 'package:frontend/posts/cubit/posting/postingEvent.dart';
-import 'package:frontend/posts/cubit/posting/postingState.dart';
 import 'package:frontend/posts/cubit/spaceCreation/spaceCreationBloc.dart';
 import 'package:frontend/posts/cubit/spaceCreation/spaceCreationEvent.dart';
 import 'package:frontend/posts/cubit/spaceCreation/spaceCreationState.dart';
-import 'package:frontend/subspace/postCreationWidget.dart';
-import 'package:frontend/subspace/postFileWidget.dart';
-import 'package:frontend/subspace/postLinkWdiget.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 
 class SubspaceCreationWidget extends StatefulWidget {
@@ -42,7 +35,7 @@ class _SubspaceCreationWidget extends State<SubspaceCreationWidget> {
         pinned: false,
         snap: false,
         floating: false,
-        expandedHeight: 160.0,
+        expandedHeight: 200.0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(10),
           child: Container(
