@@ -20,9 +20,11 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
       upVotes: json['up_votes'] as int,
       downVotes: json['down_votes'] as int,
       created: DateTime.parse(json['created'] as String),
+      spaceParentId: json['space_parent_id'] as int,
       vote: json['vote'] == null
           ? null
           : Vote.fromJson(json['vote'] as Map<String, dynamic>),
+      spaceName: json['space_name'] as String,
     );
 
 Map<String, dynamic> _$PostToJson(Post instance) {
@@ -48,6 +50,8 @@ Map<String, dynamic> _$PostToJson(Post instance) {
   }
 
   writeNotNull('vote', instance.vote);
+  val['space_parent_id'] = instance.spaceParentId;
+  val['space_name'] = instance.spaceName;
   return val;
 }
 

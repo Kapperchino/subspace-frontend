@@ -33,14 +33,14 @@ class PostCard extends StatelessWidget {
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
             context.push(
-                "/s/${data.parentSpaceId}/${data.spaceName}/p/${post.id}");
+                "/s/${data.post.spaceParentId}/${data.post.spaceName}/p/${post.id}");
           },
           child: Column(children: [
             PostMeta(
                 userName: post.posterName,
                 posterId: post.posterId,
                 created: post.created,
-                spaceName: data.spaceName),
+                spaceName: post.spaceName),
             Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[

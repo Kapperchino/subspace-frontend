@@ -38,6 +38,10 @@ class Post {
   final ContentType type;
   @JsonKey(name: 'vote')
   final Vote? vote;
+  @JsonKey(name: 'space_parent_id')
+  final int spaceParentId;
+  @JsonKey(name: 'space_name')
+  final String spaceName;
 
   const Post(
       {required this.id,
@@ -52,7 +56,9 @@ class Post {
       required this.upVotes,
       required this.downVotes,
       required this.created,
-      required this.vote});
+      required this.spaceParentId,
+      required this.vote,
+      required this.spaceName});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return _$PostFromJson(json);
