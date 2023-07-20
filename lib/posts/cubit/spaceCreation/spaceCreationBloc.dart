@@ -21,8 +21,8 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class SpaceCreationBloc extends Bloc<SpaceCreationEvent, SpaceCreationState> {
-  SpaceCreationBloc({required this.httpClient})
-      : super(const SpaceCreationState()) {
+  SpaceCreationBloc({required this.httpClient, required this.parentId})
+      : super(SpaceCreationState(parentId: parentId)) {
     on<SpaceCreated>(
       onSpaceCreated,
       transformer: throttleDroppable(throttleDuration),
@@ -30,6 +30,7 @@ class SpaceCreationBloc extends Bloc<SpaceCreationEvent, SpaceCreationState> {
   }
 
   final http.Client httpClient;
+  final int parentId;
 
   Future<void> onSpaceCreated(
     SpaceCreated event,

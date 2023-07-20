@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class PostMeta extends StatelessWidget {
-  const PostMeta({
-    super.key,
-    required this.userName,
-    required this.posterId,
-    required this.created,
-    required this.spaceName,
-  });
+  const PostMeta(
+      {super.key,
+      required this.userName,
+      required this.posterId,
+      required this.created,
+      required this.spaceName,
+      required this.parentId});
 
   final String userName;
   final int posterId;
   final DateTime created;
   final String spaceName;
+  final int parentId;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,9 @@ class PostMeta extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 5, left: 5),
                     child: TextButton(
                       child: Text('s/$spaceName'),
-                      onPressed: () {},
+                      onPressed: () {
+                        context.push("/s/$parentId/$spaceName");
+                      },
                     ),
                   ))),
         const Spacer(),

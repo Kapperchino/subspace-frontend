@@ -68,7 +68,8 @@ class CreateRoutes {
                 return ScaleTransition(scale: _animation, child: child);
               },
               child: BlocProvider(
-                create: (_) => SpaceCreationBloc(httpClient: http.Client()),
+                create: (_) => SpaceCreationBloc(
+                    httpClient: http.Client(), parentId: parentId),
                 child: SubspaceCreationWidget(
                   parentId: parentId,
                 ),

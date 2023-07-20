@@ -115,6 +115,7 @@ class PostSection extends StatelessWidget {
                           userName: state.post!.posterName,
                           posterId: state.post!.posterId,
                           created: state.post!.created,
+                          parentId: state.post!.spaceParentId,
                           spaceName: spaceName)),
                   Row(
                     mainAxisSize: MainAxisSize.max,

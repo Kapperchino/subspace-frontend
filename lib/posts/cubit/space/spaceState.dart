@@ -12,7 +12,7 @@ final class SpaceState extends Equatable {
       {this.status = SpaceStatus.initial,
       this.sortState = SortState.latest,
       this.posts = const <PostCardData>[],
-      this.sortDays = SortDays.month,
+      this.sortDays = SortDays.week,
       this.hasReachedMax = false,
       this.spaceId = -1,
       this.parentId = -1,

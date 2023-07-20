@@ -1,4 +1,3 @@
-
 import 'package:equatable/equatable.dart';
 
 enum SpaceCreationStatus { started, success, failure }
@@ -15,5 +14,5 @@ final class SpaceCreationState extends Equatable {
   }
 
   @override
-  List<Object> get props => [status];
+  List<Object> get props => [status, parentId];
 }

@@ -37,10 +37,12 @@ class PostCard extends StatelessWidget {
           },
           child: Column(children: [
             PostMeta(
-                userName: post.posterName,
-                posterId: post.posterId,
-                created: post.created,
-                spaceName: post.spaceName),
+              userName: post.posterName,
+              posterId: post.posterId,
+              created: post.created,
+              spaceName: post.spaceName,
+              parentId: post.spaceParentId,
+            ),
             Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
