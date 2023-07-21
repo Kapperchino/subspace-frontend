@@ -136,7 +136,7 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
       },
     );
     final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
-    final space = Space.fromJson(jsonDecode(spaceInfo.body));
+    final space = Space.fromJson(jsonDecode(utf8.decode(spaceInfo.bodyBytes)));
     final spaceId = space.id;
     final res = await http.get(
       Uri.parse(
@@ -152,7 +152,7 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
       if (res.body.isEmpty || res.body == 'null') {
         return Pair(spaceId, List.empty());
       }
-      final List<dynamic> list = jsonDecode(res.body);
+      final List<dynamic> list = jsonDecode(utf8.decode(res.bodyBytes));
       var output = List<PostCardData>.empty(growable: true);
       for (final json in list) {
         output.add(PostCardData(

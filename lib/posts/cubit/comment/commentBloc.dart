@@ -69,7 +69,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentsState> {
       if (res.body.isEmpty || res.body == 'null') {
         return List.empty();
       }
-      final List<dynamic> list = jsonDecode(res.body);
+      final List<dynamic> list = jsonDecode(utf8.decode(res.bodyBytes));
       final List<CommentData> comments = list.map((e) {
         final comment = Comment.fromJson(e);
         return CommentData(

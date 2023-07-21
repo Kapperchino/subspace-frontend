@@ -60,7 +60,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     if (res.statusCode == 200) {
       // If the server did return a 201 CREATED response,
       // then parse the JSON.
-      return Post.fromJson(jsonDecode(res.body));
+      return Post.fromJson(jsonDecode(utf8.decode(res.bodyBytes)));
     } else {
       // If the server did not return a 201 CREATED response,
       // then throw an exception.
