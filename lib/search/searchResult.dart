@@ -41,9 +41,11 @@ class SearchResult extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.fade,
                     ),
-                    subtitle: Text(space.description, maxLines: 4),
-                    subtitleTextStyle:
-                        const TextStyle(overflow: TextOverflow.fade),
+                    subtitle: Text(
+                      space.description,
+                      maxLines: 4,
+                      overflow: TextOverflow.fade,
+                    ),
                   )),
             ],
           ),

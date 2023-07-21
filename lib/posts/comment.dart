@@ -61,9 +61,8 @@ class CommentWidget extends StatelessWidget {
                           comment.body
                               .substring(0, min(500, comment.body.length)),
                           textAlign: TextAlign.left,
+                          maxLines: 4,
                         )),
-                    subtitleTextStyle:
-                        const TextStyle(overflow: TextOverflow.visible),
                   ))),
         ],
       ),

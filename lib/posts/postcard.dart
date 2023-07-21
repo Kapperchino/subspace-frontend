@@ -88,8 +88,6 @@ class PostCard extends StatelessWidget {
                         overflow: TextOverflow.fade,
                       ),
                       subtitle: Text(post.body, maxLines: 4),
-                      subtitleTextStyle:
-                          const TextStyle(overflow: TextOverflow.fade),
                     )),
               ],
             ),
