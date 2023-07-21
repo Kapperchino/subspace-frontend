@@ -51,7 +51,7 @@ class _LoginState extends State<Login> {
               const SizedBox(height: 60),
               TextFormField(
                 controller: _controllerEmail,
-                keyboardType: TextInputType.name,
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: "Email",
                   filled: true,
