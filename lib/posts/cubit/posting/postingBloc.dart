@@ -161,7 +161,7 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
       String? mime;
       if (state.file!.mimeType != null) {
         mime = state.file!.mimeType;
-      } else if (kIsWeb) {
+      } else {
         mime = lookupMimeType(state.file!.path);
       }
       if (mime == null) {
@@ -218,7 +218,7 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
     String? mimeStr;
     if (state.file!.mimeType != null) {
       mimeStr = state.file!.mimeType;
-    } else if (kIsWeb) {
+    } else {
       mimeStr = lookupMimeType(state.file!.path);
     }
     Uri uri = Uri.parse(presigned);

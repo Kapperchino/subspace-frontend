@@ -17,6 +17,10 @@ class CreateRoutes {
         path: '/create/space/:id/post',
         redirect: (context, state) async {
           String? expire = GetStorage().read("expire");
+          final jwt = await Store.secure.read(key: "jwt");
+          if (jwt == null) {
+            return "/login";
+          }
           if (expire != null) {
             final time = DateTime.parse(expire);
             if (time.isBefore(DateTime.now())) {
@@ -50,11 +54,19 @@ class CreateRoutes {
     return GoRoute(
         path: '/create/space/:parentId',
         redirect: (context, state) async {
+          String? expire = GetStorage().read("expire");
           final jwt = await Store.secure.read(key: "jwt");
           if (jwt == null) {
-            return '/login';
+            return "/login";
           }
-          return null;
+          if (expire != null) {
+            final time = DateTime.parse(expire);
+            if (time.isBefore(DateTime.now())) {
+              return "/login";
+            }
+            return null;
+          }
+          return "/login";
         },
         pageBuilder: (BuildContext context, GoRouterState state) {
           final parentId = int.parse(state.pathParameters['parentId']!);

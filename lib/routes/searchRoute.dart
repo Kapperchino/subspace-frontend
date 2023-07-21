@@ -15,6 +15,10 @@ class SearchRoutes {
         path: '/search/:term',
         redirect: (context, state) async {
           String? expire = GetStorage().read("expire");
+          final jwt = await Store.secure.read(key: "jwt");
+          if (jwt == null) {
+            return "/login";
+          }
           if (expire != null) {
             final time = DateTime.parse(expire);
             if (time.isBefore(DateTime.now())) {

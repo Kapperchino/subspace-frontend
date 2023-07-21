@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "frontend-iphone",
+            "type": "dart",
+            "request": "attach",
+            "args": [
+                "--dart-define",
+                "BASE_URL=http://localhost:3000"
+            ],
+        },
+        {
             "name": "frontend",
             "request": "launch",
             "type": "dart",
