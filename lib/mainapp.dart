@@ -35,11 +35,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var theme = const ColorScheme.light(
-        secondary: Colors.black,
-        background: Colors.grey,
-        primaryContainer: Colors.white10,
-        primary: Colors.blueGrey);
+    var theme = const ColorScheme.dark(primary: Colors.blue);
     return MaterialApp.router(
         theme: ThemeData(
             // Define the default brightness and colors.
