@@ -38,6 +38,7 @@ class CommentWidget extends StatelessWidget {
           created: comment.created),
       Row(
         mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           if (comment.type == ContentType.text)
             const SizedBox(width: 0, height: 0),
@@ -53,16 +54,14 @@ class CommentWidget extends StatelessWidget {
           Expanded(
               flex: 9,
               child: Align(
-                  alignment: Alignment.topLeft,
+                  alignment: Alignment.topCenter,
                   child: ListTile(
-                    subtitle: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          comment.body
-                              .substring(0, min(500, comment.body.length)),
-                          textAlign: TextAlign.left,
-                          maxLines: 4,
-                        )),
+                    dense: true,
+                    subtitle: Text(
+                      comment.body,
+                      maxLines: 20,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ))),
         ],
       ),

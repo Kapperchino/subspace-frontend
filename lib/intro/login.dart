@@ -49,79 +49,90 @@ class _LoginState extends State<Login> {
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 60),
-              TextFormField(
-                controller: _controllerEmail,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  labelText: "Email",
-                  filled: true,
-                  prefixIcon: const Icon(Icons.person_outline),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+              ConstrainedBox(
+                constraints:
+                    const BoxConstraints.expand(width: 600, height: 70),
+                child: TextFormField(
+                  controller: _controllerEmail,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    labelText: "Email",
+                    filled: true,
+                    prefixIcon: const Icon(Icons.person_outline),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  onEditingComplete: () => _focusNodePassword.requestFocus(),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter username.";
+                    }
+                    return null;
+                  },
                 ),
-                onEditingComplete: () => _focusNodePassword.requestFocus(),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return "Please enter username.";
-                  }
-                  return null;
-                },
               ),
               const SizedBox(height: 10),
-              TextFormField(
-                controller: _controllerPassword,
-                focusNode: _focusNodePassword,
-                obscureText: _obscurePassword,
-                keyboardType: TextInputType.visiblePassword,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  filled: true,
-                  prefixIcon: const Icon(Icons.password_outlined),
-                  suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
-                      icon: _obscurePassword
-                          ? const Icon(Icons.visibility_outlined)
-                          : const Icon(Icons.visibility_off_outlined)),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+              ConstrainedBox(
+                constraints:
+                    const BoxConstraints.expand(width: 600, height: 70),
+                child: TextFormField(
+                  controller: _controllerPassword,
+                  focusNode: _focusNodePassword,
+                  obscureText: _obscurePassword,
+                  keyboardType: TextInputType.visiblePassword,
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    filled: true,
+                    prefixIcon: const Icon(Icons.password_outlined),
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                        icon: _obscurePassword
+                            ? const Icon(Icons.visibility_outlined)
+                            : const Icon(Icons.visibility_off_outlined)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter password.";
+                    }
+                    return null;
+                  },
                 ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return "Please enter password.";
-                  }
-                  return null;
-                },
               ),
-              const SizedBox(height: 60),
+              const SizedBox(height: 20),
               Column(
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    onPressed: () async {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        await login();
-                        context.go("/");
-                      }
-                    },
-                    child: const Text("Login"),
-                  ),
+                  ConstrainedBox(
+                      constraints:
+                          const BoxConstraints.expand(width: 600, height: 50),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        onPressed: () async {
+                          if (_formKey.currentState?.validate() ?? false) {
+                            await login();
+                            context.go("/");
+                          }
+                        },
+                        child: const Text("Login"),
+                      )),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

@@ -35,7 +35,7 @@ class PostCard extends StatelessWidget {
             context.push(
                 "/s/${data.post.spaceParentId}/${data.post.spaceName}/p/${post.id}");
           },
-          child: Column(mainAxisAlignment: MainAxisAlignment.start,children: [
+          child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
             PostMeta(
               userName: post.posterName,
               posterId: post.posterId,
@@ -82,19 +82,20 @@ class PostCard extends StatelessWidget {
                 Expanded(
                     flex: 8,
                     child: Align(
-                      alignment: Alignment.topCenter,
+                        alignment: Alignment.topCenter,
                         child: ListTile(
-                      titleAlignment: ListTileTitleAlignment.center,
-                      title: Text(
-                        post.topic,
-                        maxLines: 1,
-                        style: Theme.of(context).textTheme.titleLarge,
-                        overflow: TextOverflow.fade,
-                      ),
-                      subtitle: Text(post.body,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                          maxLines: 4),
-                    ))),
+                          dense: true,
+                          titleAlignment: ListTileTitleAlignment.center,
+                          title: Text(
+                            post.topic,
+                            maxLines: 1,
+                            style: Theme.of(context).textTheme.titleLarge,
+                            overflow: TextOverflow.fade,
+                          ),
+                          subtitle: Text(post.body,
+                              style: Theme.of(context).textTheme.bodyLarge,
+                              maxLines: 4),
+                        ))),
               ],
             ),
             Row(
