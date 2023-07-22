@@ -35,7 +35,7 @@ class PostCard extends StatelessWidget {
             context.push(
                 "/s/${data.post.spaceParentId}/${data.post.spaceName}/p/${post.id}");
           },
-          child: Column(children: [
+          child: Column(mainAxisAlignment: MainAxisAlignment.start,children: [
             PostMeta(
               userName: post.posterName,
               posterId: post.posterId,
@@ -45,9 +45,10 @@ class PostCard extends StatelessWidget {
             ),
             Row(
               mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 if (post.type == ContentType.text)
-                  const SizedBox(width: 30, height: 0),
+                  const SizedBox(width: 5, height: 0),
                 if (post.type == ContentType.picture ||
                     post.type == ContentType.link)
                   FutureBuilder<Widget>(
@@ -80,15 +81,20 @@ class PostCard extends StatelessWidget {
                   ),
                 Expanded(
                     flex: 8,
-                    child: ListTile(
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                        child: ListTile(
                       titleAlignment: ListTileTitleAlignment.center,
                       title: Text(
                         post.topic,
-                        maxLines: 2,
+                        maxLines: 1,
+                        style: Theme.of(context).textTheme.titleLarge,
                         overflow: TextOverflow.fade,
                       ),
-                      subtitle: Text(post.body, maxLines: 4),
-                    )),
+                      subtitle: Text(post.body,
+                          style: Theme.of(context).textTheme.bodyLarge,
+                          maxLines: 4),
+                    ))),
               ],
             ),
             Row(
