@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../posts/cubit/space/spaceBlock.dart';
 import '../posts/cubit/space/spaceEvent.dart';
+import '../posts/cubit/title/titleBloc.dart';
 
 class SpacePage extends StatelessWidget {
   const SpacePage({super.key, required this.parentId, required this.spaceName});
@@ -21,8 +22,10 @@ class SpacePage extends StatelessWidget {
             ..add(SpaceFetched(parentId: parentId, spaceName: spaceName)),
         ),
         BlocProvider(create: (_) => PostingBloc(httpClient: http.Client())),
+        BlocProvider(
+          create: (_) => TitleBloc(httpClient: http.Client()),
+        )
       ],
-      
       child: Subspace(
         parentId: parentId,
         name: spaceName,

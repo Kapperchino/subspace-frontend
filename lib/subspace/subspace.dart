@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
 import 'package:frontend/posts/cubit/space/spaceEvent.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/posts/cubit/title/titleBloc.dart';
+import 'package:frontend/posts/cubit/title/titleEvent.dart';
 import 'package:frontend/subspace/sortPostsDaysWidget.dart';
 import 'package:frontend/subspace/sortPostsWidget.dart';
+import 'package:frontend/subspace/titleWidget.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
 
 import '../posts/cubit/space/spaceBlock.dart';
 import '../posts/cubit/space/spaceState.dart';
@@ -135,9 +139,11 @@ class _SubSpaceState extends State<Subspace> {
               )),
           backgroundColor: Theme.of(context).colorScheme.background,
           flexibleSpace: FlexibleSpaceBar(
-            title: Text(name),
             background: const FlutterLogo(),
             titlePadding: const EdgeInsets.all(50),
+            title: TitleWidget(
+              title: name,
+            ),
           ),
         ),
         SliverToBoxAdapter(
@@ -180,6 +186,10 @@ class _SubSpaceState extends State<Subspace> {
                 if (state.posts.isEmpty) {
                   return const SliverToBoxAdapter(
                       child: Center(child: Text('no posts')));
+                }
+                if (name != "SubSpace") {
+                  context.read<TitleBloc>().add(
+                      InitEvent(context.read<SpaceBloc>().state.spaceId, name));
                 }
                 return SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: padding),
