@@ -35,6 +35,7 @@ class _PostingState extends State<PostingWidget> {
     return Scaffold(
         body: CustomScrollView(slivers: <Widget>[
       SliverAppBar(
+        centerTitle: true,
         pinned: false,
         snap: false,
         floating: false,

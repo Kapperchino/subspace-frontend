@@ -14,6 +14,7 @@ class PostWidget extends StatelessWidget {
         body: CustomScrollView(
       slivers: <Widget>[
         SliverAppBar(
+          centerTitle: true,
           pinned: false,
           snap: false,
           floating: false,

@@ -22,6 +22,7 @@ class SearchPage extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
+          centerTitle: true,
           pinned: false,
           snap: false,
           floating: false,

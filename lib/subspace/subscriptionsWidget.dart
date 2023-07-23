@@ -61,6 +61,7 @@ class _SubscriptionsWidget extends State<SubscriptionsWidget> {
       ),
       body: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
+          centerTitle: true,
           pinned: false,
           snap: false,
           floating: false,

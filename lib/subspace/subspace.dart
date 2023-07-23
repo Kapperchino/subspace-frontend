@@ -86,6 +86,7 @@ class _SubSpaceState extends State<Subspace> {
           snap: false,
           floating: false,
           expandedHeight: 200.0,
+          centerTitle: true,
           bottom: PreferredSize(
               preferredSize: const Size.fromHeight(10),
               child: Row(

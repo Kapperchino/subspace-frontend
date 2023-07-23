@@ -32,6 +32,7 @@ class _SubspaceCreationWidget extends State<SubspaceCreationWidget> {
     return Scaffold(
         body: CustomScrollView(slivers: <Widget>[
       SliverAppBar(
+        centerTitle: true,
         pinned: false,
         snap: false,
         floating: false,
