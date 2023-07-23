@@ -89,6 +89,7 @@ class _PostingState extends State<PostingWidget> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TabBar(
+                    padding: EdgeInsets.symmetric(horizontal: padding),
                     onTap: (value) {
                       controllerBody.clear();
                       controllerTopic.clear();

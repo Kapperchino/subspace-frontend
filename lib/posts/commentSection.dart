@@ -15,7 +15,7 @@ class CommentSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 900) / 2, 0.0);
+    final padding = max((width - 600) / 2, 0.0);
     return BlocBuilder<CommentBloc, CommentsState>(builder: (context, state) {
       switch (state.status) {
         case CommentsStatus.failure:

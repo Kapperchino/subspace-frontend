@@ -32,7 +32,7 @@ class PostSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 1000) / 2, 0.0);
+    final padding = max((width - 800) / 2, 0.0);
     return BlocBuilder<PostBloc, PostState>(builder: (context, state) {
       if (state.status == PostStatus.success) {
         var urlPrefix = "";
@@ -48,10 +48,11 @@ class PostSection extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+                  if(state.post!.topic.isNotEmpty)
                   Flexible(
                       child: Padding(
                     padding: const EdgeInsets.only(top: 20),
-                    child: Text(
+                    child: SelectableText(
                       state.post!.topic,
                       style: Theme.of(context).textTheme.titleLarge,
                       textScaleFactor: 1.5,
@@ -106,7 +107,7 @@ class PostSection extends StatelessWidget {
                           child: Padding(
                               padding: const EdgeInsets.only(
                                   left: 20, right: 20, top: 20),
-                              child: Text(
+                              child: SelectableText(
                                 state.post!.body,
                                 textAlign: TextAlign.left,
                               )))),

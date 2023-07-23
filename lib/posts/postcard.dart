@@ -58,6 +58,14 @@ class PostCard extends StatelessWidget {
                       overflow: TextOverflow.fade,
                     ),
                   ),
+                if (post.body.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(post.body,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                        textAlign: TextAlign.left,
+                        maxLines: 4),
+                  ),
                 if (post.type == ContentType.picture ||
                     post.type == ContentType.link)
                   FutureBuilder<Widget>(
@@ -67,8 +75,8 @@ class PostCard extends StatelessWidget {
                         return Flexible(
                             flex: 5,
                             child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 10, right: 10),
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
                               child: InkWell(
                                   onTap: () async {
                                     if (post.type == ContentType.link) {
@@ -89,13 +97,6 @@ class PostCard extends StatelessWidget {
                       }
                     },
                   ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(post.body,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                      textAlign: TextAlign.left,
-                      maxLines: 4),
-                ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,

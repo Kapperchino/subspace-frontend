@@ -53,16 +53,14 @@ class CommentWidget extends StatelessWidget {
             ),
           Expanded(
               flex: 9,
-              child: Align(
-                  alignment: Alignment.topCenter,
-                  child: ListTile(
-                    dense: true,
-                    subtitle: Text(
-                      comment.body,
-                      maxLines: 20,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ))),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: SelectableText(
+                  comment.body,
+                  textAlign: TextAlign.left,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              )),
         ],
       ),
       Row(

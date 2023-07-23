@@ -14,7 +14,7 @@ class CommentingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 1000) / 2, 0.0);
+    final padding = max((width - 800) / 2, 0.0);
     return BlocBuilder<CommentingBloc, CommentingState>(
         builder: (context, state) {
       return AnimatedContainer(
