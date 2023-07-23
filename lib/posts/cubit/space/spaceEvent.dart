@@ -14,7 +14,7 @@ final class SpaceFetched extends SpaceEvent {
 }
 
 final class SpaceSortChanged extends SpaceEvent {
-  final SortState sortState;
+  final SortStatus sortState;
 
   SpaceSortChanged({required this.sortState});
 }

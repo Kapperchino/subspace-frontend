@@ -1,10 +1,10 @@
-
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/posts/cubit/space/spaceEvent.dart';
+import 'package:frontend/posts/cubit/sorting/sortBloc.dart';
+import 'package:frontend/posts/cubit/sorting/sortState.dart';
 
-import '../posts/cubit/space/spaceBlock.dart';
+import '../posts/cubit/sorting/sortEvent.dart';
 import '../posts/cubit/space/spaceState.dart';
 
 class SortPostsDaysWidget extends StatelessWidget {
@@ -12,7 +12,7 @@ class SortPostsDaysWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SpaceBloc, SpaceState>(builder: (context, state) {
+    return BlocBuilder<SortBloc, SortState>(builder: (context, state) {
       return DropdownButtonHideUnderline(
         child: DropdownButton2<SortDays>(
           isExpanded: true,
@@ -79,7 +79,7 @@ class SortPostsDaysWidget extends StatelessWidget {
           ],
           value: state.sortDays,
           onChanged: (SortDays? value) {
-            context.read<SpaceBloc>().add(DaysSortChanged(sortDays: value!));
+            context.read<SortBloc>().add(DaysSortChanged(sortDays: value!));
           },
           buttonStyleData: const ButtonStyleData(
             padding: EdgeInsets.symmetric(horizontal: 16),

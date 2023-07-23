@@ -2,42 +2,29 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
-import 'package:frontend/posts/cubit/sorting/sortBloc.dart';
-import 'package:frontend/posts/cubit/sorting/sortState.dart';
-import 'package:frontend/posts/cubit/space/spaceEvent.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/posts/cubit/title/titleBloc.dart';
-import 'package:frontend/posts/cubit/title/titleEvent.dart';
+import 'package:frontend/posts/cubit/subscriptions/subscriptionsBloc.dart';
+import 'package:frontend/posts/cubit/subscriptions/subscriptionsEvent.dart';
+import 'package:frontend/posts/cubit/subscriptions/subscriptionsState.dart';
 import 'package:frontend/subspace/sortPostsDaysWidget.dart';
 import 'package:frontend/subspace/sortPostsWidget.dart';
-import 'package:frontend/subspace/titleWidget.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 
-import '../posts/cubit/space/spaceBlock.dart';
-import '../posts/cubit/space/spaceState.dart';
+import '../posts/cubit/sorting/sortBloc.dart';
+import '../posts/cubit/sorting/sortState.dart';
 import '../posts/postcard.dart';
 
-class Subspace extends StatefulWidget {
-  const Subspace({super.key, required this.name, required this.parentId});
-
-  final String name;
-  final int parentId;
+class SubscriptionsWidget extends StatefulWidget {
+  const SubscriptionsWidget({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return _SubSpaceState(parentId: parentId, name: name);
+    return _SubscriptionsWidget();
   }
 }
 
-class _SubSpaceState extends State<Subspace> {
-  _SubSpaceState({
-    required this.parentId,
-    required this.name,
-  });
-
-  final String name;
-  final int parentId;
+class _SubscriptionsWidget extends State<SubscriptionsWidget> {
+  _SubscriptionsWidget();
 
   @override
   void initState() {
@@ -63,20 +50,12 @@ class _SubSpaceState extends State<Subspace> {
               ),
               child: Container(),
             ),
-            BlocBuilder<SpaceBloc, SpaceState>(
-                builder: (context, state) => ListTile(
-                      title: const Text('Create Subspace'),
-                      onTap: () {
-                        context.push("/create/space/${state.spaceId}");
-                      },
-                    )),
-            BlocBuilder<SpaceBloc, SpaceState>(
-                builder: (context, state) => ListTile(
-                      title: const Text('Subscriptions'),
-                      onTap: () {
-                        context.push("/subscriptions");
-                      },
-                    )),
+            ListTile(
+              title: const Text('Create Subspace'),
+              onTap: () {
+                context.push("/create/space/1");
+              },
+            ),
           ],
         ),
       ),
@@ -116,34 +95,13 @@ class _SubSpaceState extends State<Subspace> {
                       ),
                     ],
                   ),
-                  Container(
-                    padding: EdgeInsets.only(right: padding, bottom: 10),
-                    alignment: Alignment.bottomRight,
-                    child: BlocBuilder<SpaceBloc, SpaceState>(
-                      builder: (context, state) {
-                        return ElevatedButton(
-                          onPressed: () async {
-                            context
-                                .push("/create/space/${state.spaceId}/post")
-                                .then((value) => context.read<SpaceBloc>().add(
-                                    SpaceFetched(
-                                        parentId: parentId, spaceName: name)));
-                          },
-                          child: const Text('Post'),
-                        );
-                      },
-                    ),
-                  ),
                 ],
               )),
           backgroundColor: Theme.of(context).colorScheme.background,
-          flexibleSpace: FlexibleSpaceBar(
-            background: const FlutterLogo(),
-            titlePadding: const EdgeInsets.all(50),
-            title: TitleWidget(
-              title: name,
-            ),
-          ),
+          flexibleSpace: const FlexibleSpaceBar(
+              background: FlutterLogo(),
+              titlePadding: EdgeInsets.all(50),
+              title: Text("Subscriptions")),
         ),
         SliverToBoxAdapter(
           child: Container(
@@ -175,17 +133,13 @@ class _SubSpaceState extends State<Subspace> {
             ),
           ),
         ),
-        BlocBuilder<SpaceBloc, SpaceState>(
+        BlocBuilder<SubscriptionsBloc, SubscriptionsState>(
           builder: (context, state) {
             switch (state.status) {
-              case SpaceStatus.failure:
+              case SubscriptionsStatus.failure:
                 return const SliverToBoxAdapter(
                     child: Center(child: Text('failed to fetch posts')));
-              case SpaceStatus.success:
-                if (name != "SubSpace") {
-                  context.read<TitleBloc>().add(
-                      InitEvent(context.read<SpaceBloc>().state.spaceId, name));
-                }
+              case SubscriptionsStatus.success:
                 if (state.posts.isEmpty) {
                   return const SliverToBoxAdapter(
                       child: Center(child: Text('no posts')));
@@ -202,7 +156,7 @@ class _SubSpaceState extends State<Subspace> {
                         return PostCard(data: state.posts[index]);
                       }, childCount: state.posts.length),
                     ));
-              case SpaceStatus.initial:
+              case SubscriptionsStatus.initial:
                 return const SliverToBoxAdapter(
                     child: Center(child: CircularProgressIndicator()));
             }
@@ -211,10 +165,10 @@ class _SubSpaceState extends State<Subspace> {
         BlocListener<SortBloc, SortState>(
           listener: (context, state) {
             context
-                .read<SpaceBloc>()
-                .add(SpaceSortChanged(sortState: state.status));
+                .read<SubscriptionsBloc>()
+                .add(SubscriptionsSortChanged(sortState: state.status));
             context
-                .read<SpaceBloc>()
+                .read<SubscriptionsBloc>()
                 .add(DaysSortChanged(sortDays: state.sortDays));
           },
           child: const SliverToBoxAdapter(child: SizedBox()),

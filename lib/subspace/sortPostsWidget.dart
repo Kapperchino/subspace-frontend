@@ -1,8 +1,11 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/posts/cubit/sorting/sortBloc.dart';
+import 'package:frontend/posts/cubit/sorting/sortState.dart';
 import 'package:frontend/posts/cubit/space/spaceEvent.dart';
 
+import '../posts/cubit/sorting/sortEvent.dart';
 import '../posts/cubit/space/spaceBlock.dart';
 import '../posts/cubit/space/spaceState.dart';
 
@@ -11,9 +14,9 @@ class SortPostsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SpaceBloc, SpaceState>(builder: (context, state) {
+    return BlocBuilder<SortBloc, SortState>(builder: (context, state) {
       return DropdownButtonHideUnderline(
-        child: DropdownButton2<SortState>(
+        child: DropdownButton2<SortStatus>(
           isExpanded: true,
           hint: Text(
             'SortBy',
@@ -23,8 +26,8 @@ class SortPostsWidget extends StatelessWidget {
             ),
           ),
           items: const [
-            DropdownMenuItem<SortState>(
-              value: SortState.popular,
+            DropdownMenuItem<SortStatus>(
+              value: SortStatus.popular,
               child: Row(
                 children: [
                   Text(
@@ -37,8 +40,8 @@ class SortPostsWidget extends StatelessWidget {
                 ],
               ),
             ),
-            DropdownMenuItem<SortState>(
-              value: SortState.latest,
+            DropdownMenuItem<SortStatus>(
+              value: SortStatus.latest,
               child: Row(
                 children: [
                   Text(
@@ -52,9 +55,9 @@ class SortPostsWidget extends StatelessWidget {
               ),
             )
           ],
-          value: state.sortState,
-          onChanged: (SortState? value) {
-            context.read<SpaceBloc>().add(SpaceSortChanged(sortState: value!));
+          value: state.status,
+          onChanged: (SortStatus? value) {
+            context.read<SortBloc>().add(SortChanged(sortState: value!));
           },
           buttonStyleData: const ButtonStyleData(
             padding: EdgeInsets.symmetric(horizontal: 16),

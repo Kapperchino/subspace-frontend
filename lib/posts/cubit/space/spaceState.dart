@@ -3,14 +3,14 @@ import 'package:frontend/models/postCardData.dart';
 
 enum SpaceStatus { initial, success, failure }
 
-enum SortState { latest, popular }
+enum SortStatus { latest, popular }
 
 enum SortDays { week, month, halfYear, year }
 
 final class SpaceState extends Equatable {
   const SpaceState(
       {this.status = SpaceStatus.initial,
-      this.sortState = SortState.latest,
+      this.sortState = SortStatus.latest,
       this.posts = const <PostCardData>[],
       this.sortDays = SortDays.week,
       this.hasReachedMax = false,
@@ -21,7 +21,7 @@ final class SpaceState extends Equatable {
   final SpaceStatus status;
   final List<PostCardData> posts;
   final bool hasReachedMax;
-  final SortState sortState;
+  final SortStatus sortState;
   final SortDays sortDays;
   final int spaceId;
   final int parentId;
@@ -33,7 +33,7 @@ final class SpaceState extends Equatable {
       List<PostCardData>? posts,
       bool? hasReachedMax,
       int? spaceId,
-      SortState? sortState,
+      SortStatus? sortState,
       int? parentId,
       String? spaceName}) {
     return SpaceState(

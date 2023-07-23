@@ -5,8 +5,8 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/models/postCardData.dart';
-import 'package:frontend/posts/cubit/space/spaceEvent.dart';
-import 'package:frontend/posts/cubit/space/spaceState.dart';
+import 'package:frontend/posts/cubit/subscriptions/subscriptionsEvent.dart';
+import 'package:frontend/posts/cubit/subscriptions/subscriptionsState.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:stream_transform/stream_transform.dart';
@@ -15,6 +15,7 @@ import '../../../config.dart';
 import '../../../models/appUser.dart';
 import '../../../models/space.dart';
 import '../../../stores/store.dart';
+import '../space/spaceState.dart';
 
 const _postLimit = 20;
 const throttleDuration = Duration(milliseconds: 100);
@@ -25,19 +26,14 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
   };
 }
 
-class Pair {
-  final int spaceId;
-  final List<PostCardData> data;
-  Pair(this.spaceId, this.data);
-}
-
-class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
-  SpaceBloc({required this.httpClient}) : super(const SpaceState()) {
-    on<SpaceFetched>(
+class SubscriptionsBloc extends Bloc<SubscriptionsEvent, SubscriptionsState> {
+  SubscriptionsBloc({required this.httpClient})
+      : super(const SubscriptionsState()) {
+    on<SubscriptionsFetched>(
       _onPostFetched,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<SpaceSortChanged>(
+    on<SubscriptionsSortChanged>(
       _onSortChange,
       transformer: throttleDroppable(throttleDuration),
     );
@@ -51,69 +47,62 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
 
   Future<void> _onDaysChange(
     DaysSortChanged event,
-    Emitter<SpaceState> emit,
+    Emitter<SubscriptionsState> emit,
   ) async {
     try {
-      final posts = await getPosts(state.parentId, state.spaceName,
-          sort: state.sortState, days: event.sortDays);
+      final posts = await getPosts(sort: state.sortState, days: event.sortDays);
       return emit(
         state.copyWith(
           days: event.sortDays,
-          status: SpaceStatus.success,
-          posts: posts.data,
-          spaceId: posts.spaceId,
+          status: SubscriptionsStatus.success,
+          posts: posts,
           hasReachedMax: false,
         ),
       );
     } catch (_) {
-      emit(state.copyWith(status: SpaceStatus.failure));
+      emit(state.copyWith(status: SubscriptionsStatus.failure));
     }
   }
 
   Future<void> _onSortChange(
-    SpaceSortChanged event,
-    Emitter<SpaceState> emit,
+    SubscriptionsSortChanged event,
+    Emitter<SubscriptionsState> emit,
   ) async {
     try {
-      final posts = await getPosts(state.parentId, state.spaceName,
-          sort: event.sortState);
+      final posts = await getPosts(sort: event.sortState);
       return emit(
         state.copyWith(
           sortState: event.sortState,
-          status: SpaceStatus.success,
-          posts: posts.data,
-          spaceId: posts.spaceId,
+          status: SubscriptionsStatus.success,
+          posts: posts,
           hasReachedMax: false,
         ),
       );
     } catch (_) {
-      emit(state.copyWith(status: SpaceStatus.failure));
+      emit(state.copyWith(status: SubscriptionsStatus.failure));
     }
   }
 
   Future<void> _onPostFetched(
-    SpaceFetched event,
-    Emitter<SpaceState> emit,
+    SubscriptionsFetched event,
+    Emitter<SubscriptionsState> emit,
   ) async {
     if (state.hasReachedMax) return;
     try {
-      final posts = await getPosts(event.parentId, event.spaceName);
+      final posts = await getPosts();
       return emit(
         state.copyWith(
-          status: SpaceStatus.success,
-          posts: posts.data,
-          spaceId: posts.spaceId,
-          parentId: event.parentId,
-          spaceName: event.spaceName,
+          status: SubscriptionsStatus.success,
+          posts: posts,
           hasReachedMax: false,
         ),
       );
     } catch (_) {
-      emit(state.copyWith(status: SpaceStatus.failure));
+      emit(state.copyWith(status: SubscriptionsStatus.failure));
     }
   }
 
-  Future<Pair> getPosts(int parentId, String? spaceName,
+  Future<List<PostCardData>> getPosts(
       {SortStatus sort = SortStatus.latest,
       SortDays days = SortDays.week}) async {
     final token = await Store.secure.read(key: 'jwt');
@@ -128,19 +117,10 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
       case SortDays.week:
         intDays = 7;
     }
-    final spaceInfo = await http.get(
-      Uri.parse('${Config.baseUrl}/spaces?name=$spaceName&parentId=$parentId'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token',
-      },
-    );
     final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
-    final space = Space.fromJson(jsonDecode(utf8.decode(spaceInfo.bodyBytes)));
-    final spaceId = space.id;
     final res = await http.get(
       Uri.parse(
-          '${Config.baseUrl}/posts/spaces/$spaceId?sort=${sort.name}&days=$intDays&userId=${user.id}'),
+          '${Config.baseUrl}/posts/users/${user.id}/subscriptions?sort=${sort.name}&days=$intDays'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -150,17 +130,17 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
       // If the server did return a 201 CREATED response,
       // then parse the JSON.
       if (res.body.isEmpty || res.body == 'null') {
-        return Pair(spaceId, List.empty());
+        return List.empty();
       }
       final List<dynamic> list = jsonDecode(utf8.decode(res.bodyBytes));
       var output = List<PostCardData>.empty(growable: true);
       for (final json in list) {
         output.add(PostCardData(
             post: Post.fromJson(json),
-            spaceName: space.name,
-            parentSpaceId: space.parentId));
+            spaceName: "Subscriptions",
+            parentSpaceId: 1));
       }
-      return Pair(spaceId, output);
+      return output;
     } else {
       // If the server did not return a 201 CREATED response,
       // then throw an exception.

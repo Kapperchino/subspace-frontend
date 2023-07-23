@@ -140,7 +140,7 @@ class _LoginState extends State<Login> {
                       TextButton(
                         onPressed: () {
                           _formKey.currentState?.reset();
-                          context.go("/signup");
+                          context.push("/signup");
                         },
                         child: const Text("Signup"),
                       ),
