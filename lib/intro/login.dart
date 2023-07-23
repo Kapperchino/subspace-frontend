@@ -160,7 +160,7 @@ class _LoginState extends State<Login> {
       Uri.parse('${Config.baseUrl}/auth/login'),
       body: jsonEncode({
         'password': _controllerPassword.text,
-        'email': _controllerEmail.text
+        'email': _controllerEmail.text.toLowerCase()
       }),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',

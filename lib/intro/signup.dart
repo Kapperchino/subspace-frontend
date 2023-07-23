@@ -242,7 +242,7 @@ class _SignupState extends State<Signup> {
     final req = SignUpRequest(
         password: _controllerPassword.text,
         displayName: _controllerDisplayName.text,
-        email: _controllerEmail.text);
+        email: _controllerEmail.text.toLowerCase());
     final res = await http.post(
       Uri.parse('${Config.baseUrl}/auth/user'),
       body: jsonEncode(req.toJson()),
