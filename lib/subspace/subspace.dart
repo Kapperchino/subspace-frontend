@@ -47,7 +47,7 @@ class _SubSpaceState extends State<Subspace> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 1000) / 2, 0.0);
+    final padding = max((width - 600) / 2, 0.0);
     return Scaffold(
       endDrawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll

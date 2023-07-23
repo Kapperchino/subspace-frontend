@@ -10,23 +10,32 @@ PostRequest _$PostRequestFromJson(Map<String, dynamic> json) => PostRequest(
       spaceId: json['space_id'] as int,
       posterId: json['poster_id'] as int,
       isUpload: json['is_upload'] as bool? ?? false,
-      topic: json['topic'] as String,
-      body: json['body'] as String? ?? "",
-      content: json['content'] as String? ?? "",
+      topic: json['topic'] as String?,
+      body: json['body'] as String?,
+      content: json['content'] as String?,
       type: $enumDecodeNullable(_$ContentTypeEnumMap, json['content_type']) ??
           ContentType.text,
     );
 
-Map<String, dynamic> _$PostRequestToJson(PostRequest instance) =>
-    <String, dynamic>{
-      'space_id': instance.spaceId,
-      'poster_id': instance.posterId,
-      'topic': instance.topic,
-      'body': instance.body,
-      'is_upload': instance.isUpload,
-      'content': instance.content,
-      'content_type': _$ContentTypeEnumMap[instance.type]!,
-    };
+Map<String, dynamic> _$PostRequestToJson(PostRequest instance) {
+  final val = <String, dynamic>{
+    'space_id': instance.spaceId,
+    'poster_id': instance.posterId,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('topic', instance.topic);
+  writeNotNull('body', instance.body);
+  val['is_upload'] = instance.isUpload;
+  writeNotNull('content', instance.content);
+  val['content_type'] = _$ContentTypeEnumMap[instance.type]!;
+  return val;
+}
 
 const _$ContentTypeEnumMap = {
   ContentType.text: 'text',

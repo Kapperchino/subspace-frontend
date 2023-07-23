@@ -35,20 +35,29 @@ class PostCard extends StatelessWidget {
             context.push(
                 "/s/${data.post.spaceParentId}/${data.post.spaceName}/p/${post.id}");
           },
-          child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-            PostMeta(
-              userName: post.posterName,
-              posterId: post.posterId,
-              created: post.created,
-              spaceName: post.spaceName,
-              parentId: post.spaceParentId,
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                if (post.type == ContentType.text)
-                  const SizedBox(width: 5, height: 0),
+              children: [
+                PostMeta(
+                  userName: post.posterName,
+                  posterId: post.posterId,
+                  created: post.created,
+                  spaceName: post.spaceName,
+                  parentId: post.spaceParentId,
+                ),
+                if (post.topic.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      post.topic,
+                      maxLines: 1,
+                      style: Theme.of(context).textTheme.titleLarge,
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.fade,
+                    ),
+                  ),
                 if (post.type == ContentType.picture ||
                     post.type == ContentType.link)
                   FutureBuilder<Widget>(
@@ -57,18 +66,19 @@ class PostCard extends StatelessWidget {
                       if (snapshot.hasData) {
                         return Flexible(
                             flex: 5,
-                            child: InkWell(
-                              onTap: () async {
-                                if (post.type == ContentType.link) {
-                                  final Uri url = Uri.parse(post.content);
-                                  if (!await launchUrl(url)) {
-                                    throw Exception('Could not launch $url');
-                                  }
-                                }
-                              },
-                              child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10, bottom: 10),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 10, right: 10),
+                              child: InkWell(
+                                  onTap: () async {
+                                    if (post.type == ContentType.link) {
+                                      final Uri url = Uri.parse(post.content);
+                                      if (!await launchUrl(url)) {
+                                        throw Exception(
+                                            'Could not launch $url');
+                                      }
+                                    }
+                                  },
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(8.0),
                                     child: snapshot.data,
@@ -79,43 +89,32 @@ class PostCard extends StatelessWidget {
                       }
                     },
                   ),
-                Expanded(
-                    flex: 8,
-                    child: Align(
-                        alignment: Alignment.topCenter,
-                        child: ListTile(
-                          dense: true,
-                          titleAlignment: ListTileTitleAlignment.center,
-                          title: Text(
-                            post.topic,
-                            maxLines: 1,
-                            style: Theme.of(context).textTheme.titleLarge,
-                            overflow: TextOverflow.fade,
-                          ),
-                          subtitle: Text(post.body,
-                              style: Theme.of(context).textTheme.bodyLarge,
-                              maxLines: 4),
-                        ))),
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                BlocProvider(
-                  create: (_) => VoteBloc(
-                    httpClient: http.Client(),
-                    type: VoteType.post,
-                  )..add(InitEvent(
-                      data.post.id,
-                      data.post.upVotes,
-                      data.post.downVotes,
-                      VotesUtil.getStatus(data.post.vote),
-                      VoteType.post)),
-                  child: const VoteWidgetFlat(),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(post.body,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.left,
+                      maxLines: 4),
                 ),
-              ],
-            )
-          ]),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    BlocProvider(
+                      create: (_) => VoteBloc(
+                        httpClient: http.Client(),
+                        type: VoteType.post,
+                      )..add(InitEvent(
+                          data.post.id,
+                          data.post.upVotes,
+                          data.post.downVotes,
+                          VotesUtil.getStatus(data.post.vote),
+                          VoteType.post)),
+                      child: const VoteWidgetFlat(),
+                    ),
+                  ],
+                )
+              ]),
         ));
   }
 
@@ -127,9 +126,8 @@ class PostCard extends StatelessWidget {
     if (type == ContentType.picture) {
       return Image.network(
         "$urlPrefix$link",
-        width: 100,
-        height: 100,
-        fit: BoxFit.fill,
+        width: 600,
+        fit: BoxFit.contain,
       );
     }
     Metadata? metadata = await AnyLinkPreview.getMetadata(
@@ -139,7 +137,6 @@ class PostCard extends StatelessWidget {
     if (metadata?.image == null) {
       return const SizedBox();
     }
-    return Image.network(metadata!.image!,
-        width: 100, height: 100, fit: BoxFit.fill);
+    return Image.network(width: 600, metadata!.image!, fit: BoxFit.contain);
   }
 }

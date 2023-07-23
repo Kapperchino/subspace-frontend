@@ -1,3 +1,4 @@
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class _PostingState extends State<PostingWidget> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 1000) / 2, 0.0);
+    final padding = max((width - 600) / 2, 0.0);
     return Scaffold(
         body: CustomScrollView(slivers: <Widget>[
       SliverAppBar(

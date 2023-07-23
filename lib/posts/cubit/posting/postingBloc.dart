@@ -63,21 +63,12 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
         ),
       );
     }
-    if (state.status == PostingStatus.failure) {
-      if (event.body.isEmpty || event.topic.isEmpty) {
-        return emit(state.copyWith(
-          status: PostingStatus.closed,
-        ));
-      }
-    }
     if (state.status == PostingStatus.started ||
         state.status == PostingStatus.failure) {
-      if (event.body.isEmpty && event.topic.isEmpty) {
-        return emit(state.copyWith(
-          status: PostingStatus.closed,
-        ));
-      }
-      if (event.body.isEmpty || event.topic.isEmpty) {
+      if (event.body.isEmpty &&
+          event.content.isEmpty &&
+          state.mode != PostingMode.upload &&
+          state.file == null) {
         return emit(state.copyWith(
           status: PostingStatus.failure,
         ));
@@ -119,8 +110,7 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
         case PostingMode.upload:
           {
             final type = await getContentType();
-            final int res = await postPost(
-                event.body, event.topic, event.spaceId,
+            final res = await postPost(event.body, event.topic, event.spaceId,
                 content: event.content, contentType: type);
             if (res != 200) {
               return emit(state.copyWith(
@@ -128,7 +118,7 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
               ));
             }
             return emit(
-              state.copyWith(status: PostingStatus.success),
+              state.copyWith(status: PostingStatus.success, file: null),
             );
           }
       }
