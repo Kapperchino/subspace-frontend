@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -34,7 +33,7 @@ class _PostingState extends State<PostingWidget> {
     final width = MediaQuery.of(context).size.width;
     final padding = max((width - 600) / 2, 0.0);
     return Scaffold(
-        body: CustomScrollView(slivers: <Widget>[
+        body: CustomScrollView(shrinkWrap: true, slivers: <Widget>[
       SliverAppBar(
         centerTitle: true,
         pinned: false,
@@ -139,9 +138,8 @@ class _PostingState extends State<PostingWidget> {
                   ),
                   ConstrainedBox(
                     constraints:
-                        BoxConstraints.loose(const Size.fromHeight(300)),
+                        BoxConstraints.loose(const Size.fromHeight(220)),
                     child: TabBarView(
-                      clipBehavior: Clip.hardEdge,
                       children: [
                         PostCreationWidget(
                             controllderBody: controllerBody,

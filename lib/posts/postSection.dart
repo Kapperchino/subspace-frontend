@@ -48,26 +48,32 @@ class PostSection extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  if(state.post!.topic.isNotEmpty)
-                  Flexible(
-                      child: Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: SelectableText(
-                      state.post!.topic,
-                      style: Theme.of(context).textTheme.titleLarge,
-                      textScaleFactor: 1.5,
+                  if (state.post!.topic.isEmpty)
+                    const SizedBox(
+                      height: 10,
                     ),
-                  )),
+                  if (state.post!.topic.isNotEmpty)
+                    Flexible(
+                        child: Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: SelectableText(
+                        state.post!.topic,
+                        style: Theme.of(context).textTheme.titleLarge,
+                        textScaleFactor: 1.5,
+                      ),
+                    )),
                   if (state.post!.type == ContentType.text)
                     const SizedBox(width: 0, height: 0),
                   if (state.post!.type == ContentType.picture)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
-                        "$urlPrefix${state.post!.content}",
-                        width: 600,
-                        height: 600,
-                        fit: BoxFit.fill,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Image.network(
+                          "$urlPrefix${state.post!.content}",
+                          width: 800,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
                   if (state.post!.type == ContentType.link)
@@ -101,16 +107,17 @@ class PostSection extends StatelessWidget {
                                 }
                                 // This disables tap event
                                 ))),
-                  Flexible(
-                      child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20, right: 20, top: 20),
-                              child: SelectableText(
-                                state.post!.body,
-                                textAlign: TextAlign.left,
-                              )))),
+                  if (state.post!.body.isNotEmpty)
+                    Flexible(
+                        child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 20, right: 20),
+                                child: SelectableText(
+                                  state.post!.body,
+                                  textAlign: TextAlign.left,
+                                )))),
                   Flexible(
                       child: PostMeta(
                           userName: state.post!.posterName,

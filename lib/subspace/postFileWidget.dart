@@ -25,7 +25,7 @@ class PostFileWidget extends StatelessWidget {
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Flexible(
             child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
+                padding: const EdgeInsets.all(5),
                 child: TextField(
                   autofocus: false,
                   maxLines: 1,
@@ -62,25 +62,28 @@ class PostFileWidget extends StatelessWidget {
                     },
                     child: const Text("Upload photo")))),
         Flexible(
-            flex: 2,
-            child: TextField(
-              autofocus: false,
-              maxLines: 5,
-              controller: controllderBody,
-              decoration: InputDecoration(
-                filled: true,
-                hintText: 'Body',
-                contentPadding: const EdgeInsets.only(left: 14.0, top: 8.0),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).cardColor),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).cardColor),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ))
+            child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5),
+                child: TextField(
+                  autofocus: false,
+                  maxLines: 5,
+                  controller: controllderBody,
+                  decoration: InputDecoration(
+                    filled: true,
+                    hintText: 'Body',
+                    contentPadding: const EdgeInsets.only(left: 14.0, top: 8.0),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).cardColor),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).cardColor),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                )))
       ]),
     );
   }

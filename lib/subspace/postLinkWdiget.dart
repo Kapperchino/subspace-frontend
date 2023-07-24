@@ -22,7 +22,7 @@ class PostLinkWidget extends StatelessWidget {
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Flexible(
             child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
+                padding: const EdgeInsets.all(5),
                 child: TextField(
                   autofocus: false,
                   maxLines: 1,
@@ -46,7 +46,7 @@ class PostLinkWidget extends StatelessWidget {
                 ))),
         Flexible(
             child: Padding(
-                padding: const EdgeInsets.only(bottom: 5),
+                padding: const EdgeInsets.only(bottom: 5, left: 5, right: 5),
                 child: TextField(
                   autofocus: false,
                   maxLines: 1,
@@ -69,25 +69,28 @@ class PostLinkWidget extends StatelessWidget {
                   ),
                 ))),
         Flexible(
-            flex: 2,
-            child: TextField(
-              autofocus: false,
-              maxLines: 5,
-              controller: controllderBody,
-              decoration: InputDecoration(
-                filled: true,
-                hintText: 'Body',
-                contentPadding: const EdgeInsets.only(left: 14.0, top: 8.0),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).cardColor),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Theme.of(context).cardColor),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ))
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: TextField(
+                  autofocus: false,
+                  maxLines: 5,
+                  controller: controllderBody,
+                  decoration: InputDecoration(
+                    filled: true,
+                    hintText: 'Body',
+                    contentPadding: const EdgeInsets.only(left: 14.0, top: 8.0),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).cardColor),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).cardColor),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                )))
       ]),
     );
   }

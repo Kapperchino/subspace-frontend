@@ -28,7 +28,7 @@ class _SubspaceCreationWidget extends State<SubspaceCreationWidget> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 1000) / 2, 0.0);
+    final padding = max((width - 600) / 2, 0.0);
     return Scaffold(
         body: CustomScrollView(slivers: <Widget>[
       SliverAppBar(
@@ -90,15 +90,65 @@ class _SubspaceCreationWidget extends State<SubspaceCreationWidget> {
                     child: Card(
                       margin: EdgeInsets.symmetric(horizontal: padding),
                       child: Column(mainAxisSize: MainAxisSize.min, children: [
+                        Flexible(
+                            child: Padding(
+                                padding: const EdgeInsetsDirectional.all(5),
+                                child: TextField(
+                                  autofocus: false,
+                                  maxLines: 1,
+                                  controller: controllerName,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    hintText: 'Space Name',
+                                    contentPadding: const EdgeInsets.only(
+                                        left: 14.0, bottom: 8.0, top: 8.0),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).cardColor),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).cardColor),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ))),
+                        Flexible(
+                            child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
+                                child: TextField(
+                                  autofocus: false,
+                                  maxLines: 7,
+                                  controller: controllerDiscription,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    hintText: 'Discription',
+                                    contentPadding: const EdgeInsets.only(
+                                        left: 14.0, bottom: 8.0, top: 8.0),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).cardColor),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).cardColor),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                ))),
                         Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5),
-                            child: TextField(
+                            padding: const EdgeInsetsDirectional.all(5),
+                            child: Flexible(
+                                child: TextField(
                               autofocus: false,
-                              maxLines: 1,
-                              controller: controllerName,
+                              maxLines: 7,
+                              controller: controllerLink,
                               decoration: InputDecoration(
                                 filled: true,
-                                hintText: 'Space Name',
+                                hintText: 'Picture',
                                 contentPadding: const EdgeInsets.only(
                                     left: 14.0, bottom: 8.0, top: 8.0),
                                 focusedBorder: OutlineInputBorder(
@@ -112,51 +162,7 @@ class _SubspaceCreationWidget extends State<SubspaceCreationWidget> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                            )),
-                        Flexible(
-                            child: TextField(
-                          autofocus: false,
-                          maxLines: 7,
-                          controller: controllerDiscription,
-                          decoration: InputDecoration(
-                            filled: true,
-                            hintText: 'Discription',
-                            contentPadding: const EdgeInsets.only(
-                                left: 14.0, bottom: 8.0, top: 8.0),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).cardColor),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).cardColor),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        )),
-                        Flexible(
-                            child: TextField(
-                          autofocus: false,
-                          maxLines: 7,
-                          controller: controllerLink,
-                          decoration: InputDecoration(
-                            filled: true,
-                            hintText: 'Picture',
-                            contentPadding: const EdgeInsets.only(
-                                left: 14.0, bottom: 8.0, top: 8.0),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).cardColor),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Theme.of(context).cardColor),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ))
+                            )))
                       ]),
                     )),
               ],

@@ -34,7 +34,7 @@ class _SubscriptionsWidget extends State<SubscriptionsWidget> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 1000) / 2, 0.0);
+    final padding = max((width - 600) / 2, 0.0);
     return Scaffold(
       endDrawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -164,10 +164,21 @@ class _SubscriptionsWidget extends State<SubscriptionsWidget> {
           },
         ),
         BlocListener<SortBloc, SortState>(
+          listenWhen: (previous, current) {
+            return previous.status != current.status;
+          },
           listener: (context, state) {
             context
                 .read<SubscriptionsBloc>()
                 .add(SubscriptionsSortChanged(sortState: state.status));
+          },
+          child: const SliverToBoxAdapter(child: SizedBox()),
+        ),
+        BlocListener<SortBloc, SortState>(
+          listenWhen: (previous, current) {
+            return previous.sortDays != current.sortDays;
+          },
+          listener: (context, state) {
             context
                 .read<SubscriptionsBloc>()
                 .add(DaysSortChanged(sortDays: state.sortDays));
