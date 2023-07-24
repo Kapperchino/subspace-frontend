@@ -139,30 +139,30 @@ class _SubspaceCreationWidget extends State<SubspaceCreationWidget> {
                                     ),
                                   ),
                                 ))),
-                        Padding(
-                            padding: const EdgeInsetsDirectional.all(5),
-                            child: Flexible(
+                        Flexible(
+                            child: Padding(
+                                padding: const EdgeInsetsDirectional.all(5),
                                 child: TextField(
-                              autofocus: false,
-                              maxLines: 7,
-                              controller: controllerLink,
-                              decoration: InputDecoration(
-                                filled: true,
-                                hintText: 'Picture',
-                                contentPadding: const EdgeInsets.only(
-                                    left: 14.0, bottom: 8.0, top: 8.0),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Theme.of(context).cardColor),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Theme.of(context).cardColor),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            )))
+                                  autofocus: false,
+                                  maxLines: 7,
+                                  controller: controllerLink,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    hintText: 'Picture',
+                                    contentPadding: const EdgeInsets.only(
+                                        left: 14.0, bottom: 8.0, top: 8.0),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).cardColor),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context).cardColor),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                )))
                       ]),
                     )),
               ],
