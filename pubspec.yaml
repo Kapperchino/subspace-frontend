@@ -49,6 +49,8 @@ dependencies:
   url_launcher: ^6.1.12
   image_picker: ^1.0.1
   dropdown_button2: ^2.1.4
+  cached_network_image: ^3.2.3
+  transparent_image: ^2.0.1
 
 dev_dependencies:
   flutter_test:

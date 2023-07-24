@@ -80,7 +80,7 @@ class _SubSpaceState extends State<Subspace> {
           ],
         ),
       ),
-      body: CustomScrollView(slivers: <Widget>[
+      body: CustomScrollView(cacheExtent: 8500, slivers: <Widget>[
         SliverAppBar(
           pinned: false,
           snap: false,

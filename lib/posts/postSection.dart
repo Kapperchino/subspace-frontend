@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,7 @@ import 'package:frontend/posts/cubit/post/postBloc.dart';
 import 'package:frontend/posts/cubit/post/postState.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/voteRequest.dart';
@@ -68,13 +70,14 @@ class PostSection extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Image.network(
-                          "$urlPrefix${state.post!.content}",
-                          width: 800,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: CachedNetworkImage(
+                            imageUrl: "$urlPrefix${state.post!.content}",
+                            placeholder: (context, url) =>
+                                Image.memory(kTransparentImage),
+                            width: 800,
+                            fit: BoxFit.contain,
+                          )),
                     ),
                   if (state.post!.type == ContentType.link)
                     Flexible(

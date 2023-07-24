@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/models/post.dart';
@@ -12,6 +13,7 @@ import 'package:frontend/posts/cubit/vote/voteBloc.dart';
 import 'package:frontend/posts/cubit/vote/voteEvent.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:frontend/util/votesUtil.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../models/CommentData.dart';
 import 'commentingWidget.dart';
@@ -45,8 +47,9 @@ class CommentWidget extends StatelessWidget {
           if (comment.type == ContentType.picture)
             ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
-              child: Image.network(
-                comment.content,
+              child: CachedNetworkImage(
+                imageUrl: comment.content,
+                placeholder: (context, url) => Image.memory(kTransparentImage),
                 width: 120,
                 height: 120,
               ),

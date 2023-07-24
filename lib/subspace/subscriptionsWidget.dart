@@ -59,7 +59,7 @@ class _SubscriptionsWidget extends State<SubscriptionsWidget> {
           ],
         ),
       ),
-      body: CustomScrollView(slivers: <Widget>[
+      body: CustomScrollView(cacheExtent: 8500, slivers: <Widget>[
         SliverAppBar(
           centerTitle: true,
           pinned: false,

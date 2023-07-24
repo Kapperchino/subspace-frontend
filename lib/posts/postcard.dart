@@ -1,4 +1,5 @@
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:go_router/go_router.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/postCardData.dart';
@@ -125,8 +127,9 @@ class PostCard extends StatelessWidget {
       urlPrefix = "https://subspace-cors.fly.dev/";
     }
     if (type == ContentType.picture) {
-      return Image.network(
-        "$urlPrefix$link",
+      return CachedNetworkImage(
+        imageUrl: "$urlPrefix$link",
+        placeholder: (context, url) => Image.memory(kTransparentImage),
         width: 600,
         fit: BoxFit.contain,
       );
@@ -138,6 +141,10 @@ class PostCard extends StatelessWidget {
     if (metadata?.image == null) {
       return const SizedBox();
     }
-    return Image.network(width: 600, metadata!.image!, fit: BoxFit.contain);
+    return CachedNetworkImage(
+        imageUrl: "$urlPrefix${metadata!.image!}",
+        placeholder: (context, url) => Image.memory(kTransparentImage),
+        width: 600,
+        fit: BoxFit.contain);
   }
 }
