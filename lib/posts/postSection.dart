@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:detectable_text_field/detectable_text_field.dart';
+import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +17,7 @@ import 'package:frontend/posts/cubit/post/postBloc.dart';
 import 'package:frontend/posts/cubit/post/postState.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
+import 'package:frontend/util/selectableDetectables.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -117,10 +120,24 @@ class PostSection extends StatelessWidget {
                             child: Padding(
                                 padding:
                                     const EdgeInsets.only(left: 20, right: 20),
-                                child: SelectableText(
-                                  state.post!.body,
-                                  textAlign: TextAlign.left,
-                                )))),
+                                child: SelectableDetectable(
+                                    text: state.post!.body,
+                                    textAlign: TextAlign.left,
+                                    detectionRegExp: detectionRegExp()!,
+                                    trimMode: TrimMode.Line,
+                                    trimLines: 100,
+                                    onTap: (text) {
+                                      switch (text.characters.first) {
+                                        case "#":
+                                          {
+                                            print(text);
+                                          }
+                                        case "@":
+                                          {
+                                            print(text);
+                                          }
+                                      }
+                                    })))),
                   Flexible(
                       child: PostMeta(
                           userName: state.post!.posterName,

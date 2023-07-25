@@ -1,5 +1,7 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
+import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,11 +65,26 @@ class PostCard extends StatelessWidget {
                 if (post.body.isNotEmpty)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Text(post.body,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                        textAlign: TextAlign.left,
-                        overflow: TextOverflow.fade,
-                        maxLines: 4),
+                    child: DetectableText(
+                      text: post.body,
+                      basicStyle: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.left,
+                      detectionRegExp: detectionRegExp()!,
+                      overflow: TextOverflow.fade,
+                      maxLines: 4,
+                      onTap: (text) {
+                        switch (text.characters.first) {
+                          case "#":
+                            {
+                              print(text);
+                            }
+                          case "@":
+                            {
+                              print(text);
+                            }
+                        }
+                      },
+                    ),
                   ),
                 if (post.type == ContentType.picture ||
                     post.type == ContentType.link)

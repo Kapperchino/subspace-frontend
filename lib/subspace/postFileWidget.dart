@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
+import 'package:detectable_text_field/widgets/detectable_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -63,10 +65,11 @@ class PostFileWidget extends StatelessWidget {
                     child: const Text("Upload photo")))),
         Flexible(
             child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5),
-                child: TextField(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: DetectableTextField(
                   autofocus: false,
                   maxLines: 5,
+                  detectionRegExp: detectionRegExp()!,
                   controller: controllderBody,
                   decoration: InputDecoration(
                     filled: true,

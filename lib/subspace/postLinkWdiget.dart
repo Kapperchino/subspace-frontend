@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
+import 'package:detectable_text_field/widgets/detectable_text_field.dart';
 import 'package:flutter/material.dart';
 
 class PostLinkWidget extends StatelessWidget {
@@ -71,8 +73,9 @@ class PostLinkWidget extends StatelessWidget {
         Flexible(
             child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: TextField(
+                child: DetectableTextField(
                   autofocus: false,
+                  detectionRegExp: detectionRegExp()!,
                   maxLines: 5,
                   controller: controllderBody,
                   decoration: InputDecoration(
