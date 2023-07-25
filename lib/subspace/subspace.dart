@@ -11,12 +11,14 @@ import 'package:frontend/posts/cubit/title/titleEvent.dart';
 import 'package:frontend/subspace/sortPostsDaysWidget.dart';
 import 'package:frontend/subspace/sortPostsWidget.dart';
 import 'package:frontend/subspace/titleWidget.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
 import '../posts/cubit/space/spaceBlock.dart';
 import '../posts/cubit/space/spaceState.dart';
 import '../posts/postcard.dart';
+import '../stores/store.dart';
 
 class Subspace extends StatefulWidget {
   const Subspace({super.key, required this.name, required this.parentId});
@@ -77,6 +79,14 @@ class _SubSpaceState extends State<Subspace> {
                         context.push("/subscriptions");
                       },
                     )),
+            ListTile(
+              title: const Text('Sign Out'),
+              onTap: () async {
+                await GetStorage().remove("expire");
+                await Store.secure.delete(key: "jwt");
+                context.go("/login");
+              },
+            ),
           ],
         ),
       ),

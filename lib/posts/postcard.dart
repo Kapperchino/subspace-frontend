@@ -66,6 +66,7 @@ class PostCard extends StatelessWidget {
                     child: Text(post.body,
                         style: Theme.of(context).textTheme.bodyLarge,
                         textAlign: TextAlign.left,
+                        overflow: TextOverflow.fade,
                         maxLines: 4),
                   ),
                 if (post.type == ContentType.picture ||
