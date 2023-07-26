@@ -14,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../models/postCardData.dart';
 import '../models/voteRequest.dart';
+import '../util/constDetectable.dart';
 import '../util/votesUtil.dart';
 import 'cubit/vote/voteBloc.dart';
 import 'package:http/http.dart' as http;
@@ -65,7 +66,7 @@ class PostCard extends StatelessWidget {
                 if (post.body.isNotEmpty)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: DetectableText(
+                    child: ConstDetectableText(
                       text: post.body,
                       basicStyle: Theme.of(context).textTheme.bodyLarge,
                       textAlign: TextAlign.left,

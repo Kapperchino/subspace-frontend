@@ -9,8 +9,8 @@ const String _kLineSeparator = '\u2028';
 /// Show detected text only to be shown
 ///
 /// [onTap] is called when a tagged text is tapped.
-class SelectableDetectable extends StatefulWidget {
-  const SelectableDetectable({
+class ConstDetectableText extends StatefulWidget {
+  const ConstDetectableText({
     super.key,
     required this.text,
     required this.detectionRegExp,
@@ -81,10 +81,10 @@ class SelectableDetectable extends StatefulWidget {
   final Color? colorClickableText;
 
   @override
-  _SelectableDetectableState createState() => _SelectableDetectableState();
+  _DetectableTextState createState() => _DetectableTextState();
 }
 
-class _SelectableDetectableState extends State<SelectableDetectable> {
+class _DetectableTextState extends State<ConstDetectableText> {
   bool _readMore = true;
 
   void _onTapLink() {
@@ -97,7 +97,7 @@ class _SelectableDetectableState extends State<SelectableDetectable> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final TextStyle style = theme.textTheme.subtitle1!.merge(widget.basicStyle);
+    final TextStyle style = theme.textTheme.titleMedium!.merge(widget.basicStyle);
     final dStyle = widget.detectedStyle ?? style.copyWith(color: Colors.blue);
 
     final _defaultLessStyle = widget.lessStyle ?? style;
@@ -263,12 +263,15 @@ class _SelectableDetectableState extends State<SelectableDetectable> {
         //   text: textSpan,
         // );
 
-        return SelectableText.rich(
-          textSpan,
+        return RichText(
+          text: textSpan,
           textAlign: widget.textAlign,
           textDirection: textDirection,
+          softWrap: widget.softWrap,
+          overflow: widget.overflow,
           textScaleFactor: widget.textScaleFactor,
           maxLines: widget.maxLines,
+          locale: widget.locale,
           strutStyle: widget.strutStyle,
           textWidthBasis: widget.textWidthBasis,
           textHeightBehavior: widget.textHeightBehavior,
