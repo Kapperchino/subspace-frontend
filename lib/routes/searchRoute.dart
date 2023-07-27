@@ -29,7 +29,8 @@ class SearchRoutes {
           return "/login";
         },
         pageBuilder: (BuildContext context, GoRouterState state) {
-          final term = state.pathParameters['term']!;
+          var term = state.pathParameters['term']!;
+          bool isTag = state.queryParameters['isTag']! == 'true';
           return CustomTransitionPage<void>(
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
@@ -41,7 +42,7 @@ class SearchRoutes {
               },
               child: BlocProvider(
                 create: (_) => SearchBloc(httpClient: http.Client())
-                  ..add(SearchFetched(term: term)),
+                  ..add(SearchFetched(term: term, isTag: isTag)),
                 child: SearchPage(),
               ));
         });

@@ -166,7 +166,14 @@ class _SubSpaceState extends State<Subspace> {
               child: TextField(
                 autofocus: false,
                 maxLines: 1,
-                onSubmitted: (value) => context.push("/search/$value"),
+                onSubmitted: (value) {
+                  bool isTag = false;
+                  if (value.startsWith("#")) {
+                    value = value.substring(1);
+                    isTag = true;
+                  }
+                  context.push("/search/$value?isTag=$isTag");
+                },
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.search),
                   filled: true,

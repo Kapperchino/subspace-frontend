@@ -77,7 +77,8 @@ class PostCard extends StatelessWidget {
                         switch (text.characters.first) {
                           case "#":
                             {
-                              print(text);
+                              text = text.substring(1);
+                              context.push("/search/$text?isTag=true");
                             }
                           case "@":
                             {

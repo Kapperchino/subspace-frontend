@@ -7,5 +7,6 @@ sealed class SearchEvent extends Equatable {
 
 final class SearchFetched extends SearchEvent {
   final String term;
-  SearchFetched({required this.term});
+  final bool isTag;
+  SearchFetched({required this.term, required this.isTag});
 }
