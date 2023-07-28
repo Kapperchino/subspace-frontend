@@ -26,9 +26,24 @@ class PostMeta extends StatelessWidget {
                 alignment: Alignment.topLeft,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 5, left: 5),
-                  child: TextButton(
-                    child: Text(userName),
-                    onPressed: () {},
+                  child: TextButton(                    
+                    onPressed: () {
+                      context.push("/u/posterId");
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.blueGrey[300],
+                          maxRadius: 15,
+                          minRadius: 10,
+                          child: Text(userName[0].toUpperCase()),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(userName)
+                        ],
+                    ),
                   ),
                 ))),
         if (spaceName != 'SubSpace')
