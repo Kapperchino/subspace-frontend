@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/appUser.dart';
 import 'package:frontend/models/appUserRes.dart';
@@ -165,10 +166,12 @@ class _LoginState extends State<Login> {
 
   Future<AppUserRes> login() async {
     Device? device;
-    if (Platform.isIOS || Platform.isAndroid) {
-      final deviceId = await getId();
-      final registration = await FirebaseMessaging.instance.getToken();
-      device = Device(deviceId: deviceId!, registration: registration!);
+    if (!kIsWeb) {
+      if (Platform.isIOS || Platform.isAndroid) {
+        final deviceId = await getId();
+        final registration = await FirebaseMessaging.instance.getToken();
+        device = Device(deviceId: deviceId!, registration: registration!);
+      }
     }
     var login = LogIn(
         email: _controllerEmail.text.toLowerCase(),

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:frontend/mainapp.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/messageHandler.dart';
@@ -28,51 +29,54 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
   await GetStorage.init();
   GoRouter.optionURLReflectsImperativeAPIs = true;
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  if (Platform.isAndroid || Platform.isIOS) {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
+  if (!kIsWeb) {
+    if (Platform.isAndroid || Platform.isIOS) {
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true,
-    );
+      NotificationSettings settings = await messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true,
+      );
 
-    print('User granted permission: ${settings.authorizationStatus}');
+      print('User granted permission: ${settings.authorizationStatus}');
 
-    FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) async {
-      String? expire = GetStorage().read("expire");
-      if (expire != null) {
-        final time = DateTime.parse(expire);
-        if (time.isAfter(DateTime.now())) {
-          return;
+      FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) async {
+        String? expire = GetStorage().read("expire");
+        if (expire != null) {
+          final time = DateTime.parse(expire);
+          if (time.isAfter(DateTime.now())) {
+            return;
+          }
+          final AppUser user =
+              AppUser.fromJson(await GetStorage().read("user"));
+          final token = await Store.secure.read(key: 'jwt');
+          final deviceId = await getId();
+          final res = await http.put(Uri.parse('${Config.baseUrl}/devices/'),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization': 'Bearer $token',
+              },
+              body: jsonEncode(UpdateDeviceReq(
+                  deviceId: deviceId!,
+                  registration: fcmToken,
+                  userId: user.id)));
         }
-        final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
-        final token = await Store.secure.read(key: 'jwt');
-        final deviceId = await getId();
-        final res = await http.put(Uri.parse('${Config.baseUrl}/devices/'),
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-              'Authorization': 'Bearer $token',
-            },
-            body: jsonEncode(UpdateDeviceReq(
-                deviceId: deviceId!, registration: fcmToken, userId: user.id)));
-      }
-    }).onError((err) {
-      log(err);
-    });
-    MessageHandler();
+      }).onError((err) {
+        log(err);
+      });
+      MessageHandler();
+    }
   }
-
   runApp(MainApp());
 }
