@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:frontend/mainapp.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/messageHandler.dart';
 import 'package:frontend/models/updateDeviceReq.dart';
 import 'package:frontend/stores/store.dart';
 import 'package:frontend/util/deviceUtil.dart';
@@ -13,6 +14,7 @@ import 'package:go_router/go_router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'config.dart';
 import 'firebase_options.dart';
+import 'messageHandler.dart';
 import 'models/appUser.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,7 +23,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
-
   print("Handling a background message: ${message.messageId}");
 }
 
@@ -34,21 +35,21 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-
-  print('User granted permission: ${settings.authorizationStatus}');
-
   if (Platform.isAndroid || Platform.isIOS) {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    print('User granted permission: ${settings.authorizationStatus}');
+
     FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) async {
       String? expire = GetStorage().read("expire");
       if (expire != null) {
@@ -70,6 +71,7 @@ void main() async {
     }).onError((err) {
       log(err);
     });
+    MessageHandler();
   }
 
   runApp(MainApp());
