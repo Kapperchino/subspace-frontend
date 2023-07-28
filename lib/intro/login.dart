@@ -1,7 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:android_id/android_id.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/appUser.dart';
 import 'package:frontend/models/appUserRes.dart';
+import 'package:frontend/models/device.dart';
+import 'package:frontend/models/login.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -9,6 +15,8 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import '../config.dart';
 import '../stores/store.dart';
 import 'package:http/http.dart' as http;
+
+import '../util/deviceUtil.dart';
 
 class Login extends StatefulWidget {
   const Login({
@@ -156,12 +164,19 @@ class _LoginState extends State<Login> {
   }
 
   Future<AppUserRes> login() async {
+    Device? device;
+    if (Platform.isIOS || Platform.isAndroid) {
+      final deviceId = await getId();
+      final registration = await FirebaseMessaging.instance.getToken();
+      device = Device(deviceId: deviceId!, registration: registration!);
+    }
+    var login = LogIn(
+        email: _controllerEmail.text.toLowerCase(),
+        password: _controllerPassword.text,
+        device: device);
     final res = await http.post(
       Uri.parse('${Config.baseUrl}/auth/login'),
-      body: jsonEncode({
-        'password': _controllerPassword.text,
-        'email': _controllerEmail.text.toLowerCase()
-      }),
+      body: jsonEncode(login.toJson()),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
