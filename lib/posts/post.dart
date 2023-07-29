@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/posts/commentSection.dart';
+import 'package:frontend/posts/cubit/post/postBloc.dart';
+import 'package:frontend/posts/cubit/post/postEvent.dart';
 import 'package:frontend/posts/postSection.dart';
 
 class PostWidget extends StatelessWidget {
@@ -11,28 +14,32 @@ class PostWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: CustomScrollView(
-      slivers: <Widget>[
-        SliverAppBar(
-          centerTitle: true,
-          pinned: false,
-          snap: false,
-          floating: false,
-          expandedHeight: 200.0,
-          backgroundColor: Theme.of(context).colorScheme.background,
-          flexibleSpace: FlexibleSpaceBar(
-            title: Text(spaceName),
-            background: const FlutterLogo(),
-            titlePadding: const EdgeInsets.all(50),
-          ),
-        ),
-        SliverToBoxAdapter(
-            child: PostSection(
-          spaceName: spaceName,
-          id: id,
-        )),
-        CommentSection(postId: id)
-      ],
-    ));
+        body: RefreshIndicator(
+            onRefresh: () async {
+              context.read<PostBloc>().add(PostFetched(postId: id));
+            },
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  centerTitle: true,
+                  pinned: false,
+                  snap: false,
+                  floating: false,
+                  expandedHeight: 200.0,
+                  backgroundColor: Theme.of(context).colorScheme.background,
+                  flexibleSpace: FlexibleSpaceBar(
+                    title: Text(spaceName),
+                    background: const FlutterLogo(),
+                    titlePadding: const EdgeInsets.all(50),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                    child: PostSection(
+                  spaceName: spaceName,
+                  id: id,
+                )),
+                CommentSection(postId: id)
+              ],
+            )));
   }
 }

@@ -90,165 +90,176 @@ class _SubSpaceState extends State<Subspace> {
           ],
         ),
       ),
-      body: CustomScrollView(cacheExtent: 8500, slivers: <Widget>[
-        SliverAppBar(
-          pinned: false,
-          snap: false,
-          floating: false,
-          expandedHeight: 200.0,
-          centerTitle: true,
-          bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.only(
-                                      left: padding, bottom: 10),
-                                  alignment: Alignment.topLeft,
-                                  child: const SortPostsWidget()),
-                              Container(
-                                  padding: const EdgeInsets.only(
-                                      left: 5, bottom: 10),
-                                  alignment: Alignment.bottomLeft,
-                                  child: const SortPostsDaysWidget())
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(right: padding, bottom: 10),
-                    alignment: Alignment.bottomRight,
-                    child: BlocBuilder<SpaceBloc, SpaceState>(
-                      builder: (context, state) {
-                        return ElevatedButton(
-                          onPressed: () async {
-                            context
-                                .push("/create/space/${state.spaceId}/post")
-                                .then((value) => context.read<SpaceBloc>().add(
-                                    SpaceFetched(
-                                        parentId: parentId, spaceName: name)));
-                          },
-                          child: const Text('Post'),
-                        );
-                      },
+      body: RefreshIndicator(
+        onRefresh: ()async {
+          context
+              .read<SpaceBloc>()
+              .add(SpaceFetched(parentId: parentId, spaceName: name));
+        },
+        child: CustomScrollView(cacheExtent: 8500, slivers: <Widget>[
+          SliverAppBar(
+            pinned: false,
+            snap: false,
+            floating: false,
+            expandedHeight: 200.0,
+            centerTitle: true,
+            bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                    padding: EdgeInsets.only(
+                                        left: padding, bottom: 10),
+                                    alignment: Alignment.topLeft,
+                                    child: const SortPostsWidget()),
+                                Container(
+                                    padding: const EdgeInsets.only(
+                                        left: 5, bottom: 10),
+                                    alignment: Alignment.bottomLeft,
+                                    child: const SortPostsDaysWidget())
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              )),
-          backgroundColor: Theme.of(context).colorScheme.background,
-          flexibleSpace: FlexibleSpaceBar(
-            background: const FlutterLogo(),
-            titlePadding: const EdgeInsets.all(50),
-            title: TitleWidget(
-              title: name,
+                    Container(
+                      padding: EdgeInsets.only(right: padding, bottom: 10),
+                      alignment: Alignment.bottomRight,
+                      child: BlocBuilder<SpaceBloc, SpaceState>(
+                        builder: (context, state) {
+                          return ElevatedButton(
+                            onPressed: () async {
+                              context
+                                  .push("/create/space/${state.spaceId}/post")
+                                  .then((value) => context
+                                      .read<SpaceBloc>()
+                                      .add(SpaceFetched(
+                                          parentId: parentId,
+                                          spaceName: name)));
+                            },
+                            child: const Text('Post'),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                )),
+            backgroundColor: Theme.of(context).colorScheme.background,
+            flexibleSpace: FlexibleSpaceBar(
+              background: const FlutterLogo(),
+              titlePadding: const EdgeInsets.all(50),
+              title: TitleWidget(
+                title: name,
+              ),
             ),
           ),
-        ),
-        SliverToBoxAdapter(
-          child: Container(
-            padding: EdgeInsets.only(left: padding + 5, bottom: 5),
-            alignment: Alignment.bottomLeft,
-            child: ConstrainedBox(
-              constraints:
-                  const BoxConstraints.tightFor(width: 300, height: 40),
-              child: TextField(
-                autofocus: false,
-                maxLines: 1,
-                onSubmitted: (value) {
-                  bool isTag = false;
-                  if (value.startsWith("#")) {
-                    value = value.substring(1);
-                    isTag = true;
-                  }
-                  context.push("/search/$value?isTag=$isTag");
-                },
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  filled: true,
-                  hintText: 'Search',
-                  contentPadding:
-                      const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).cardColor),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).cardColor),
-                    borderRadius: BorderRadius.circular(10),
+          SliverToBoxAdapter(
+            child: Container(
+              padding: EdgeInsets.only(left: padding + 5, bottom: 5),
+              alignment: Alignment.bottomLeft,
+              child: ConstrainedBox(
+                constraints:
+                    const BoxConstraints.tightFor(width: 300, height: 40),
+                child: TextField(
+                  autofocus: false,
+                  maxLines: 1,
+                  onSubmitted: (value) {
+                    bool isTag = false;
+                    if (value.startsWith("#")) {
+                      value = value.substring(1);
+                      isTag = true;
+                    }
+                    context.push("/search/$value?isTag=$isTag");
+                  },
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search),
+                    filled: true,
+                    hintText: 'Search',
+                    contentPadding: const EdgeInsets.only(
+                        left: 14.0, bottom: 8.0, top: 8.0),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).cardColor),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).cardColor),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-        BlocBuilder<SpaceBloc, SpaceState>(
-          builder: (context, state) {
-            switch (state.status) {
-              case SpaceStatus.failure:
-                return const SliverToBoxAdapter(
-                    child: Center(child: Text('failed to fetch posts')));
-              case SpaceStatus.success:
-                if (name != "SubSpace") {
-                  context.read<TitleBloc>().add(
-                      InitEvent(context.read<SpaceBloc>().state.spaceId, name));
-                }
-                if (state.posts.isEmpty) {
+          BlocBuilder<SpaceBloc, SpaceState>(
+            builder: (context, state) {
+              switch (state.status) {
+                case SpaceStatus.failure:
                   return const SliverToBoxAdapter(
-                      child: Center(child: Text('no posts')));
-                }
-                return SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: padding),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        if (index >= state.posts.length) {
-                          return const SliverToBoxAdapter(
-                              child: BottomLoader());
-                        }
-                        return PostCard(data: state.posts[index]);
-                      }, childCount: state.posts.length),
-                    ));
-              case SpaceStatus.initial:
-                return const SliverToBoxAdapter(
-                    child: Center(child: CircularProgressIndicator()));
-            }
-          },
-        ),
-        BlocListener<SortBloc, SortState>(
-          listenWhen: (previous, current) {
-            return previous.status != current.status;
-          },
-          listener: (context, state) {
-            context
-                .read<SpaceBloc>()
-                .add(SpaceSortChanged(sortState: state.status));
-          },
-          child: const SliverToBoxAdapter(child: SizedBox()),
-        ),
-        BlocListener<SortBloc, SortState>(
-          listenWhen: (previous, current) {
-            return previous.sortDays != current.sortDays;
-          },
-          listener: (context, state) {
-            context
-                .read<SpaceBloc>()
-                .add(DaysSortChanged(sortDays: state.sortDays));
-          },
-          child: const SliverToBoxAdapter(child: SizedBox()),
-        )
-      ]),
+                      child: Center(child: Text('failed to fetch posts')));
+                case SpaceStatus.success:
+                  if (name != "SubSpace") {
+                    context.read<TitleBloc>().add(InitEvent(
+                        context.read<SpaceBloc>().state.spaceId, name));
+                  }
+                  if (state.posts.isEmpty) {
+                    return const SliverToBoxAdapter(
+                        child: Center(child: Text('no posts')));
+                  }
+                  return SliverPadding(
+                      padding: EdgeInsets.symmetric(horizontal: padding),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                          if (index >= state.posts.length) {
+                            return const SliverToBoxAdapter(
+                                child: BottomLoader());
+                          }
+                          return PostCard(data: state.posts[index]);
+                        }, childCount: state.posts.length),
+                      ));
+                case SpaceStatus.initial:
+                  return const SliverToBoxAdapter(
+                      child: Center(child: CircularProgressIndicator()));
+              }
+            },
+          ),
+          BlocListener<SortBloc, SortState>(
+            listenWhen: (previous, current) {
+              return previous.status != current.status;
+            },
+            listener: (context, state) {
+              context
+                  .read<SpaceBloc>()
+                  .add(SpaceSortChanged(sortState: state.status));
+            },
+            child: const SliverToBoxAdapter(child: SizedBox()),
+          ),
+          BlocListener<SortBloc, SortState>(
+            listenWhen: (previous, current) {
+              return previous.sortDays != current.sortDays;
+            },
+            listener: (context, state) {
+              context
+                  .read<SpaceBloc>()
+                  .add(DaysSortChanged(sortDays: state.sortDays));
+            },
+            child: const SliverToBoxAdapter(child: SizedBox()),
+          )
+        ]),
+      ),
     );
   }
 }

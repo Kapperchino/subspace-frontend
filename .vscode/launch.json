@@ -19,7 +19,7 @@
             "type": "dart",
             "args": [
                 "--dart-define",
-                "BASE_URL=http://192.168.68.55:3000"
+                "BASE_URL=http://192.168.68.57:3000"
             ],
         },
         {
