@@ -197,24 +197,33 @@ class _SignupState extends State<Signup> {
                         ),
                         onPressed: () async {
                           if (_formKey.currentState?.validate() ?? false) {
-                            await register();
+                            final res = await register();
                             if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                width: 200,
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.secondary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                            if (res.statusCode == 200) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: Colors.green,
+                                  content: Text("Registered Successfully"),
                                 ),
-                                behavior: SnackBarBehavior.floating,
-                                content: const Text("Registered Successfully"),
-                              ),
-                            );
-
-                            _formKey.currentState?.reset();
-
-                            context.pop();
+                              );
+                              _formKey.currentState?.reset();
+                              context.pop();
+                            } else if (res.statusCode == 409) {
+                              var message = "";
+                              if (res.body == "email") {
+                                message = "Email already registered";
+                              } else if (res.body == "display_name") {
+                                message = "Display name already taken";
+                              } else {
+                                message = "Error with the server";
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content: Text(message),
+                                ),
+                              );
+                            }
                           }
                         },
                         child: const Text("Register"),
@@ -238,7 +247,7 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  Future<AppUserRes> register() async {
+  Future<http.Response> register() async {
     final req = SignUpRequest(
         password: _controllerPassword.text,
         displayName: _controllerDisplayName.text,
@@ -259,11 +268,11 @@ class _SignupState extends State<Signup> {
           "user",
           AppUser(id: user.id, displayName: user.displayName, email: user.email)
               .toJson());
-      return user;
+      return res;
     } else {
       // If the server did not return a 201 CREATED response,
       // then throw an exception.
-      throw Exception('Failed to create album.');
+      return res;
     }
   }
 

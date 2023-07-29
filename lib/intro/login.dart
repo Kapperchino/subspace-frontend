@@ -136,8 +136,16 @@ class _LoginState extends State<Login> {
                         ),
                         onPressed: () async {
                           if (_formKey.currentState?.validate() ?? false) {
-                            await login();
-                            context.go("/");
+                            final res = await login();
+                            if (res == 200) {
+                              context.go("/");
+                            } else if (res == 404 || res == 400) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text("Invalid email or password"),
+                                backgroundColor: Colors.red,
+                              ));
+                            }
                           }
                         },
                         child: const Text("Login"),
@@ -164,7 +172,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Future<AppUserRes> login() async {
+  Future<int> login() async {
     Device? device;
     if (!kIsWeb) {
       if (Platform.isIOS || Platform.isAndroid) {
@@ -196,11 +204,9 @@ class _LoginState extends State<Login> {
           "user",
           AppUser(id: user.id, displayName: user.displayName, email: user.email)
               .toJson());
-      return user;
+      return res.statusCode;
     } else {
-      // If the server did not return a 201 CREATED response,
-      // then throw an exception.
-      throw Exception('Failed to create album.');
+      return res.statusCode;
     }
   }
 
