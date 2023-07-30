@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter/material.dart';
 import 'package:frontend/posts/cubit/commenting/commentingEvent.dart';
 import 'package:frontend/posts/cubit/commenting/commentingState.dart';
 import 'package:get_storage/get_storage.dart';
@@ -28,7 +29,9 @@ class CommentingBloc extends Bloc<CommentingEvent, CommentingState> {
       required this.postId,
       required this.parentId,
       required this.isPostComment})
-      : super(CommentingState(isPostComment: isPostComment)) {
+      : super(CommentingState(
+            isPostComment: isPostComment,
+            controller: TextEditingController())) {
     on<CommentPressed>(
       onCommentSubmitted,
       transformer: throttleDroppable(throttleDuration),

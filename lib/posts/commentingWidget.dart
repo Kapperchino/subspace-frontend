@@ -31,6 +31,7 @@ class CommentingWidget extends StatelessWidget {
         child: TextField(
           autofocus: false,
           maxLines: 3,
+          controller: state.controller,
           onChanged: (comment) => context
               .read<CommentingBloc>()
               .add(CommentChanged(comment: comment)),

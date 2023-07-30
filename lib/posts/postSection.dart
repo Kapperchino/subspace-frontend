@@ -185,6 +185,7 @@ class PostSection extends StatelessWidget {
                 if (state.status == CommentingStaus.success) {
                   BlocProvider.of<CommentBloc>(context)
                       .add(CommentsFetched(postId: id));
+                  state.controller.clear();
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       backgroundColor: Colors.green,
                       content: Text('Comment created')));
