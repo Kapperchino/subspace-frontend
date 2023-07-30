@@ -12,6 +12,7 @@ import 'package:go_router/go_router.dart';
 
 import '../posts/cubit/sorting/sortBloc.dart';
 import '../posts/cubit/sorting/sortState.dart';
+import '../posts/postCardWrapper.dart';
 import '../posts/postcard.dart';
 
 class SubscriptionsWidget extends StatefulWidget {
@@ -160,7 +161,7 @@ class _SubscriptionsWidget extends State<SubscriptionsWidget> {
                               return const SliverToBoxAdapter(
                                   child: BottomLoader());
                             }
-                            return PostCard(data: state.posts[index]);
+                            return PostCardWrapper(data: state.posts[index]);
                           }, childCount: state.posts.length),
                         ));
                   case SubscriptionsStatus.initial:

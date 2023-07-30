@@ -12,6 +12,7 @@ import 'package:go_router/go_router.dart';
 
 import '../posts/cubit/space/spaceBlock.dart';
 import '../posts/cubit/space/spaceState.dart';
+import '../posts/postCardWrapper.dart';
 
 class SearchPage extends StatelessWidget {
   SearchPage({super.key});
@@ -87,7 +88,7 @@ class SearchPage extends StatelessWidget {
                           return const SliverToBoxAdapter(
                               child: BottomLoader());
                         }
-                        return PostCard(
+                        return PostCardWrapper(
                           data: PostCardData(
                               parentSpaceId: state.posts![index].spaceParentId,
                               spaceName: state.posts![index].spaceName,

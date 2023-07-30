@@ -6,6 +6,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/models/post.dart';
+import 'package:frontend/posts/cubit/space/spaceBlock.dart';
+import 'package:frontend/posts/cubit/space/spaceState.dart';
+import 'package:frontend/posts/cubit/subscriptions/subscriptionsBloc.dart';
+import 'package:frontend/posts/cubit/subscriptions/subscriptionsState.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:go_router/go_router.dart';
@@ -32,6 +36,8 @@ class PostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final post = data.post;
+    final location = GoRouterState.of(context).matchedLocation;
+
     return Card(
         clipBehavior: Clip.hardEdge,
         child: InkWell(
@@ -57,10 +63,10 @@ class PostCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
                       post.topic,
-                      maxLines: 1,
+                      maxLines: 2,
                       style: Theme.of(context).textTheme.titleLarge,
                       textAlign: TextAlign.left,
-                      overflow: TextOverflow.fade,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 if (post.body.isNotEmpty)
@@ -72,7 +78,9 @@ class PostCard extends StatelessWidget {
                       textAlign: TextAlign.left,
                       detectionRegExp: detectionRegExp()!,
                       overflow: TextOverflow.fade,
-                      maxLines: 4,
+                      maxLines: 6,
+                      trimMode: TrimMode.Length,
+                      trimLines: 100,
                       onTap: (text) {
                         switch (text.characters.first) {
                           case "#":
@@ -123,18 +131,30 @@ class PostCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    BlocProvider(
-                      create: (_) => VoteBloc(
-                        httpClient: http.Client(),
-                        type: VoteType.post,
-                      )..add(InitEvent(
-                          data.post.id,
-                          data.post.upVotes,
-                          data.post.downVotes,
-                          VotesUtil.getStatus(data.post.vote),
-                          VoteType.post)),
-                      child: const VoteWidgetFlat(),
-                    ),
+                    if (location.startsWith("/s/"))
+                      BlocBuilder<SpaceBloc, SpaceState>(
+                        builder: (context, state) {
+                          context.read<VoteBloc>().add(InitEvent(
+                              data.post.id,
+                              data.post.upVotes,
+                              data.post.downVotes,
+                              VotesUtil.getStatus(data.post.vote),
+                              VoteType.post));
+                          return const VoteWidgetFlat();
+                        },
+                      ),
+                    if (location.startsWith("/subscriptions"))
+                      BlocBuilder<SubscriptionsBloc, SubscriptionsState>(
+                        builder: (context, state) {
+                          context.read<VoteBloc>().add(InitEvent(
+                              data.post.id,
+                              data.post.upVotes,
+                              data.post.downVotes,
+                              VotesUtil.getStatus(data.post.vote),
+                              VoteType.post));
+                          return const VoteWidgetFlat();
+                        },
+                      ),
                   ],
                 )
               ]),

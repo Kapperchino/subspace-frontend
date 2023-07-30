@@ -17,6 +17,7 @@ import 'package:http/http.dart' as http;
 
 import '../posts/cubit/space/spaceBlock.dart';
 import '../posts/cubit/space/spaceState.dart';
+import '../posts/postCardWrapper.dart';
 import '../posts/postcard.dart';
 import '../stores/store.dart';
 
@@ -228,7 +229,7 @@ class _SubSpaceState extends State<Subspace> {
                             return const SliverToBoxAdapter(
                                 child: BottomLoader());
                           }
-                          return PostCard(data: state.posts[index]);
+                          return PostCardWrapper(data: state.posts[index]);
                         }, childCount: state.posts.length),
                       ));
                 case SpaceStatus.initial:
