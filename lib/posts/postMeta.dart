@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/postCardData.dart';
 import 'package:go_router/go_router.dart';
@@ -5,9 +6,11 @@ import 'package:go_router/go_router.dart';
 import '../models/post.dart';
 
 class PostMeta extends StatelessWidget {
-  const PostMeta({super.key, required this.post});
+  const PostMeta(
+      {super.key, required this.post, required this.maxUserNameLength});
 
   final Post post;
+  final int maxUserNameLength;
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +20,10 @@ class PostMeta extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
-          child: const CircleAvatar(
+          child: CircleAvatar(
             maxRadius: 20,
-            backgroundImage: AssetImage('assets/default_profile.png'),
+            foregroundImage: NetworkImage(post.posterPicture),
+            backgroundImage: const AssetImage('assets/default_profile.png'),
             backgroundColor: Colors.blue,
           ),
         ),
@@ -30,8 +34,14 @@ class PostMeta extends StatelessWidget {
             style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                minimumSize: const Size(45, 45)),
-            child: Text(post.posterName),
+                minimumSize: const Size(30, 45)),
+            child: Text(
+              post.posterName.length > maxUserNameLength
+                  ? '${post.posterName.substring(0, maxUserNameLength)}...'
+                  : post.posterName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
             onPressed: () {},
           ),
         ),
@@ -48,7 +58,7 @@ class PostMeta extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: const CircleAvatar(
                   maxRadius: 20,
-                  backgroundImage: AssetImage('assets/default_space.png'),
+                  backgroundImage: AssetImage('assets/default_space_small.png'),
                   backgroundColor: Colors.blue,
                 ),
               ),
@@ -59,7 +69,7 @@ class PostMeta extends StatelessWidget {
                   style: TextButton.styleFrom(
                       padding: EdgeInsets.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      minimumSize: const Size(45, 45)),
+                      minimumSize: const Size(30, 45)),
                   onPressed: () {
                     context.push("/s/${post.spaceParentId}/${post.spaceName}");
                   },

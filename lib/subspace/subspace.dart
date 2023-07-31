@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
 import 'package:frontend/posts/cubit/sorting/sortBloc.dart';
@@ -14,6 +17,7 @@ import 'package:frontend/subspace/titleWidget.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
+import 'package:transparent_image/transparent_image.dart';
 
 import '../posts/cubit/space/spaceBlock.dart';
 import '../posts/cubit/space/spaceState.dart';
@@ -51,6 +55,16 @@ class _SubSpaceState extends State<Subspace> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final padding = max((width - 600) / 2, 0.0);
+    var fit = BoxFit.none;
+    if (kIsWeb) {
+      fit = BoxFit.fitWidth;
+    } else {
+      if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
+        fit = BoxFit.fitWidth;
+      } else {
+        fit = BoxFit.fitHeight;
+      }
+    }
     return Scaffold(
       endDrawer: Drawer(
         // Add a ListView to the drawer. This ensures the user can scroll
@@ -102,7 +116,7 @@ class _SubSpaceState extends State<Subspace> {
             pinned: false,
             snap: false,
             floating: false,
-            expandedHeight: 200.0,
+            expandedHeight: 200,
             centerTitle: true,
             bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(10),
@@ -157,13 +171,14 @@ class _SubSpaceState extends State<Subspace> {
                   ],
                 )),
             backgroundColor: Theme.of(context).colorScheme.background,
-            flexibleSpace: FlexibleSpaceBar(
-              background: const FlutterLogo(),
-              titlePadding: const EdgeInsets.all(50),
-              title: TitleWidget(
-                title: name,
-              ),
-            ),
+            flexibleSpace: BlocBuilder<SpaceBloc, SpaceState>(
+                builder: (context, state) => FlexibleSpaceBar(
+                      background: getImage(state.picture, fit),
+                      titlePadding: const EdgeInsets.all(50),
+                      title: TitleWidget(
+                        title: name,
+                      ),
+                    )),
           ),
           SliverToBoxAdapter(
             child: Container(
@@ -261,6 +276,20 @@ class _SubSpaceState extends State<Subspace> {
           )
         ]),
       ),
+    );
+  }
+
+  Widget getImage(String url, BoxFit fit) {
+    if (url.isEmpty) {
+      return Image.asset(
+        "assets/default_space_background.png",
+        fit: fit,
+      );
+    }
+    return CachedNetworkImage(
+      imageUrl: url,
+      placeholder: (context, url) => Image.memory(kTransparentImage),
+      fit: fit,
     );
   }
 }

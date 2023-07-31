@@ -25,12 +25,6 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
   };
 }
 
-class Pair {
-  final int spaceId;
-  final List<PostCardData> data;
-  Pair(this.spaceId, this.data);
-}
-
 class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
   SpaceBloc({required this.httpClient}) : super(const SpaceState()) {
     on<SpaceFetched>(
@@ -60,8 +54,8 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
         state.copyWith(
           days: event.sortDays,
           status: SpaceStatus.success,
-          posts: posts.data,
-          spaceId: posts.spaceId,
+          posts: posts.$2,
+          spaceId: posts.$1,
           hasReachedMax: false,
         ),
       );
@@ -81,8 +75,8 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
         state.copyWith(
           sortState: event.sortState,
           status: SpaceStatus.success,
-          posts: posts.data,
-          spaceId: posts.spaceId,
+          posts: posts.$2,
+          spaceId: posts.$1,
           hasReachedMax: false,
         ),
       );
@@ -101,8 +95,8 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
       return emit(
         state.copyWith(
           status: SpaceStatus.success,
-          posts: posts.data,
-          spaceId: posts.spaceId,
+          posts: posts.$2,
+          spaceId: posts.$1,
           parentId: event.parentId,
           spaceName: event.spaceName,
           hasReachedMax: false,
@@ -113,7 +107,8 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
     }
   }
 
-  Future<Pair> getPosts(int parentId, String? spaceName,
+  Future<(int, List<PostCardData>, String)> getPosts(
+      int parentId, String? spaceName,
       {SortStatus sort = SortStatus.latest,
       SortDays days = SortDays.week}) async {
     final token = await Store.secure.read(key: 'jwt');
@@ -138,6 +133,7 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
     final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
     final space = Space.fromJson(jsonDecode(utf8.decode(spaceInfo.bodyBytes)));
     final spaceId = space.id;
+    final image = space.picture;
     final res = await http.get(
       Uri.parse(
           '${Config.baseUrl}/posts/spaces/$spaceId?sort=${sort.name}&days=$intDays&userId=${user.id}'),
@@ -150,7 +146,8 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
       // If the server did return a 201 CREATED response,
       // then parse the JSON.
       if (res.body.isEmpty || res.body == 'null') {
-        return Pair(spaceId, List.empty());
+        List<PostCardData> list = List.empty();
+        return (spaceId, list, image);
       }
       final List<dynamic> list = jsonDecode(utf8.decode(res.bodyBytes));
       var output = List<PostCardData>.empty(growable: true);
@@ -160,7 +157,7 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
             spaceName: space.name,
             parentSpaceId: space.parentId));
       }
-      return Pair(spaceId, output);
+      return (spaceId, output, image);
     } else {
       // If the server did not return a 201 CREATED response,
       // then throw an exception.

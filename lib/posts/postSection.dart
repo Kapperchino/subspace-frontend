@@ -138,7 +138,11 @@ class PostSection extends StatelessWidget {
                                           }
                                       }
                                     })))),
-                  Flexible(child: PostMeta(post: state.post!)),
+                  Flexible(
+                      child: PostMeta(
+                    post: state.post!,
+                    maxUserNameLength: 50,
+                  )),
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [

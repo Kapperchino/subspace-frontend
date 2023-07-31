@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,6 +38,16 @@ class _SubscriptionsWidget extends State<SubscriptionsWidget> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final padding = max((width - 600) / 2, 0.0);
+    var fit = BoxFit.none;
+    if (kIsWeb) {
+      fit = BoxFit.fitWidth;
+    } else {
+      if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
+        fit = BoxFit.fitWidth;
+      } else {
+        fit = BoxFit.fitHeight;
+      }
+    }
     return Scaffold(
         endDrawer: Drawer(
           // Add a ListView to the drawer. This ensures the user can scroll
@@ -104,10 +116,13 @@ class _SubscriptionsWidget extends State<SubscriptionsWidget> {
                     ],
                   )),
               backgroundColor: Theme.of(context).colorScheme.background,
-              flexibleSpace: const FlexibleSpaceBar(
-                  background: FlutterLogo(),
-                  titlePadding: EdgeInsets.all(50),
-                  title: Text("Subscriptions")),
+              flexibleSpace: FlexibleSpaceBar(
+                  background: Image.asset(
+                    "assets/default_subscription_background.png",
+                    fit: fit,
+                  ),
+                  titlePadding: const EdgeInsets.all(50),
+                  title: const Text("Subscriptions")),
             ),
             SliverToBoxAdapter(
               child: Container(

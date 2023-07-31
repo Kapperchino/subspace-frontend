@@ -18,22 +18,32 @@ class CommentMeta extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
-        Flexible(
-            child: Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 5, left: 5),
-                  child: TextButton(
-                    child: Text(userName),
-                    onPressed: () {},
-                  ),
-                ))),
+        Container(
+          padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
+          child: const CircleAvatar(
+            maxRadius: 20,
+            backgroundImage: AssetImage('assets/default_profile.png'),
+            backgroundColor: Colors.blue,
+          ),
+        ),
+        Container(
+          alignment: Alignment.topLeft,
+          padding: const EdgeInsets.only(top: 5, left: 3),
+          child: TextButton(
+            style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                minimumSize: const Size(45, 45)),
+            child: Text(userName),
+            onPressed: () {},
+          ),
+        ),
         const Spacer(),
         Flexible(
             child: Align(
                 alignment: Alignment.topRight,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 5, right: 5),
+                  padding: const EdgeInsets.only(top: 5, right: 10),
                   child: Text("${getTime(created)} ago"),
                 )))
       ],

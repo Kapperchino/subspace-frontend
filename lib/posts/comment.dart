@@ -104,7 +104,6 @@ class CommentWidget extends StatelessWidget {
             context
                 .read<CommentBloc>()
                 .add(CommentsFetched(postId: comment.postId));
-            state.controller.clear();
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                 backgroundColor: Colors.green,
                 content: Text('Comment created')));

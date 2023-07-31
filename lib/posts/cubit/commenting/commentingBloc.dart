@@ -50,9 +50,12 @@ class CommentingBloc extends Bloc<CommentingEvent, CommentingState> {
     CommentChanged event,
     Emitter<CommentingState> emit,
   ) async {
-    return emit(
-      state.copyWith(comment: event.comment),
-    );
+    if (state.status == CommentingStaus.failure ||
+        state.status == CommentingStaus.started) {
+      return emit(
+        state.copyWith(comment: event.comment),
+      );
+    }
   }
 
   Future<void> onCommentSubmitted(
@@ -84,6 +87,7 @@ class CommentingBloc extends Bloc<CommentingEvent, CommentingState> {
         return emit(state.copyWith(
             status: CommentingStaus.failure, comment: state.comment));
       }
+      state.controller.clear();
       return emit(
         state.copyWith(status: CommentingStaus.success, comment: ""),
       );

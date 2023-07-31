@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
 import 'package:frontend/models/postCardData.dart';
@@ -21,7 +23,17 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 1000) / 2, 0.0);
+    final padding = max((width - 600) / 2, 0.0);
+    var fit = BoxFit.none;
+    if (kIsWeb) {
+      fit = BoxFit.fitWidth;
+    } else {
+      if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
+        fit = BoxFit.fitWidth;
+      } else {
+        fit = BoxFit.fitHeight;
+      }
+    }
     return Scaffold(
       body: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
@@ -31,10 +43,13 @@ class SearchPage extends StatelessWidget {
           floating: false,
           expandedHeight: 200.0,
           backgroundColor: Theme.of(context).colorScheme.background,
-          flexibleSpace: const FlexibleSpaceBar(
-            title: Text("Search"),
-            background: FlutterLogo(),
-            titlePadding: EdgeInsets.all(50),
+          flexibleSpace: FlexibleSpaceBar(
+            title: const Text("Search"),
+            background: Image.asset(
+              "assets/search_background.png",
+              fit: fit,
+            ),
+            titlePadding: const EdgeInsets.all(50),
           ),
         ),
         BlocBuilder<SearchBloc, SearchState>(

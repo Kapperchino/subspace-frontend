@@ -16,7 +16,8 @@ final class SpaceState extends Equatable {
       this.hasReachedMax = false,
       this.spaceId = -1,
       this.parentId = -1,
-      this.spaceName = ""});
+      this.spaceName = "",
+      this.picture = ""});
 
   final SpaceStatus status;
   final List<PostCardData> posts;
@@ -26,6 +27,7 @@ final class SpaceState extends Equatable {
   final int spaceId;
   final int parentId;
   final String spaceName;
+  final String picture;
 
   SpaceState copyWith(
       {SortDays? days,
@@ -35,7 +37,8 @@ final class SpaceState extends Equatable {
       int? spaceId,
       SortStatus? sortState,
       int? parentId,
-      String? spaceName}) {
+      String? spaceName,
+      String? picture}) {
     return SpaceState(
         status: status ?? this.status,
         posts: posts ?? this.posts,
@@ -44,7 +47,8 @@ final class SpaceState extends Equatable {
         sortState: sortState ?? this.sortState,
         parentId: parentId ?? this.parentId,
         spaceName: spaceName ?? this.spaceName,
-        sortDays: days ?? sortDays);
+        sortDays: days ?? sortDays,
+        picture: picture ?? this.picture);
   }
 
   @override

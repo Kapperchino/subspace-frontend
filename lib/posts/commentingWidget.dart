@@ -31,6 +31,8 @@ class CommentingWidget extends StatelessWidget {
         child: TextField(
           autofocus: false,
           maxLines: 3,
+          enabled: state.status == CommentingStaus.failure ||
+              state.status == CommentingStaus.started,
           controller: state.controller,
           onChanged: (comment) => context
               .read<CommentingBloc>()
@@ -45,6 +47,10 @@ class CommentingWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
             ),
             enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Theme.of(context).cardColor),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            disabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(color: Theme.of(context).cardColor),
               borderRadius: BorderRadius.circular(10),
             ),

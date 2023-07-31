@@ -53,6 +53,7 @@ class PostCard extends StatelessWidget {
               children: [
                 Flexible(
                     child: PostMeta(
+                  maxUserNameLength: 16,
                   post: data.post,
                 )),
                 if (post.topic.isNotEmpty)
@@ -102,8 +103,8 @@ class PostCard extends StatelessWidget {
                         return Flexible(
                             flex: 5,
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 10),
+                              padding: const EdgeInsets.only(
+                                  left: 10, right: 10, top: 5),
                               child: InkWell(
                                   onTap: () async {
                                     if (post.type == ContentType.link) {
