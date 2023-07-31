@@ -1,57 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/postCardData.dart';
 import 'package:go_router/go_router.dart';
 
-class PostMeta extends StatelessWidget {
-  const PostMeta(
-      {super.key,
-      required this.userName,
-      required this.posterId,
-      required this.created,
-      required this.spaceName,
-      required this.parentId});
+import '../models/post.dart';
 
-  final String userName;
-  final int posterId;
-  final DateTime created;
-  final String spaceName;
-  final int parentId;
+class PostMeta extends StatelessWidget {
+  const PostMeta({super.key, required this.post});
+
+  final Post post;
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Flexible(
-            child: Align(
+        Container(
+          padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
+          child: const CircleAvatar(
+            maxRadius: 20,
+            backgroundImage: AssetImage('assets/default_profile.png'),
+            backgroundColor: Colors.blue,
+          ),
+        ),
+        Container(
+          alignment: Alignment.topLeft,
+          padding: const EdgeInsets.only(top: 5),
+          child: TextButton(
+            style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                minimumSize: const Size(45, 45)),
+            child: Text(post.posterName),
+            onPressed: () {},
+          ),
+        ),
+        if (post.spaceName != 'SubSpace')
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 5),
+                child: Text("posted in "),
+              ),
+              Container(
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                child: const CircleAvatar(
+                  maxRadius: 20,
+                  backgroundImage: AssetImage('assets/default_space.png'),
+                  backgroundColor: Colors.blue,
+                ),
+              ),
+              Container(
                 alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 5, left: 5),
-                  child: TextButton(
-                    child: Text(userName),
-                    onPressed: () {},
-                  ),
-                ))),
-        if (spaceName != 'SubSpace')
-          Flexible(
-              child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 5, left: 5),
-                    child: TextButton(
-                      child: Text('s/$spaceName'),
-                      onPressed: () {
-                        context.push("/s/$parentId/$spaceName");
-                      },
-                    ),
-                  ))),
+                padding: const EdgeInsets.only(top: 5, left: 5),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      minimumSize: const Size(45, 45)),
+                  onPressed: () {
+                    context.push("/s/${post.spaceParentId}/${post.spaceName}");
+                  },
+                  child: Text('s/${post.spaceName}'),
+                ),
+              ),
+            ],
+          ),
         const Spacer(),
-        Flexible(
-            child: Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 5, right: 5),
-                  child: Text("${getTime(created)} ago"),
-                )))
+        Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 5, right: 10),
+              child: Text("${getTime(post.created)} ago"),
+            ))
       ],
     );
   }

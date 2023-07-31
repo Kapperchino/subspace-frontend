@@ -92,13 +92,12 @@ class _SubSpaceState extends State<Subspace> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: ()async {
+        onRefresh: () async {
           context
               .read<SpaceBloc>()
               .add(SpaceFetched(parentId: parentId, spaceName: name));
         },
-        child: CustomScrollView(
-          cacheExtent: 8500, slivers: <Widget>[
+        child: CustomScrollView(cacheExtent: 8500, slivers: <Widget>[
           SliverAppBar(
             pinned: false,
             snap: false,

@@ -25,6 +25,7 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
           ? null
           : Vote.fromJson(json['vote'] as Map<String, dynamic>),
       spaceName: json['space_name'] as String,
+      posterPicture: json['poster_picture'] as String,
     );
 
 Map<String, dynamic> _$PostToJson(Post instance) {
@@ -34,6 +35,7 @@ Map<String, dynamic> _$PostToJson(Post instance) {
     'space_picture': instance.spacePicture,
     'poster_id': instance.posterId,
     'poster_name': instance.posterName,
+    'poster_picture': instance.posterPicture,
     'topic': instance.topic,
     'body': instance.body,
     'content': instance.content,

@@ -138,13 +138,7 @@ class PostSection extends StatelessWidget {
                                           }
                                       }
                                     })))),
-                  Flexible(
-                      child: PostMeta(
-                          userName: state.post!.posterName,
-                          posterId: state.post!.posterId,
-                          created: state.post!.created,
-                          parentId: state.post!.spaceParentId,
-                          spaceName: spaceName)),
+                  Flexible(child: PostMeta(post: state.post!)),
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [

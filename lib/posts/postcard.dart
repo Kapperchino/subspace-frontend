@@ -51,13 +51,10 @@ class PostCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                PostMeta(
-                  userName: post.posterName,
-                  posterId: post.posterId,
-                  created: post.created,
-                  spaceName: post.spaceName,
-                  parentId: post.spaceParentId,
-                ),
+                Flexible(
+                    child: PostMeta(
+                  post: data.post,
+                )),
                 if (post.topic.isNotEmpty)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),

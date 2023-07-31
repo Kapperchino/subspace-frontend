@@ -26,6 +26,8 @@ class Post {
   final int posterId;
   @JsonKey(name: 'poster_name')
   final String posterName;
+  @JsonKey(name: 'poster_picture')
+  final String posterPicture;
   final String topic;
   final String body;
   final String content;
@@ -58,7 +60,8 @@ class Post {
       required this.created,
       required this.spaceParentId,
       required this.vote,
-      required this.spaceName});
+      required this.spaceName,
+      required this.posterPicture});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return _$PostFromJson(json);
