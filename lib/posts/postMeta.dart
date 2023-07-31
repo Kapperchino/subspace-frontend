@@ -25,7 +25,7 @@ class PostMeta extends StatelessWidget {
         ),
         Container(
           alignment: Alignment.topLeft,
-          padding: const EdgeInsets.only(top: 5),
+          padding: const EdgeInsets.only(top: 5, left: 3),
           child: TextButton(
             style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
@@ -41,7 +41,7 @@ class PostMeta extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const Padding(
-                padding: EdgeInsets.only(top: 5),
+                padding: EdgeInsets.only(top: 5, left: 3),
                 child: Text("posted in "),
               ),
               Container(
