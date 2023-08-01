@@ -14,6 +14,7 @@ class PostMeta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final defaultProfileIndex = post.posterId % 6;
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -23,7 +24,8 @@ class PostMeta extends StatelessWidget {
           child: CircleAvatar(
             maxRadius: 20,
             foregroundImage: NetworkImage(post.posterPicture),
-            backgroundImage: const AssetImage('assets/default_profile.png'),
+            backgroundImage:
+                AssetImage('assets/default_profile_$defaultProfileIndex.png'),
             backgroundColor: Colors.blue,
           ),
         ),

@@ -15,14 +15,16 @@ class CommentMeta extends StatelessWidget {
   @override
   @override
   Widget build(BuildContext context) {
+    final defaultProfileIndex = posterId % 6;
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
         Container(
           padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
-          child: const CircleAvatar(
+          child: CircleAvatar(
             maxRadius: 20,
-            backgroundImage: AssetImage('assets/default_profile.png'),
+            backgroundImage:
+                AssetImage('assets/default_profile_$defaultProfileIndex.png'),
             backgroundColor: Colors.blue,
           ),
         ),
