@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/posts/commentSection.dart';
 import 'package:frontend/posts/cubit/post/postBloc.dart';
 import 'package:frontend/posts/cubit/post/postEvent.dart';
@@ -63,15 +64,15 @@ class PostWidget extends StatelessWidget {
     )));
   }
 
-  Widget getImage(String? url, BoxFit fit) {
-    if (url == null || url.isEmpty) {
+  Widget getImage(PictureMeta? picture, BoxFit fit) {
+    if (picture == null) {
       return Image.asset(
         "assets/default_space_background.png",
         fit: fit,
       );
     }
     return CachedNetworkImage(
-      imageUrl: url,
+      imageUrl: picture.url,
       placeholder: (context, url) => Image.memory(kTransparentImage),
       fit: fit,
     );

@@ -104,6 +104,7 @@ class SearchPage extends StatelessWidget {
                               child: BottomLoader());
                         }
                         return PostCardWrapper(
+                          spaceName: "",
                           data: PostCardData(
                               parentSpaceId: state.posts![index].spaceParentId,
                               spaceName: state.posts![index].spaceName,

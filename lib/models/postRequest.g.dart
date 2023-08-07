@@ -9,10 +9,10 @@ part of 'postRequest.dart';
 PostRequest _$PostRequestFromJson(Map<String, dynamic> json) => PostRequest(
       spaceId: json['space_id'] as int,
       posterId: json['poster_id'] as int,
-      isUpload: json['is_upload'] as bool? ?? false,
+      fileIds:
+          (json['file_ids'] as List<dynamic>?)?.map((e) => e as int).toList(),
       topic: json['topic'] as String?,
       body: json['body'] as String?,
-      content: json['content'] as String?,
       type: $enumDecodeNullable(_$ContentTypeEnumMap, json['content_type']) ??
           ContentType.text,
     );
@@ -31,9 +31,8 @@ Map<String, dynamic> _$PostRequestToJson(PostRequest instance) {
 
   writeNotNull('topic', instance.topic);
   writeNotNull('body', instance.body);
-  val['is_upload'] = instance.isUpload;
-  writeNotNull('content', instance.content);
   val['content_type'] = _$ContentTypeEnumMap[instance.type]!;
+  writeNotNull('file_ids', instance.fileIds);
   return val;
 }
 

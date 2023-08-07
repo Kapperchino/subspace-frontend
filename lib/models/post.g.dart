@@ -13,8 +13,12 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
       topic: json['topic'] as String,
       posterName: json['poster_name'] as String,
       body: json['body'] as String? ?? "",
-      content: json['content'] as String? ?? "",
-      spacePicture: json['space_picture'] as String? ?? "",
+      postPictures: (json['post_pictures'] as List<dynamic>?)
+          ?.map((e) => PictureMeta.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      spacePicture: json['space_picture'] == null
+          ? null
+          : PictureMeta.fromJson(json['space_picture'] as Map<String, dynamic>),
       type: $enumDecodeNullable(_$ContentTypeEnumMap, json['content_type']) ??
           ContentType.text,
       upVotes: json['up_votes'] as int,
@@ -25,24 +29,16 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
           ? null
           : Vote.fromJson(json['vote'] as Map<String, dynamic>),
       spaceName: json['space_name'] as String,
-      posterPicture: json['poster_picture'] as String,
+      posterPicture: json['poster_picture'] == null
+          ? null
+          : PictureMeta.fromJson(
+              json['poster_picture'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$PostToJson(Post instance) {
   final val = <String, dynamic>{
     'id': instance.id,
     'space_id': instance.spaceId,
-    'space_picture': instance.spacePicture,
-    'poster_id': instance.posterId,
-    'poster_name': instance.posterName,
-    'poster_picture': instance.posterPicture,
-    'topic': instance.topic,
-    'body': instance.body,
-    'content': instance.content,
-    'up_votes': instance.upVotes,
-    'down_votes': instance.downVotes,
-    'created': instance.created.toIso8601String(),
-    'content_type': _$ContentTypeEnumMap[instance.type]!,
   };
 
   void writeNotNull(String key, dynamic value) {
@@ -51,6 +47,17 @@ Map<String, dynamic> _$PostToJson(Post instance) {
     }
   }
 
+  writeNotNull('space_picture', instance.spacePicture);
+  val['poster_id'] = instance.posterId;
+  val['poster_name'] = instance.posterName;
+  writeNotNull('poster_picture', instance.posterPicture);
+  val['topic'] = instance.topic;
+  val['body'] = instance.body;
+  writeNotNull('post_pictures', instance.postPictures);
+  val['up_votes'] = instance.upVotes;
+  val['down_votes'] = instance.downVotes;
+  val['created'] = instance.created.toIso8601String();
+  val['content_type'] = _$ContentTypeEnumMap[instance.type]!;
   writeNotNull('vote', instance.vote);
   val['space_parent_id'] = instance.spaceParentId;
   val['space_name'] = instance.spaceName;

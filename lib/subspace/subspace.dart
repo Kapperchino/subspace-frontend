@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
+import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/posts/cubit/sorting/sortBloc.dart';
 import 'package:frontend/posts/cubit/sorting/sortState.dart';
 import 'package:frontend/posts/cubit/space/spaceEvent.dart';
@@ -173,7 +174,7 @@ class _SubSpaceState extends State<Subspace> {
             backgroundColor: Theme.of(context).colorScheme.background,
             flexibleSpace: BlocBuilder<SpaceBloc, SpaceState>(
                 builder: (context, state) => FlexibleSpaceBar(
-                      background: getImage(state.picture, fit),
+                      background: getImage(state.backgroundPicture, fit),
                       titlePadding: const EdgeInsets.all(50),
                       title: TitleWidget(
                         title: name,
@@ -243,7 +244,8 @@ class _SubSpaceState extends State<Subspace> {
                             return const SliverToBoxAdapter(
                                 child: BottomLoader());
                           }
-                          return PostCardWrapper(data: state.posts[index]);
+                          return PostCardWrapper(
+                              spaceName: name, data: state.posts[index]);
                         }, childCount: state.posts.length),
                       ));
                 case SpaceStatus.initial:
@@ -279,15 +281,15 @@ class _SubSpaceState extends State<Subspace> {
     );
   }
 
-  Widget getImage(String url, BoxFit fit) {
-    if (url.isEmpty) {
+  Widget getImage(PictureMeta? picture, BoxFit fit) {
+    if (picture == null) {
       return Image.asset(
         "assets/default_space_background.png",
         fit: fit,
       );
     }
     return CachedNetworkImage(
-      imageUrl: url,
+      imageUrl: picture.url,
       placeholder: (context, url) => Image.memory(kTransparentImage),
       fit: fit,
     );

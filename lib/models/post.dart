@@ -1,3 +1,4 @@
+import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/models/vote.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'post.g.dart';
@@ -21,16 +22,17 @@ class Post {
   @JsonKey(name: 'space_id')
   final int spaceId;
   @JsonKey(name: 'space_picture')
-  final String spacePicture;
+  final PictureMeta? spacePicture;
   @JsonKey(name: 'poster_id')
   final int posterId;
   @JsonKey(name: 'poster_name')
   final String posterName;
   @JsonKey(name: 'poster_picture')
-  final String posterPicture;
+  final PictureMeta? posterPicture;
   final String topic;
   final String body;
-  final String content;
+  @JsonKey(name: 'post_pictures')
+  final List<PictureMeta>? postPictures;
   @JsonKey(name: 'up_votes')
   final int upVotes;
   @JsonKey(name: 'down_votes')
@@ -52,8 +54,8 @@ class Post {
       required this.topic,
       required this.posterName,
       this.body = "",
-      this.content = "",
-      this.spacePicture = "",
+      this.postPictures,
+      this.spacePicture,
       this.type = ContentType.text,
       required this.upVotes,
       required this.downVotes,

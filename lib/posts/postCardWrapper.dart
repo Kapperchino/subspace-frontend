@@ -11,12 +11,11 @@ import '../util/votesUtil.dart';
 import 'cubit/vote/voteEvent.dart';
 
 class PostCardWrapper extends StatelessWidget {
-  const PostCardWrapper({
-    super.key,
-    required this.data,
-  });
+  const PostCardWrapper(
+      {super.key, required this.data, required this.spaceName});
 
   final PostCardData data;
+  final String spaceName;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +27,7 @@ class PostCardWrapper extends StatelessWidget {
           VotesUtil.getStatus(data.post.vote), VoteType.post)),
       child: PostCard(
         data: data,
+        spaceName: spaceName,
       ),
     );
   }

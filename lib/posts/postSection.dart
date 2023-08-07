@@ -60,7 +60,7 @@ class PostSection extends StatelessWidget {
                   if (state.post!.topic.isNotEmpty)
                     Flexible(
                         child: Padding(
-                      padding: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.only(top: 20, bottom: 20),
                       child: SelectableText(
                         state.post!.topic,
                         style: Theme.of(context).textTheme.titleLarge,
@@ -75,7 +75,8 @@ class PostSection extends StatelessWidget {
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(8.0),
                           child: CachedNetworkImage(
-                            imageUrl: "$urlPrefix${state.post!.content}",
+                            imageUrl:
+                                "$urlPrefix${state.post!.postPictures![0].url}",
                             placeholder: (context, url) =>
                                 Image.memory(kTransparentImage),
                             width: 800,
@@ -87,7 +88,8 @@ class PostSection extends StatelessWidget {
                         child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 50),
                             child: AnyLinkPreview(
-                                link: "$urlPrefix${state.post!.content}",
+                                link:
+                                    "$urlPrefix${state.post!.postPictures![0].url}",
                                 displayDirection:
                                     UIDirection.uiDirectionVertical,
                                 showMultimedia: true,
@@ -105,8 +107,8 @@ class PostSection extends StatelessWidget {
                                 backgroundColor: Theme.of(context).cardColor,
                                 borderRadius: 12,
                                 onTap: () async {
-                                  final Uri url =
-                                      Uri.parse(state.post!.content);
+                                  final Uri url = Uri.parse(
+                                      state.post!.postPictures![0].url);
                                   if (!await launchUrl(url)) {
                                     throw Exception('Could not launch $url');
                                   }
@@ -139,10 +141,14 @@ class PostSection extends StatelessWidget {
                                       }
                                     })))),
                   Flexible(
-                      child: PostMeta(
-                    post: state.post!,
-                    maxUserNameLength: 50,
-                  )),
+                    child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: PostMeta(
+                          spaceName: spaceName,
+                          post: state.post!,
+                          maxUserNameLength: 50,
+                        )),
+                  ),
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [

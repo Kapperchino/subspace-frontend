@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/models/space.dart';
 import 'package:go_router/go_router.dart';
 
@@ -23,7 +24,7 @@ class SearchResult extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               FutureBuilder<Widget>(
-                future: getImage(space.picture),
+                future: getImage(space.smallPicture),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return snapshot.data!;
@@ -52,12 +53,12 @@ class SearchResult extends StatelessWidget {
         ));
   }
 
-  Future<Widget> getImage(String link) async {
-    if (link == "") {
-      return SizedBox();
+  Future<Widget> getImage(PictureMeta? picture) async {
+    if (picture == null) {
+      return const SizedBox();
     }
     return Image.network(
-      link,
+      picture.url,
       width: 100,
       height: 100,
       fit: BoxFit.fill,

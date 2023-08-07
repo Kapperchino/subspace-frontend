@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/models/postCardData.dart';
 
 enum SpaceStatus { initial, success, failure }
@@ -17,7 +18,7 @@ final class SpaceState extends Equatable {
       this.spaceId = -1,
       this.parentId = -1,
       this.spaceName = "",
-      this.picture = ""});
+      this.backgroundPicture});
 
   final SpaceStatus status;
   final List<PostCardData> posts;
@@ -27,7 +28,7 @@ final class SpaceState extends Equatable {
   final int spaceId;
   final int parentId;
   final String spaceName;
-  final String picture;
+  final PictureMeta? backgroundPicture;
 
   SpaceState copyWith(
       {SortDays? days,
@@ -38,7 +39,7 @@ final class SpaceState extends Equatable {
       SortStatus? sortState,
       int? parentId,
       String? spaceName,
-      String? picture}) {
+      PictureMeta? backgroundPicture}) {
     return SpaceState(
         status: status ?? this.status,
         posts: posts ?? this.posts,
@@ -48,7 +49,7 @@ final class SpaceState extends Equatable {
         parentId: parentId ?? this.parentId,
         spaceName: spaceName ?? this.spaceName,
         sortDays: days ?? sortDays,
-        picture: picture ?? this.picture);
+        backgroundPicture: backgroundPicture ?? this.backgroundPicture);
   }
 
   @override

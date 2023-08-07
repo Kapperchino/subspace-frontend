@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/models/postCardData.dart';
 import 'package:go_router/go_router.dart';
 
@@ -7,14 +8,17 @@ import '../models/post.dart';
 
 class PostMeta extends StatelessWidget {
   const PostMeta(
-      {super.key, required this.post, required this.maxUserNameLength});
+      {super.key,
+      required this.post,
+      required this.spaceName,
+      required this.maxUserNameLength});
 
   final Post post;
+  final String spaceName;
   final int maxUserNameLength;
 
   @override
   Widget build(BuildContext context) {
-    final defaultProfileIndex = post.posterId % 6;
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -23,9 +27,7 @@ class PostMeta extends StatelessWidget {
           padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
           child: CircleAvatar(
             maxRadius: 20,
-            foregroundImage: NetworkImage(post.posterPicture),
-            backgroundImage:
-                AssetImage('assets/default_profile_$defaultProfileIndex.png'),
+            foregroundImage: getProfilePic(post.posterPicture),
             backgroundColor: Colors.blue,
           ),
         ),
@@ -47,7 +49,7 @@ class PostMeta extends StatelessWidget {
             onPressed: () {},
           ),
         ),
-        if (post.spaceName != 'SubSpace')
+        if (post.spaceName != 'SubSpace' && spaceName != post.spaceName)
           Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -80,50 +82,15 @@ class PostMeta extends StatelessWidget {
               ),
             ],
           ),
-        const Spacer(),
-        Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 5, right: 10),
-              child: Text("${getTime(post.created)} ago"),
-            ))
       ],
     );
   }
 
-  String getTime(DateTime time) {
-    final diff = DateTime.now().difference(time);
-    if (diff.inDays >= 365) {
-      final years = diff.inDays / 365;
-      if (years == 1) {
-        return '$years year';
-      }
-      return '$years years';
+  ImageProvider getProfilePic(PictureMeta? picture) {
+    final defaultProfileIndex = post.posterId % 6;
+    if (picture == null) {
+      return AssetImage('assets/default_profile_$defaultProfileIndex.png');
     }
-    if (diff.inDays >= 1) {
-      final days = diff.inDays;
-      if (days == 1) {
-        return '$days day';
-      }
-      return '$days days';
-    }
-    if (diff.inHours >= 1) {
-      final hours = diff.inHours;
-      if (hours == 1) {
-        return '$hours hour';
-      }
-      return '$hours hours';
-    }
-
-    if (diff.inMinutes >= 1) {
-      final minutes = diff.inMinutes;
-      if (minutes == 1) {
-        return '$minutes minute';
-      }
-      return '$minutes minutes';
-    }
-
-    final seconds = diff.inSeconds;
-    return '$seconds seconds';
+    return NetworkImage(picture.url);
   }
 }

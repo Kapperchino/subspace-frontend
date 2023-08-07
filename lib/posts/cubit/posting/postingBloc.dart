@@ -1,13 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/foundation.dart';
+import 'package:frontend/models/fileUploadRequest.dart';
+import 'package:frontend/models/pictureMetaResult.dart';
+import 'package:frontend/models/pictureRequestMeta.dart';
 import 'package:frontend/posts/cubit/posting/postingEvent.dart';
 import 'package:frontend/posts/cubit/posting/postingState.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_size_getter/file_input.dart';
+import 'package:image_size_getter/image_size_getter.dart';
 import 'package:mime/mime.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -146,7 +152,7 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
     return ContentType.unknown;
   }
 
-  Future<ContentType> getContentType() async {
+  ContentType getContentType() {
     try {
       String? mime;
       if (state.file!.mimeType != null) {
@@ -176,15 +182,52 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
       {String content = "", ContentType contentType = ContentType.text}) async {
     final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
     final token = await Store.secure.read(key: 'jwt');
+    final List<int> fileIds = List.empty(growable: true);
+    if (getContentType() == ContentType.picture) {
+      final file = File(state.file!.path);
+      final size = ImageSizeGetter.getSize(FileInput(file));
+      final pictureMeta =
+          PictureRequestMeta(width: size.width, height: size.height);
+      final json = jsonEncode(FileUploadRequest(
+          fileType: FileType.picture, pictureMeta: pictureMeta));
+      final res = await http.put(
+        Uri.parse('${Config.baseUrl}/files'),
+        body: json,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (res.statusCode != 200) {
+        return res.statusCode;
+      }
+      final resMeta = PictureMetaResult.fromJson(jsonDecode(res.body));
+      fileIds.add(resMeta.id);
+
+      String? mimeStr;
+      if (state.file!.mimeType != null) {
+        mimeStr = state.file!.mimeType;
+      } else {
+        mimeStr = lookupMimeType(state.file!.path);
+      }
+      Uri uri = Uri.parse(resMeta.presigned);
+      final fileRes = await http.put(uri,
+          body: await state.file?.readAsBytes(),
+          headers: {"Content-Type": mimeStr!});
+      if (fileRes.statusCode != 200) {
+        return fileRes.statusCode;
+      }
+    }
+
     final json = jsonEncode(PostRequest(
-      content: content,
       type: contentType,
       topic: topic,
       spaceId: spaceId,
       posterId: user.id,
-      isUpload: state.mode == PostingMode.upload,
+      fileIds: fileIds,
       body: body,
     ).toJson());
+
     final res = await http.post(
       Uri.parse('${Config.baseUrl}/posts'),
       body: json,
@@ -194,27 +237,6 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
       },
     );
 
-    if (res.statusCode != 200) {
-      return res.statusCode;
-    }
-
-    if (state.mode != PostingMode.upload) {
-      return res.statusCode;
-    }
-
-    final response = jsonDecode(res.body);
-    final presigned = response['presigned'];
-
-    String? mimeStr;
-    if (state.file!.mimeType != null) {
-      mimeStr = state.file!.mimeType;
-    } else {
-      mimeStr = lookupMimeType(state.file!.path);
-    }
-    Uri uri = Uri.parse(presigned);
-    final photoRes = await http.put(uri,
-        body: await state.file?.readAsBytes(),
-        headers: {"Content-Type": mimeStr!});
-    return photoRes.statusCode;
+    return res.statusCode;
   }
 }

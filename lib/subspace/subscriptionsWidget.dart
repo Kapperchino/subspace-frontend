@@ -176,7 +176,10 @@ class _SubscriptionsWidget extends State<SubscriptionsWidget> {
                               return const SliverToBoxAdapter(
                                   child: BottomLoader());
                             }
-                            return PostCardWrapper(data: state.posts[index]);
+                            return PostCardWrapper(
+                              data: state.posts[index],
+                              spaceName: "",
+                            );
                           }, childCount: state.posts.length),
                         ));
                   case SubscriptionsStatus.initial:

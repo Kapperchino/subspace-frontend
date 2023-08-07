@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/posts/cubit/space/spaceEvent.dart';
@@ -107,7 +108,7 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
     }
   }
 
-  Future<(int, List<PostCardData>, String)> getPosts(
+  Future<(int, List<PostCardData>, PictureMeta?)> getPosts(
       int parentId, String? spaceName,
       {SortStatus sort = SortStatus.latest,
       SortDays days = SortDays.week}) async {
@@ -133,7 +134,7 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
     final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
     final space = Space.fromJson(jsonDecode(utf8.decode(spaceInfo.bodyBytes)));
     final spaceId = space.id;
-    final image = space.picture;
+    final image = space.backgroundPicture;
     final res = await http.get(
       Uri.parse(
           '${Config.baseUrl}/posts/spaces/$spaceId?sort=${sort.name}&days=$intDays&userId=${user.id}'),

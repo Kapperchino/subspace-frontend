@@ -1,7 +1,8 @@
+import 'package:frontend/models/pictureMeta.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'space.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class Space {
   final int id;
   @JsonKey(name: 'parent_id')
@@ -10,14 +11,18 @@ class Space {
   final String name;
   @JsonKey(name: 'description')
   final String description;
-  final String picture;
+  @JsonKey(name: 'small_picture')
+  final PictureMeta? smallPicture;
+  @JsonKey(name: 'background_picture')
+  final PictureMeta? backgroundPicture;
 
   const Space(
       {required this.id,
       required this.parentId,
       required this.name,
       required this.description,
-      required this.picture});
+      this.backgroundPicture,
+      this.smallPicture});
 
   factory Space.fromJson(Map<String, dynamic> json) {
     return _$SpaceFromJson(json);
