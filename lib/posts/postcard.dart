@@ -158,12 +158,21 @@ class PostCard extends StatelessWidget {
     if (pictures == null) {
       return Image.memory(kTransparentImage);
     }
+    const defaultRatio = 600 / 500;
+    final imageRatio = pictures[0].width / pictures[0].height;
+    var boxfit = BoxFit.fitWidth;
+    final adjustedHeight = 600 / imageRatio;
+    final double height = min(500.0, adjustedHeight);
+    if (imageRatio < defaultRatio) {
+      boxfit = BoxFit.cover;
+    }
     if (type == ContentType.picture) {
       return CachedNetworkImage(
         imageUrl: "$urlPrefix${pictures[0].url}",
         placeholder: (context, url) => Image.memory(kTransparentImage),
         width: 600,
-        fit: BoxFit.contain,
+        height: height,
+        fit: boxfit,
       );
     }
     Metadata? metadata = await AnyLinkPreview.getMetadata(

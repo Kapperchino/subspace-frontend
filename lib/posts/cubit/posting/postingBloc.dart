@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -183,7 +184,34 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
     final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
     final token = await Store.secure.read(key: 'jwt');
     final List<int> fileIds = List.empty(growable: true);
-    if (getContentType() == ContentType.picture) {
+    if (state.mode == PostingMode.link) {
+      if (contentType == ContentType.picture) {
+        final res = await http.get(Uri.parse(content));
+        final bytes = res.bodyBytes;
+        final codec = await instantiateImageCodec(bytes);
+        final frameInfo = await codec.getNextFrame();
+        final image = frameInfo.image;
+        final pictureMeta = PictureRequestMeta(
+            width: image.width, height: image.height, url: content);
+        final json = jsonEncode(FileUploadRequest(
+            fileType: FileType.picture,
+            pictureMeta: pictureMeta,
+            isLink: true));
+        final putRes = await http.put(
+          Uri.parse('${Config.baseUrl}/files'),
+          body: json,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+        );
+        if (res.statusCode != 200) {
+          throw const HttpException("should not get non 200");
+        }
+        final resMeta = PictureMetaResult.fromJson(jsonDecode(putRes.body));
+        fileIds.add(resMeta.id);
+      }
+    } else if (getContentType() == ContentType.picture) {
       final file = File(state.file!.path);
       final size = ImageSizeGetter.getSize(FileInput(file));
       final pictureMeta =

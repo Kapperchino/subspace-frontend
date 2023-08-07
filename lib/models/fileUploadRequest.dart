@@ -10,7 +10,7 @@ enum FileType {
   video
 }
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class FileUploadRequest {
   @JsonKey(name: 'picture_meta')
   final PictureRequestMeta? pictureMeta;
@@ -18,7 +18,11 @@ class FileUploadRequest {
   @JsonKey(name: 'file_type')
   final FileType fileType;
 
-  const FileUploadRequest({required this.fileType, this.pictureMeta});
+  @JsonKey(name: 'is_link')
+  final bool? isLink;
+
+  const FileUploadRequest(
+      {required this.fileType, this.pictureMeta, this.isLink});
 
   factory FileUploadRequest.fromJson(Map<String, dynamic> json) {
     return _$FileUploadRequestFromJson(json);
