@@ -78,11 +78,8 @@ class PostSection extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: FutureBuilder<Widget>(
-                        future: getImage(
-                            state.post!.postPictures,
-                            state.post!.type,
-                            state.post!.link,
-                            Theme.of(context)),
+                        future: getImage(state.post!.postPictures,
+                            state.post!.type, state.post!.link, context),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return snapshot.data!;
@@ -186,7 +183,7 @@ class PostSection extends StatelessWidget {
   }
 
   Future<Widget> getImage(List<PictureMeta>? pictures, ContentType type,
-      String? link, ThemeData theme) async {
+      String? link, BuildContext context) async {
     var urlPrefix = "";
     if (kIsWeb) {
       urlPrefix = "https://subspace-cors.fly.dev/";
@@ -195,10 +192,12 @@ class PostSection extends StatelessWidget {
       return const SizedBox();
     }
     if (type == ContentType.picture) {
-      const defaultRatio = CARD_MAX_WIDTH / CARD_MAX_HEIGHT;
+      final deviceWidth = MediaQuery.of(context).size.width - 20;
+      final maxWidth = min(deviceWidth, CARD_MAX_WIDTH);
+      final defaultRatio = maxWidth / CARD_MAX_HEIGHT;
       final imageRatio = pictures![0].width / pictures[0].height;
       var boxfit = BoxFit.fitWidth;
-      final adjustedHeight = CARD_MAX_WIDTH / imageRatio;
+      final adjustedHeight = maxWidth / imageRatio;
       final double height = min(CARD_MAX_HEIGHT, adjustedHeight);
       if (imageRatio < defaultRatio) {
         boxfit = BoxFit.cover;
@@ -224,8 +223,8 @@ class PostSection extends StatelessWidget {
                   showMultimedia: true,
                   bodyMaxLines: 3,
                   bodyTextOverflow: TextOverflow.ellipsis,
-                  bodyStyle: theme.textTheme.bodyLarge,
-                  titleStyle: theme.textTheme.titleLarge,
+                  bodyStyle: Theme.of(context).textTheme.bodyLarge,
+                  titleStyle: Theme.of(context).textTheme.titleLarge,
                   previewHeight: 500,
                   errorBody: 'Error!',
                   errorTitle: 'Error!',
@@ -233,7 +232,7 @@ class PostSection extends StatelessWidget {
                     color: Colors.grey[300],
                     child: const Text('Oops!'),
                   ),
-                  backgroundColor: theme.cardColor,
+                  backgroundColor: Theme.of(context).cardColor,
                   borderRadius: 12,
                   onTap: () async {
                     final Uri url = Uri.parse(link!);

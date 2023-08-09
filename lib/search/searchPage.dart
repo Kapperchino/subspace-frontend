@@ -8,7 +8,9 @@ import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/posts/cubit/search/searchBloc.dart';
 import 'package:frontend/posts/cubit/search/searchState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/search/searchPosts.dart';
 import 'package:frontend/search/searchResult.dart';
+import 'package:frontend/search/searchSpaces.dart';
 
 import '../posts/postCardWrapper.dart';
 
@@ -30,91 +32,141 @@ class SearchPage extends StatelessWidget {
         fit = BoxFit.fitHeight;
       }
     }
-    return Scaffold(
-      body: CustomScrollView(slivers: <Widget>[
-        SliverAppBar(
-          centerTitle: true,
-          pinned: false,
-          snap: false,
-          floating: false,
-          expandedHeight: 200.0,
-          backgroundColor: Theme.of(context).colorScheme.background,
-          flexibleSpace: FlexibleSpaceBar(
-            title: const Text("Search"),
-            background: Image.asset(
-              "assets/search_background.png",
-              fit: fit,
+    return DefaultTabController(
+      length: 3, // This is the number of tabs.
+      child: Scaffold(
+        body: NestedScrollView(
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            // These are the slivers that show up in the "outer" scroll view.
+            return <Widget>[
+              SliverOverlapAbsorber(
+                // This widget takes the overlapping behavior of the SliverAppBar,
+                // and redirects it to the SliverOverlapInjector below. If it is
+                // missing, then it is possible for the nested "inner" scroll view
+                // below to end up under the SliverAppBar even when the inner
+                // scroll view thinks it has not been scrolled.
+                // This is not necessary if the "headerSliverBuilder" only builds
+                // widgets that do not overlap the next sliver.
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverAppBar(
+                  // This is the title in the app bar.
+                  pinned: false,
+                  snap: false,
+                  floating: false,
+                  expandedHeight: 200,
+                  centerTitle: true,
+                  forceElevated: innerBoxIsScrolled,
+                  backgroundColor: Theme.of(context).colorScheme.background,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Image.asset(
+                      "assets/search_background.png",
+                      fit: fit,
+                    ),
+                    titlePadding: const EdgeInsets.all(50),
+                    title: const Text("Search"),
+                  ),
+                  bottom: const TabBar(
+                    // These are the widgets to put in each tab in the tab bar.
+                    tabs: [
+                      Tab(
+                        text: "Posts",
+                      ),
+                      Tab(
+                        text: "Spaces",
+                      ),
+                      Tab(
+                        text: "Users",
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ];
+          },
+          body: TabBarView(children: [
+            SafeArea(
+              top: false,
+              bottom: false,
+              child: Builder(
+                builder: (BuildContext context) {
+                  return CustomScrollView(
+                    cacheExtent: 8500,
+                    key: const PageStorageKey<String>("Post"),
+                    slivers: <Widget>[
+                      SliverOverlapInjector(
+                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                            context),
+                      ),
+                      const SearchPosts()
+                    ],
+                  );
+                },
+              ),
             ),
-            titlePadding: const EdgeInsets.all(50),
-          ),
+            SafeArea(
+              top: false,
+              bottom: false,
+              child: Builder(
+                builder: (BuildContext context) {
+                  return CustomScrollView(
+                    cacheExtent: 8500,
+                    key: const PageStorageKey<String>("Space"),
+                    slivers: <Widget>[
+                      SliverOverlapInjector(
+                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                            context),
+                      ),
+                      const SearchSpaces()
+                    ],
+                  );
+                },
+              ),
+            ),
+            SafeArea(
+              top: false,
+              bottom: false,
+              child: Builder(
+                builder: (BuildContext context) {
+                  return CustomScrollView(
+                    cacheExtent: 8500,
+                    key: const PageStorageKey<String>("Users"),
+                    slivers: <Widget>[
+                      SliverOverlapInjector(
+                        // This is the flip side of the SliverOverlapAbsorber
+                        // above.
+                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                            context),
+                      ),
+                      SliverPadding(
+                        padding: const EdgeInsets.all(8.0),
+                        sliver: SliverFixedExtentList(
+                          itemExtent: 48.0,
+                          delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                              // This builder is called for each child.
+                              // In this example, we just number each list item.
+                              return ListTile(
+                                title: Text('Item'),
+                              );
+                            },
+                            // The childCount of the SliverChildBuilderDelegate
+                            // specifies how many children this inner list
+                            // has. In this example, each tab has a list of
+                            // exactly 30 items, but this is arbitrary.
+                            childCount: 30,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            )
+          ]),
         ),
-        BlocBuilder<SearchBloc, SearchState>(
-          builder: (context, state) {
-            switch (state.status) {
-              case SearchStatus.failure:
-                return const SliverToBoxAdapter(
-                    child: Center(child: Text('failed to fetch posts')));
-              case SearchStatus.success:
-                if (state.spaces!.isEmpty) {
-                  return const SliverToBoxAdapter(
-                      child: Center(child: SizedBox()));
-                }
-                return SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: padding),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        if (index >= state.spaces!.length) {
-                          return const SliverToBoxAdapter(
-                              child: BottomLoader());
-                        }
-                        return SearchResult(
-                          space: state.spaces![index],
-                        );
-                      }, childCount: state.spaces!.length),
-                    ));
-              case SearchStatus.initial:
-                return const SliverToBoxAdapter(
-                    child: Center(child: CircularProgressIndicator()));
-            }
-          },
-        ),
-        BlocBuilder<SearchBloc, SearchState>(
-          builder: (context, state) {
-            switch (state.status) {
-              case SearchStatus.failure:
-                return const SliverToBoxAdapter(
-                    child: Center(child: Text('failed to fetch posts')));
-              case SearchStatus.success:
-                if (state.posts!.isEmpty) {
-                  return const SliverToBoxAdapter(
-                      child: Center(child: Text('no posts')));
-                }
-                return SliverPadding(
-                    padding: EdgeInsets.symmetric(horizontal: padding),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                        if (index >= state.posts!.length) {
-                          return const SliverToBoxAdapter(
-                              child: BottomLoader());
-                        }
-                        return PostCardWrapper(
-                          spaceName: "",
-                          data: PostCardData(
-                              parentSpaceId: state.posts![index].spaceParentId,
-                              spaceName: state.posts![index].spaceName,
-                              post: state.posts![index]),
-                        );
-                      }, childCount: state.posts!.length),
-                    ));
-              case SearchStatus.initial:
-                return const SliverToBoxAdapter(
-                    child: Center(child: CircularProgressIndicator()));
-            }
-          },
-        ),
-      ]),
+      ),
     );
   }
 }

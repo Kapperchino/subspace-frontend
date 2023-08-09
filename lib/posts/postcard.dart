@@ -10,6 +10,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/common/timeWidget.dart';
 import 'package:frontend/models/post.dart';
+import 'package:frontend/posts/cubit/search/searchBloc.dart';
+import 'package:frontend/posts/cubit/search/searchState.dart';
 import 'package:frontend/posts/cubit/space/spaceBlock.dart';
 import 'package:frontend/posts/cubit/space/spaceState.dart';
 import 'package:frontend/posts/cubit/subscriptions/subscriptionsBloc.dart';
@@ -117,31 +119,19 @@ class PostCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    if (location.startsWith("/s/"))
-                      BlocBuilder<SpaceBloc, SpaceState>(
-                        builder: (context, state) {
-                          context.read<VoteBloc>().add(InitEvent(
-                              data.post.id,
-                              data.post.upVotes,
-                              data.post.downVotes,
-                              VotesUtil.getStatus(data.post.vote),
-                              VoteType.post));
-                          return const VoteWidgetFlat();
-                        },
-                      ),
-                    if (location.startsWith("/subscriptions"))
-                      BlocBuilder<SubscriptionsBloc, SubscriptionsState>(
-                        builder: (context, state) {
-                          context.read<VoteBloc>().add(InitEvent(
-                              data.post.id,
-                              data.post.upVotes,
-                              data.post.downVotes,
-                              VotesUtil.getStatus(data.post.vote),
-                              VoteType.post));
-                          return const VoteWidgetFlat();
-                        },
-                      ),
+                    Builder(
+                      builder: (context) {
+                        context.read<VoteBloc>().add(InitEvent(
+                            data.post.id,
+                            data.post.upVotes,
+                            data.post.downVotes,
+                            VotesUtil.getStatus(data.post.vote),
+                            VoteType.post));
+                        return const VoteWidgetFlat();
+                      },
+                    ),
                     Container(
+                      alignment: Alignment.centerRight,
                       padding: const EdgeInsets.only(right: 10),
                       child: TimeWidget(time: data.post.created),
                     )
@@ -173,12 +163,14 @@ class PostCard extends StatelessWidget {
       }
       return InkWell(
           onTap: () {
-            BrowserContextMenu.disableContextMenu().then((value) =>
-                context.push("/images/${pictures[0].id}").then((value) async {
-                  if (kIsWeb) {
+            if (kIsWeb) {
+              BrowserContextMenu.disableContextMenu().then((value) =>
+                  context.push("/images/${pictures[0].id}").then((value) async {
                     await BrowserContextMenu.enableContextMenu();
-                  }
-                }));
+                  }));
+            } else {
+              context.push("/images/${pictures[0].id}");
+            }
           },
           child: CachedNetworkImage(
             imageUrl: "$urlPrefix${pictures[0].url}",

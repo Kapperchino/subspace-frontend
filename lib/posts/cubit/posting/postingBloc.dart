@@ -12,6 +12,7 @@ import 'package:frontend/posts/cubit/posting/postingEvent.dart';
 import 'package:frontend/posts/cubit/posting/postingState.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:image_size_getter/file_input.dart';
 import 'package:image_size_getter/image_size_getter.dart';
 import 'package:mime/mime.dart';
@@ -206,7 +207,7 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
           },
         );
         if (res.statusCode != 200) {
-          throw const HttpException("should not get non 200");
+          throw Exception("should not get non 200");
         }
         final resMeta = PictureMetaResult.fromJson(jsonDecode(putRes.body));
         fileIds.add(resMeta.id);
@@ -214,8 +215,9 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
         link = content;
       }
     } else if (getContentType() == ContentType.picture) {
-      final file = File(state.file!.path);
-      final size = ImageSizeGetter.getSize(FileInput(file));
+      final file = XFile(state.file!.path);
+      final mem = await file.readAsBytes();
+      final size = ImageSizeGetter.getSize(MemoryInput(mem));
       final pictureMeta =
           PictureRequestMeta(width: size.width, height: size.height);
       final json = jsonEncode(FileUploadRequest(
