@@ -1,6 +1,6 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/routes/createRoutes.dart';
+import 'package:frontend/routes/imageRoutes.dart';
 import 'package:frontend/routes/loginRoutes.dart';
 import 'package:frontend/routes/searchRoute.dart';
 import 'package:frontend/routes/spaceRoutes.dart';
@@ -36,7 +36,8 @@ class MainApp extends StatelessWidget {
         AuthRoute().getLoginRoute(),
         CreateRoutes().getPostCreationRoute(),
         CreateRoutes().getSpaceCreationRoute(),
-        SearchRoutes().getSearchRoute()
+        SearchRoutes().getSearchRoute(),
+        ImageRoutes().getImageRoute(),
       ]);
 
   @override

@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/posts/cubit/vote/voteBloc.dart';
 import 'package:frontend/posts/postcard.dart';
-import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/postCardData.dart';

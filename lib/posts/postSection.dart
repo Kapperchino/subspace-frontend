@@ -21,6 +21,7 @@ import 'package:frontend/util/selectableDetectables.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../models/pictureMeta.dart';
 import '../models/voteRequest.dart';
 import '../util/votesUtil.dart';
 import 'cubit/commenting/commentingEvent.dart';
@@ -33,6 +34,9 @@ class PostSection extends StatelessWidget {
   const PostSection({super.key, required this.id, required this.spaceName});
   final int id;
   final String spaceName;
+
+  static const double CARD_MAX_HEIGHT = 600;
+  static const double CARD_MAX_WIDTH = 600;
 
   @override
   Widget build(BuildContext context) {
@@ -69,52 +73,25 @@ class PostSection extends StatelessWidget {
                     )),
                   if (state.post!.type == ContentType.text)
                     const SizedBox(width: 0, height: 0),
-                  if (state.post!.type == ContentType.picture)
+                  if (state.post!.type == ContentType.picture ||
+                      state.post!.type == ContentType.link)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: CachedNetworkImage(
-                            imageUrl:
-                                "$urlPrefix${state.post!.postPictures![0].url}",
-                            placeholder: (context, url) =>
-                                Image.memory(kTransparentImage),
-                            width: 800,
-                            fit: BoxFit.contain,
-                          )),
+                      child: FutureBuilder<Widget>(
+                        future: getImage(
+                            state.post!.postPictures,
+                            state.post!.type,
+                            state.post!.link,
+                            Theme.of(context)),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return snapshot.data!;
+                          } else {
+                            return const CircularProgressIndicator();
+                          }
+                        },
+                      ),
                     ),
-                  if (state.post!.type == ContentType.link)
-                    Flexible(
-                        child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 50),
-                            child: AnyLinkPreview(
-                                link:
-                                    "$urlPrefix${state.post!.postPictures![0].url}",
-                                displayDirection:
-                                    UIDirection.uiDirectionVertical,
-                                showMultimedia: true,
-                                bodyMaxLines: 3,
-                                bodyTextOverflow: TextOverflow.ellipsis,
-                                bodyStyle: const TextStyle(
-                                    color: Colors.grey, fontSize: 12),
-                                previewHeight: 500,
-                                errorBody: 'Error!',
-                                errorTitle: 'Error!',
-                                errorWidget: Container(
-                                  color: Colors.grey[300],
-                                  child: const Text('Oops!'),
-                                ),
-                                backgroundColor: Theme.of(context).cardColor,
-                                borderRadius: 12,
-                                onTap: () async {
-                                  final Uri url = Uri.parse(
-                                      state.post!.postPictures![0].url);
-                                  if (!await launchUrl(url)) {
-                                    throw Exception('Could not launch $url');
-                                  }
-                                }
-                                // This disables tap event
-                                ))),
                   if (state.post!.body.isNotEmpty)
                     Flexible(
                         child: Align(
@@ -206,5 +183,67 @@ class PostSection extends StatelessWidget {
       }
       return const CircularProgressIndicator.adaptive();
     });
+  }
+
+  Future<Widget> getImage(List<PictureMeta>? pictures, ContentType type,
+      String? link, ThemeData theme) async {
+    var urlPrefix = "";
+    if (kIsWeb) {
+      urlPrefix = "https://subspace-cors.fly.dev/";
+    }
+    if (type == ContentType.picture && pictures == null) {
+      return const SizedBox();
+    }
+    if (type == ContentType.picture) {
+      const defaultRatio = CARD_MAX_WIDTH / CARD_MAX_HEIGHT;
+      final imageRatio = pictures![0].width / pictures[0].height;
+      var boxfit = BoxFit.fitWidth;
+      final adjustedHeight = CARD_MAX_WIDTH / imageRatio;
+      final double height = min(CARD_MAX_HEIGHT, adjustedHeight);
+      if (imageRatio < defaultRatio) {
+        boxfit = BoxFit.cover;
+      }
+      return CachedNetworkImage(
+        imageUrl: "$urlPrefix${pictures[0].url}",
+        placeholder: (context, url) => Image.memory(
+          kTransparentImage,
+          width: CARD_MAX_WIDTH,
+          height: adjustedHeight,
+        ),
+        width: CARD_MAX_WIDTH,
+        height: height,
+        fit: boxfit,
+      );
+    } else if (type == ContentType.link) {
+      return Flexible(
+          child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: AnyLinkPreview(
+                  link: "$urlPrefix$link",
+                  displayDirection: UIDirection.uiDirectionVertical,
+                  showMultimedia: true,
+                  bodyMaxLines: 3,
+                  bodyTextOverflow: TextOverflow.ellipsis,
+                  bodyStyle: theme.textTheme.bodyLarge,
+                  titleStyle: theme.textTheme.titleLarge,
+                  previewHeight: 500,
+                  errorBody: 'Error!',
+                  errorTitle: 'Error!',
+                  errorWidget: Container(
+                    color: Colors.grey[300],
+                    child: const Text('Oops!'),
+                  ),
+                  backgroundColor: theme.cardColor,
+                  borderRadius: 12,
+                  onTap: () async {
+                    final Uri url = Uri.parse(link!);
+                    if (!await launchUrl(url)) {
+                      throw Exception('Could not launch $url');
+                    }
+                  }
+                  // This disables tap event
+                  )));
+    }
+    return const SizedBox();
   }
 }

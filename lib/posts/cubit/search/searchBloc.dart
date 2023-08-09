@@ -12,7 +12,6 @@ import 'package:stream_transform/stream_transform.dart';
 import '../../../config.dart';
 import '../../../models/appUser.dart';
 import '../../../models/post.dart';
-import '../../../models/postCardData.dart';
 import '../../../models/space.dart';
 import '../../../stores/store.dart';
 

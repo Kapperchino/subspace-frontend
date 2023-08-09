@@ -6,6 +6,7 @@ import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
 import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/common/timeWidget.dart';
 import 'package:frontend/models/post.dart';
@@ -25,7 +26,6 @@ import '../models/voteRequest.dart';
 import '../util/constDetectable.dart';
 import '../util/votesUtil.dart';
 import 'cubit/vote/voteBloc.dart';
-import 'package:http/http.dart' as http;
 
 import 'cubit/vote/voteEvent.dart';
 
@@ -35,11 +35,13 @@ class PostCard extends StatelessWidget {
   final PostCardData data;
   final String spaceName;
 
+  static const double CARD_MAX_HEIGHT = 600;
+  static const double CARD_MAX_WIDTH = 600;
+
   @override
   Widget build(BuildContext context) {
     final post = data.post;
     final location = GoRouterState.of(context).matchedLocation;
-
     return Card(
         clipBehavior: Clip.hardEdge,
         child: InkWell(
@@ -61,7 +63,8 @@ class PostCard extends StatelessWidget {
                 )),
                 if (post.topic.isNotEmpty)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, bottom: 10),
                     child: Text(
                       post.topic,
                       maxLines: 2,
@@ -100,13 +103,11 @@ class PostCard extends StatelessWidget {
                 if (post.type == ContentType.picture ||
                     post.type == ContentType.link)
                   FutureBuilder<Widget>(
-                    future: getImage(post.postPictures, post.type),
+                    future: getImage(
+                        post.postPictures, post.type, post.link, context),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        return FittedBox(
-                            fit: BoxFit.cover,
-                            clipBehavior: Clip.antiAlias,
-                            child: snapshot.data);
+                        return snapshot.data!;
                       } else {
                         return const CircularProgressIndicator();
                       }
@@ -150,42 +151,74 @@ class PostCard extends StatelessWidget {
         ));
   }
 
-  Future<Widget> getImage(List<PictureMeta>? pictures, ContentType type) async {
+  Future<Widget> getImage(List<PictureMeta>? pictures, ContentType type,
+      String? link, BuildContext context) async {
     var urlPrefix = "";
     if (kIsWeb) {
       urlPrefix = "https://subspace-cors.fly.dev/";
     }
-    if (pictures == null) {
-      return Image.memory(kTransparentImage);
-    }
-    const defaultRatio = 600 / 500;
-    final imageRatio = pictures[0].width / pictures[0].height;
-    var boxfit = BoxFit.fitWidth;
-    final adjustedHeight = 600 / imageRatio;
-    final double height = min(500.0, adjustedHeight);
-    if (imageRatio < defaultRatio) {
-      boxfit = BoxFit.cover;
-    }
-    if (type == ContentType.picture) {
-      return CachedNetworkImage(
-        imageUrl: "$urlPrefix${pictures[0].url}",
-        placeholder: (context, url) => Image.memory(kTransparentImage),
-        width: 600,
-        height: height,
-        fit: boxfit,
-      );
-    }
-    Metadata? metadata = await AnyLinkPreview.getMetadata(
-      link: "$urlPrefix${pictures[0].url}",
-      cache: const Duration(days: 7),
-    );
-    if (metadata?.image == null) {
+    if (type == ContentType.picture && pictures == null) {
       return const SizedBox();
     }
-    return CachedNetworkImage(
-        imageUrl: "$urlPrefix${metadata!.image!}",
-        placeholder: (context, url) => Image.memory(kTransparentImage),
-        width: 600,
-        fit: BoxFit.contain);
+    if (type == ContentType.picture) {
+      final deviceWidth = MediaQuery.of(context).size.width - 20;
+      final maxWidth = min(deviceWidth, CARD_MAX_WIDTH);
+      final defaultRatio = maxWidth / CARD_MAX_HEIGHT;
+      final imageRatio = pictures![0].width / pictures[0].height;
+      var boxfit = BoxFit.fitWidth;
+      final adjustedHeight = maxWidth / imageRatio;
+      final double height = min(CARD_MAX_HEIGHT, adjustedHeight);
+      if (imageRatio < defaultRatio) {
+        boxfit = BoxFit.cover;
+      }
+      return InkWell(
+          onTap: () {
+            BrowserContextMenu.disableContextMenu().then((value) =>
+                context.push("/images/${pictures[0].id}").then((value) async {
+                  if (kIsWeb) {
+                    await BrowserContextMenu.enableContextMenu();
+                  }
+                }));
+          },
+          child: CachedNetworkImage(
+            imageUrl: "$urlPrefix${pictures[0].url}",
+            placeholder: (context, url) => Image.memory(
+              kTransparentImage,
+              width: CARD_MAX_WIDTH,
+              height: adjustedHeight,
+            ),
+            width: CARD_MAX_WIDTH,
+            height: height,
+            fit: boxfit,
+          ));
+    } else if (type == ContentType.link) {
+      return Flexible(
+          child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: AnyLinkPreview(
+                  link: "$urlPrefix$link",
+                  displayDirection: UIDirection.uiDirectionVertical,
+                  showMultimedia: true,
+                  bodyMaxLines: 3,
+                  bodyTextOverflow: TextOverflow.ellipsis,
+                  bodyStyle: Theme.of(context).textTheme.bodyLarge,
+                  titleStyle: Theme.of(context).textTheme.titleLarge,
+                  previewHeight: 500,
+                  errorBody: 'Error!',
+                  errorTitle: 'Error!',
+                  errorWidget: Container(
+                    color: Colors.grey[300],
+                    child: const Text('Oops!'),
+                  ),
+                  backgroundColor: Theme.of(context).cardColor,
+                  borderRadius: 12,
+                  onTap: () async {
+                    final Uri url = Uri.parse(link!);
+                    if (!await launchUrl(url)) {
+                      throw Exception('Could not launch $url');
+                    }
+                  })));
+    }
+    return const SizedBox();
   }
 }

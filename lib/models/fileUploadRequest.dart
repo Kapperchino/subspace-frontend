@@ -1,5 +1,4 @@
 import 'package:frontend/models/pictureRequestMeta.dart';
-import 'package:frontend/models/post.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'fileUploadRequest.g.dart';
 

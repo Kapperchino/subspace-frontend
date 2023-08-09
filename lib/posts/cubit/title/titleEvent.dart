@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:frontend/models/voteRequest.dart';
-import 'package:frontend/posts/cubit/vote/voteState.dart';
 
 sealed class TitleEvent extends Equatable {
   @override

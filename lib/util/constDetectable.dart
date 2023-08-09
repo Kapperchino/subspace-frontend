@@ -35,7 +35,7 @@ class ConstDetectableText extends StatefulWidget {
     this.trimLength = 240,
     this.trimLines = 2,
     this.trimMode = TrimMode.Length,
-    this.delimiter = _kEllipsis + ' ',
+    this.delimiter = '$_kEllipsis ',
     this.callback,
   });
 
@@ -100,26 +100,26 @@ class _DetectableTextState extends State<ConstDetectableText> {
     final TextStyle style = theme.textTheme.titleMedium!.merge(widget.basicStyle);
     final dStyle = widget.detectedStyle ?? style.copyWith(color: Colors.blue);
 
-    final _defaultLessStyle = widget.lessStyle ?? style;
-    final _defaultMoreStyle = widget.moreStyle ?? style;
+    final defaultLessStyle = widget.lessStyle ?? style;
+    final defaultMoreStyle = widget.moreStyle ?? style;
     final textDirection = widget.textDirection ?? Directionality.of(context);
     final overflow = DefaultTextStyle.of(context).overflow;
     final locale = widget.locale ?? Localizations.maybeLocaleOf(context);
-    final _defaultDelimiterStyle = style;
+    final defaultDelimiterStyle = style;
 
     TextSpan link = TextSpan(
       text: _readMore ? widget.trimCollapsedText : widget.trimExpandedText,
-      style: _readMore ? _defaultMoreStyle : _defaultLessStyle,
+      style: _readMore ? defaultMoreStyle : defaultLessStyle,
       recognizer: TapGestureRecognizer()..onTap = _onTapLink,
     );
 
-    TextSpan _delimiter = TextSpan(
+    TextSpan delimiter = TextSpan(
       text: _readMore
           ? widget.trimCollapsedText.isNotEmpty
               ? widget.delimiter
               : ''
           : '',
-      style: _defaultDelimiterStyle,
+      style: defaultDelimiterStyle,
       recognizer: TapGestureRecognizer()..onTap = _onTapLink,
     );
 
@@ -151,7 +151,7 @@ class _DetectableTextState extends State<ConstDetectableText> {
         final linkSize = textPainter.size;
 
         // Layout and measure delimiter
-        textPainter.text = _delimiter;
+        textPainter.text = delimiter;
         textPainter.layout(minWidth: 0, maxWidth: maxWidth);
         final delimiterSize = textPainter.size;
 
@@ -181,7 +181,7 @@ class _DetectableTextState extends State<ConstDetectableText> {
           linkLongerThanLine = true;
         }
 
-        var textSpan;
+        TextSpan textSpan;
         switch (widget.trimMode) {
           case TrimMode.Length:
             if (widget.trimLength < widget.text.length) {
@@ -202,7 +202,7 @@ class _DetectableTextState extends State<ConstDetectableText> {
                         (linkLongerThanLine ? _kLineSeparator : '')
                     : widget.text,
                 detectionRegExp: widget.detectionRegExp,
-                children: <TextSpan>[_delimiter, link],
+                children: <TextSpan>[delimiter, link],
               );
             } else {
               textSpan = getDetectedTextSpan(
@@ -234,7 +234,7 @@ class _DetectableTextState extends State<ConstDetectableText> {
                         (linkLongerThanLine ? _kLineSeparator : '')
                     : widget.text,
                 detectionRegExp: widget.detectionRegExp,
-                children: <TextSpan>[_delimiter, link],
+                children: <TextSpan>[delimiter, link],
               );
             } else {
               textSpan = getDetectedTextSpan(

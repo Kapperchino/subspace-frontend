@@ -37,6 +37,8 @@ class Post {
   final int upVotes;
   @JsonKey(name: 'down_votes')
   final int downVotes;
+  @JsonKey(name: "link")
+  final String? link;
   final DateTime created;
   @JsonKey(name: 'content_type')
   final ContentType type;
@@ -57,6 +59,7 @@ class Post {
       this.postPictures,
       this.spacePicture,
       this.type = ContentType.text,
+      this.link,
       required this.upVotes,
       required this.downVotes,
       required this.created,

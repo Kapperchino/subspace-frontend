@@ -10,6 +10,7 @@ class PostRequest {
   final int posterId;
   final String? topic;
   final String? body;
+  final String? link;
   @JsonKey(name: 'content_type')
   final ContentType type;
   @JsonKey(name: 'file_ids')
@@ -21,6 +22,7 @@ class PostRequest {
     this.fileIds,
     this.topic,
     this.body,
+    this.link,
     this.type = ContentType.text,
   });
 

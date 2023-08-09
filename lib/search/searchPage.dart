@@ -8,12 +8,8 @@ import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/posts/cubit/search/searchBloc.dart';
 import 'package:frontend/posts/cubit/search/searchState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/posts/postcard.dart';
 import 'package:frontend/search/searchResult.dart';
-import 'package:go_router/go_router.dart';
 
-import '../posts/cubit/space/spaceBlock.dart';
-import '../posts/cubit/space/spaceState.dart';
 import '../posts/postCardWrapper.dart';
 
 class SearchPage extends StatelessWidget {

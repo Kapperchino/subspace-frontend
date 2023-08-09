@@ -17,13 +17,11 @@ import 'package:frontend/subspace/sortPostsWidget.dart';
 import 'package:frontend/subspace/titleWidget.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 import 'package:transparent_image/transparent_image.dart';
 
 import '../posts/cubit/space/spaceBlock.dart';
 import '../posts/cubit/space/spaceState.dart';
 import '../posts/postCardWrapper.dart';
-import '../posts/postcard.dart';
 import '../stores/store.dart';
 
 class Subspace extends StatefulWidget {

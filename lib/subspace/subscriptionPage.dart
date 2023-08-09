@@ -4,13 +4,9 @@ import 'package:frontend/posts/cubit/posting/postingBloc.dart';
 import 'package:frontend/posts/cubit/subscriptions/subscriptionsBloc.dart';
 import 'package:frontend/posts/cubit/subscriptions/subscriptionsEvent.dart';
 import 'package:frontend/subspace/subscriptionsWidget.dart';
-import 'package:frontend/subspace/subspace.dart';
 import 'package:http/http.dart' as http;
 
 import '../posts/cubit/sorting/sortBloc.dart';
-import '../posts/cubit/space/spaceBlock.dart';
-import '../posts/cubit/space/spaceEvent.dart';
-import '../posts/cubit/title/titleBloc.dart';
 
 class SubscriptionPage extends StatelessWidget {
   const SubscriptionPage({super.key});

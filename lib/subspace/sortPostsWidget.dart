@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/posts/cubit/sorting/sortBloc.dart';
 import 'package:frontend/posts/cubit/sorting/sortState.dart';
-import 'package:frontend/posts/cubit/space/spaceEvent.dart';
 
 import '../posts/cubit/sorting/sortEvent.dart';
-import '../posts/cubit/space/spaceBlock.dart';
 import '../posts/cubit/space/spaceState.dart';
 
 class SortPostsWidget extends StatelessWidget {

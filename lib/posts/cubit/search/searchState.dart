@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../models/post.dart';
-import '../../../models/postCardData.dart';
 import '../../../models/space.dart';
 
 enum SearchStatus { initial, success, failure }

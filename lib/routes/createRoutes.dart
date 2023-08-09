@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/intro/login.dart';
 import 'package:frontend/posts/cubit/spaceCreation/spaceCreationBloc.dart';
 import 'package:frontend/subspace/postingWidget.dart';
 import 'package:frontend/subspace/subspaceCreationWidget.dart';

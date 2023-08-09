@@ -1,5 +1,5 @@
 class Config {
-  static const String baseUrl = const String.fromEnvironment(
+  static const String baseUrl = String.fromEnvironment(
     'BASE_URL',
     defaultValue: '',
   );

@@ -17,4 +17,5 @@ Future<String?> getId() async {
       return androidId;
     }
   }
+  return null;
 }

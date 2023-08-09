@@ -15,7 +15,6 @@ import 'package:go_router/go_router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'config.dart';
 import 'firebase_options.dart';
-import 'messageHandler.dart';
 import 'models/appUser.dart';
 import 'package:http/http.dart' as http;
 

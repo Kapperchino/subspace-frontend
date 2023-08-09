@@ -12,7 +12,6 @@ import 'package:frontend/posts/cubit/post/postState.dart';
 import 'package:frontend/posts/postSection.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../subspace/titleWidget.dart';
 
 class PostWidget extends StatelessWidget {
   const PostWidget({super.key, required this.id, required this.spaceName});

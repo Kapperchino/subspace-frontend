@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -15,7 +14,6 @@ import 'package:stream_transform/stream_transform.dart';
 
 import '../../../config.dart';
 import '../../../models/appUser.dart';
-import '../../../models/voteRequest.dart';
 import '../../../stores/store.dart';
 
 const throttleDuration = Duration(milliseconds: 100);

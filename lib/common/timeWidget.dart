@@ -1,9 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/models/postCardData.dart';
-import 'package:go_router/go_router.dart';
 
-import '../models/post.dart';
 
 class TimeWidget extends StatelessWidget {
   const TimeWidget({super.key, required this.time});

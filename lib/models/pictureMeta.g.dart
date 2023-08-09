@@ -10,6 +10,7 @@ PictureMeta _$PictureMetaFromJson(Map<String, dynamic> json) => PictureMeta(
       width: json['width'] as int,
       height: json['height'] as int,
       url: json['url'] as String,
+      id: json['id'] as int,
     );
 
 Map<String, dynamic> _$PictureMetaToJson(PictureMeta instance) =>
@@ -17,4 +18,5 @@ Map<String, dynamic> _$PictureMetaToJson(PictureMeta instance) =>
       'width': instance.width,
       'height': instance.height,
       'url': instance.url,
+      'id': instance.id,
     };

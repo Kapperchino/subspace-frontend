@@ -21,6 +21,7 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
           : PictureMeta.fromJson(json['space_picture'] as Map<String, dynamic>),
       type: $enumDecodeNullable(_$ContentTypeEnumMap, json['content_type']) ??
           ContentType.text,
+      link: json['link'] as String?,
       upVotes: json['up_votes'] as int,
       downVotes: json['down_votes'] as int,
       created: DateTime.parse(json['created'] as String),
@@ -56,6 +57,7 @@ Map<String, dynamic> _$PostToJson(Post instance) {
   writeNotNull('post_pictures', instance.postPictures);
   val['up_votes'] = instance.upVotes;
   val['down_votes'] = instance.downVotes;
+  writeNotNull('link', instance.link);
   val['created'] = instance.created.toIso8601String();
   val['content_type'] = _$ContentTypeEnumMap[instance.type]!;
   writeNotNull('vote', instance.vote);

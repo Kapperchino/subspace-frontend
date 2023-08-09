@@ -1,4 +1,3 @@
-import 'package:frontend/models/voteRequest.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'subscriptionRequest.g.dart';
 

@@ -5,7 +5,6 @@ import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:flutter/foundation.dart';
 import 'package:frontend/models/fileUploadRequest.dart';
 import 'package:frontend/models/pictureMetaResult.dart';
 import 'package:frontend/models/pictureRequestMeta.dart';
@@ -116,7 +115,7 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
           }
         case PostingMode.upload:
           {
-            final type = await getContentType();
+            final type = getContentType();
             final res = await postPost(event.body, event.topic, event.spaceId,
                 content: event.content, contentType: type);
             if (res != 200) {
@@ -184,6 +183,7 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
     final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
     final token = await Store.secure.read(key: 'jwt');
     final List<int> fileIds = List.empty(growable: true);
+    String? link;
     if (state.mode == PostingMode.link) {
       if (contentType == ContentType.picture) {
         final res = await http.get(Uri.parse(content));
@@ -210,6 +210,8 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
         }
         final resMeta = PictureMetaResult.fromJson(jsonDecode(putRes.body));
         fileIds.add(resMeta.id);
+      } else {
+        link = content;
       }
     } else if (getContentType() == ContentType.picture) {
       final file = File(state.file!.path);
@@ -248,13 +250,14 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
     }
 
     final json = jsonEncode(PostRequest(
-      type: contentType,
-      topic: topic,
-      spaceId: spaceId,
-      posterId: user.id,
-      fileIds: fileIds,
-      body: body,
-    ).toJson());
+            type: contentType,
+            topic: topic,
+            spaceId: spaceId,
+            posterId: user.id,
+            fileIds: fileIds,
+            body: body,
+            link: link)
+        .toJson());
 
     final res = await http.post(
       Uri.parse('${Config.baseUrl}/posts'),

@@ -13,6 +13,7 @@ PostRequest _$PostRequestFromJson(Map<String, dynamic> json) => PostRequest(
           (json['file_ids'] as List<dynamic>?)?.map((e) => e as int).toList(),
       topic: json['topic'] as String?,
       body: json['body'] as String?,
+      link: json['link'] as String?,
       type: $enumDecodeNullable(_$ContentTypeEnumMap, json['content_type']) ??
           ContentType.text,
     );
@@ -31,6 +32,7 @@ Map<String, dynamic> _$PostRequestToJson(PostRequest instance) {
 
   writeNotNull('topic', instance.topic);
   writeNotNull('body', instance.body);
+  writeNotNull('link', instance.link);
   val['content_type'] = _$ContentTypeEnumMap[instance.type]!;
   writeNotNull('file_ids', instance.fileIds);
   return val;

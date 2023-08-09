@@ -13,7 +13,6 @@ import 'package:stream_transform/stream_transform.dart';
 
 import '../../../config.dart';
 import '../../../models/appUser.dart';
-import '../../../models/space.dart';
 import '../../../stores/store.dart';
 import '../space/spaceState.dart';
 
