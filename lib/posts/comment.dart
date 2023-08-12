@@ -5,21 +5,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/models/voteRequest.dart';
 import 'package:frontend/posts/commentMeta.dart';
-import 'package:frontend/posts/cubit/comment/commentBloc.dart';
-import 'package:frontend/posts/cubit/comment/commentEvent.dart';
-import 'package:frontend/posts/cubit/vote/voteBloc.dart';
-import 'package:frontend/posts/cubit/vote/voteEvent.dart';
+import 'package:frontend/cubit/comment/commentBloc.dart';
+import 'package:frontend/cubit/comment/commentEvent.dart';
+import 'package:frontend/cubit/vote/voteBloc.dart';
+import 'package:frontend/cubit/vote/voteEvent.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:frontend/util/votesUtil.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../models/CommentData.dart';
 import 'commentingWidget.dart';
-import 'cubit/commenting/commentingBloc.dart';
+import '../cubit/commenting/commentingBloc.dart';
 import 'package:http/http.dart' as http;
 
-import 'cubit/commenting/commentingEvent.dart';
-import 'cubit/commenting/commentingState.dart';
+import '../cubit/commenting/commentingEvent.dart';
+import '../cubit/commenting/commentingState.dart';
 
 class CommentWidget extends StatelessWidget {
   const CommentWidget({super.key, required this.parentId, required this.data});

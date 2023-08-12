@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/posts/cubit/imageView/imageViewEvent.dart';
+import 'package:frontend/cubit/imageView/imageViewEvent.dart';
 import 'package:frontend/posts/imageView.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
-import '../posts/cubit/imageView/imageViewBloc.dart';
+import '../cubit/imageView/imageViewBloc.dart';
 import '../stores/store.dart';
 
 class ImageRoutes {

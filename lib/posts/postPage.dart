@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/posts/cubit/comment/commentEvent.dart';
-import 'package:frontend/posts/cubit/post/postBloc.dart';
-import 'package:frontend/posts/cubit/post/postEvent.dart';
+import 'package:frontend/cubit/comment/commentEvent.dart';
+import 'package:frontend/cubit/post/postBloc.dart';
+import 'package:frontend/cubit/post/postEvent.dart';
 import 'package:frontend/posts/post.dart';
 import 'package:http/http.dart' as http;
 
-import 'cubit/comment/commentBloc.dart';
-import 'cubit/commenting/commentingBloc.dart';
+import '../cubit/comment/commentBloc.dart';
+import '../cubit/commenting/commentingBloc.dart';
 
 class PostPage extends StatelessWidget {
   const PostPage({super.key, required this.id, required this.spaceName});

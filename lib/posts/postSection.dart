@@ -9,12 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/posts/commentingWidget.dart';
-import 'package:frontend/posts/cubit/comment/commentBloc.dart';
-import 'package:frontend/posts/cubit/comment/commentEvent.dart';
-import 'package:frontend/posts/cubit/commenting/commentingBloc.dart';
-import 'package:frontend/posts/cubit/commenting/commentingState.dart';
-import 'package:frontend/posts/cubit/post/postBloc.dart';
-import 'package:frontend/posts/cubit/post/postState.dart';
+import 'package:frontend/cubit/comment/commentBloc.dart';
+import 'package:frontend/cubit/comment/commentEvent.dart';
+import 'package:frontend/cubit/commenting/commentingBloc.dart';
+import 'package:frontend/cubit/commenting/commentingState.dart';
+import 'package:frontend/cubit/post/postBloc.dart';
+import 'package:frontend/cubit/post/postState.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:frontend/util/selectableDetectables.dart';
@@ -24,11 +24,11 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/pictureMeta.dart';
 import '../models/voteRequest.dart';
 import '../util/votesUtil.dart';
-import 'cubit/commenting/commentingEvent.dart';
-import 'cubit/vote/voteBloc.dart';
+import '../cubit/commenting/commentingEvent.dart';
+import '../cubit/vote/voteBloc.dart';
 import 'package:http/http.dart' as http;
 
-import 'cubit/vote/voteEvent.dart';
+import '../cubit/vote/voteEvent.dart';
 
 class PostSection extends StatelessWidget {
   const PostSection({super.key, required this.id, required this.spaceName});

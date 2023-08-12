@@ -6,12 +6,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
 import 'package:frontend/models/pictureMeta.dart';
-import 'package:frontend/posts/cubit/sorting/sortBloc.dart';
-import 'package:frontend/posts/cubit/sorting/sortState.dart';
-import 'package:frontend/posts/cubit/space/spaceEvent.dart';
+import 'package:frontend/cubit/sorting/sortBloc.dart';
+import 'package:frontend/cubit/sorting/sortState.dart';
+import 'package:frontend/cubit/space/spaceEvent.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/posts/cubit/title/titleBloc.dart';
-import 'package:frontend/posts/cubit/title/titleEvent.dart';
+import 'package:frontend/cubit/title/titleBloc.dart';
+import 'package:frontend/cubit/title/titleEvent.dart';
 import 'package:frontend/subspace/sortPostsDaysWidget.dart';
 import 'package:frontend/subspace/sortPostsWidget.dart';
 import 'package:frontend/subspace/titleWidget.dart';
@@ -19,8 +19,8 @@ import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../posts/cubit/space/spaceBlock.dart';
-import '../posts/cubit/space/spaceState.dart';
+import '../cubit/space/spaceBlock.dart';
+import '../cubit/space/spaceState.dart';
 import '../posts/postCardWrapper.dart';
 import '../stores/store.dart';
 
@@ -73,11 +73,14 @@ class _SubSpaceState extends State<Subspace> {
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.background,
+            SizedBox(
+              height: 210,
+              child: DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.background,
+                ),
+                child: Container(),
               ),
-              child: Container(),
             ),
             BlocBuilder<SpaceBloc, SpaceState>(
                 builder: (context, state) => ListTile(

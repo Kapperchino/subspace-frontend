@@ -1,4 +1,4 @@
-import 'package:frontend/posts/cubit/vote/voteState.dart';
+import 'package:frontend/cubit/vote/voteState.dart';
 
 import '../models/vote.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/posts/cubit/search/searchBloc.dart';
-import 'package:frontend/posts/cubit/search/searchEvent.dart';
+import 'package:frontend/cubit/search/searchBloc.dart';
+import 'package:frontend/cubit/search/searchEvent.dart';
 import 'package:frontend/search/searchPage.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/posts/cubit/title/titleEvent.dart';
+import 'package:frontend/cubit/title/titleEvent.dart';
 
-import '../posts/cubit/title/titleBloc.dart';
-import '../posts/cubit/title/titleState.dart';
+import '../cubit/title/titleBloc.dart';
+import '../cubit/title/titleState.dart';
 
 class TitleWidget extends StatelessWidget {
   const TitleWidget({super.key, required this.title});

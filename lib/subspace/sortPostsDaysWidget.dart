@@ -1,11 +1,11 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/posts/cubit/sorting/sortBloc.dart';
-import 'package:frontend/posts/cubit/sorting/sortState.dart';
+import 'package:frontend/cubit/sorting/sortBloc.dart';
+import 'package:frontend/cubit/sorting/sortState.dart';
 
-import '../posts/cubit/sorting/sortEvent.dart';
-import '../posts/cubit/space/spaceState.dart';
+import '../cubit/sorting/sortEvent.dart';
+import '../cubit/space/spaceState.dart';
 
 class SortPostsDaysWidget extends StatelessWidget {
   const SortPostsDaysWidget({super.key});

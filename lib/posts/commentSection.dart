@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/posts/comment.dart';
-import 'package:frontend/posts/cubit/comment/commentBloc.dart';
-import 'package:frontend/posts/cubit/comment/commentState.dart';
-import 'package:frontend/posts/cubit/commenting/commentingBloc.dart';
+import 'package:frontend/cubit/comment/commentBloc.dart';
+import 'package:frontend/cubit/comment/commentState.dart';
+import 'package:frontend/cubit/commenting/commentingBloc.dart';
 import 'package:http/http.dart' as http;
 
 class CommentSection extends StatelessWidget {

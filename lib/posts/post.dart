@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/posts/commentSection.dart';
-import 'package:frontend/posts/cubit/post/postBloc.dart';
-import 'package:frontend/posts/cubit/post/postEvent.dart';
-import 'package:frontend/posts/cubit/post/postState.dart';
+import 'package:frontend/cubit/post/postBloc.dart';
+import 'package:frontend/cubit/post/postEvent.dart';
+import 'package:frontend/cubit/post/postState.dart';
 import 'package:frontend/posts/postSection.dart';
 import 'package:transparent_image/transparent_image.dart';
 

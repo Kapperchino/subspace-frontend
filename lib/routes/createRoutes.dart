@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/posts/cubit/spaceCreation/spaceCreationBloc.dart';
+import 'package:frontend/cubit/spaceCreation/spaceCreationBloc.dart';
 import 'package:frontend/subspace/postingWidget.dart';
 import 'package:frontend/subspace/subspaceCreationWidget.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 
-import '../posts/cubit/posting/postingBloc.dart';
+import '../cubit/posting/postingBloc.dart';
 import '../stores/store.dart';
 import 'package:http/http.dart' as http;
 

@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../posts/cubit/posting/postingBloc.dart';
-import '../posts/cubit/posting/postingEvent.dart';
+import '../cubit/posting/postingBloc.dart';
+import '../cubit/posting/postingEvent.dart';
 
 class PostFileWidget extends StatelessWidget {
   const PostFileWidget(

@@ -1,9 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/posts/cubit/vote/voteBloc.dart';
-import 'package:frontend/posts/cubit/vote/voteEvent.dart';
-import 'package:frontend/posts/cubit/vote/voteState.dart';
+import 'package:frontend/cubit/vote/voteBloc.dart';
+import 'package:frontend/cubit/vote/voteEvent.dart';
+import 'package:frontend/cubit/vote/voteState.dart';
 
 
 class VoteWidgetFlat extends StatelessWidget {

@@ -10,12 +10,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/common/timeWidget.dart';
 import 'package:frontend/models/post.dart';
-import 'package:frontend/posts/cubit/search/searchBloc.dart';
-import 'package:frontend/posts/cubit/search/searchState.dart';
-import 'package:frontend/posts/cubit/space/spaceBlock.dart';
-import 'package:frontend/posts/cubit/space/spaceState.dart';
-import 'package:frontend/posts/cubit/subscriptions/subscriptionsBloc.dart';
-import 'package:frontend/posts/cubit/subscriptions/subscriptionsState.dart';
+import 'package:frontend/cubit/search/searchBloc.dart';
+import 'package:frontend/cubit/search/searchState.dart';
+import 'package:frontend/cubit/space/spaceBlock.dart';
+import 'package:frontend/cubit/space/spaceState.dart';
+import 'package:frontend/cubit/subscriptions/subscriptionsBloc.dart';
+import 'package:frontend/cubit/subscriptions/subscriptionsState.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:go_router/go_router.dart';
@@ -27,9 +27,9 @@ import '../models/postCardData.dart';
 import '../models/voteRequest.dart';
 import '../util/constDetectable.dart';
 import '../util/votesUtil.dart';
-import 'cubit/vote/voteBloc.dart';
+import '../cubit/vote/voteBloc.dart';
 
-import 'cubit/vote/voteEvent.dart';
+import '../cubit/vote/voteEvent.dart';
 
 class PostCard extends StatelessWidget {
   const PostCard({super.key, required this.data, required this.spaceName});

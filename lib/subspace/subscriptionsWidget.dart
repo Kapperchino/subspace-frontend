@@ -5,15 +5,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/posts/cubit/subscriptions/subscriptionsBloc.dart';
-import 'package:frontend/posts/cubit/subscriptions/subscriptionsEvent.dart';
-import 'package:frontend/posts/cubit/subscriptions/subscriptionsState.dart';
+import 'package:frontend/cubit/subscriptions/subscriptionsBloc.dart';
+import 'package:frontend/cubit/subscriptions/subscriptionsEvent.dart';
+import 'package:frontend/cubit/subscriptions/subscriptionsState.dart';
 import 'package:frontend/subspace/sortPostsDaysWidget.dart';
 import 'package:frontend/subspace/sortPostsWidget.dart';
 import 'package:go_router/go_router.dart';
 
-import '../posts/cubit/sorting/sortBloc.dart';
-import '../posts/cubit/sorting/sortState.dart';
+import '../cubit/sorting/sortBloc.dart';
+import '../cubit/sorting/sortState.dart';
 import '../posts/postCardWrapper.dart';
 
 class SubscriptionsWidget extends StatefulWidget {

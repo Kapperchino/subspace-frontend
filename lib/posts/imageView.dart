@@ -8,8 +8,8 @@ import 'package:image_downloader_web/image_downloader_web.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import 'cubit/imageView/imageViewBloc.dart';
-import 'cubit/imageView/imageViewState.dart';
+import '../cubit/imageView/imageViewBloc.dart';
+import '../cubit/imageView/imageViewState.dart';
 
 class ImageView extends StatelessWidget {
   const ImageView({super.key});
