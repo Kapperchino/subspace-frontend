@@ -176,7 +176,7 @@ class _SubscriptionsWidget extends State<SubscriptionsWidget> {
                                   child: BottomLoader());
                             }
                             return PostCardWrapper(
-                              data: state.posts[index],
+                              post: state.posts[index].post,
                               spaceName: "",
                             );
                           }, childCount: state.posts.length),

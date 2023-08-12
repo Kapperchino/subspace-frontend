@@ -5,6 +5,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
+import 'package:frontend/cubit/userPage/userPageBloc.dart';
+import 'package:frontend/cubit/userPage/userPageEvent.dart';
+import 'package:frontend/cubit/userPage/userPageState.dart';
 import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/cubit/sorting/sortBloc.dart';
 import 'package:frontend/cubit/sorting/sortState.dart';
@@ -25,26 +28,21 @@ import '../posts/postCardWrapper.dart';
 import '../sidebar/sidebar.dart';
 import '../stores/store.dart';
 
-class Subspace extends StatefulWidget {
-  const Subspace({super.key, required this.name, required this.parentId});
+class UserWidget extends StatefulWidget {
+  const UserWidget({super.key, required this.userId});
 
-  final String name;
-  final int parentId;
+  final int userId;
 
   @override
   State<StatefulWidget> createState() {
-    return _SubSpaceState(parentId: parentId, name: name);
+    return _UserWidgetState(userId: userId);
   }
 }
 
-class _SubSpaceState extends State<Subspace> {
-  _SubSpaceState({
-    required this.parentId,
-    required this.name,
-  });
+class _UserWidgetState extends State<UserWidget> {
+  _UserWidgetState({required this.userId});
 
-  final String name;
-  final int parentId;
+  final int userId;
 
   @override
   void initState() {
@@ -69,9 +67,7 @@ class _SubSpaceState extends State<Subspace> {
       endDrawer: const SideBar(),
       body: RefreshIndicator(
         onRefresh: () async {
-          context
-              .read<SpaceBloc>()
-              .add(SpaceFetched(parentId: parentId, spaceName: name));
+          context.read<UserPageBloc>().add(UserPageFetched(userId: userId));
         },
         child: CustomScrollView(cacheExtent: 8500, slivers: <Widget>[
           SliverAppBar(
@@ -110,88 +106,21 @@ class _SubSpaceState extends State<Subspace> {
                         ),
                       ],
                     ),
-                    Container(
-                      padding: EdgeInsets.only(right: padding, bottom: 10),
-                      alignment: Alignment.bottomRight,
-                      child: BlocBuilder<SpaceBloc, SpaceState>(
-                        builder: (context, state) {
-                          return ElevatedButton(
-                            onPressed: () async {
-                              context
-                                  .push("/create/space/${state.spaceId}/post")
-                                  .then((value) => context
-                                      .read<SpaceBloc>()
-                                      .add(SpaceFetched(
-                                          parentId: parentId,
-                                          spaceName: name)));
-                            },
-                            child: const Text('Post'),
-                          );
-                        },
-                      ),
-                    ),
                   ],
                 )),
             backgroundColor: Theme.of(context).colorScheme.background,
-            flexibleSpace: BlocBuilder<SpaceBloc, SpaceState>(
-                builder: (context, state) => FlexibleSpaceBar(
-                      background: getImage(state.backgroundPicture, fit),
-                      titlePadding: const EdgeInsets.all(50),
-                      title: TitleWidget(
-                        title: name,
-                      ),
-                    )),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              padding: EdgeInsets.only(left: padding + 5, bottom: 5),
-              alignment: Alignment.bottomLeft,
-              child: ConstrainedBox(
-                constraints:
-                    const BoxConstraints.tightFor(width: 300, height: 40),
-                child: TextField(
-                  autofocus: false,
-                  maxLines: 1,
-                  onSubmitted: (value) {
-                    bool isTag = false;
-                    if (value.startsWith("#")) {
-                      value = value.substring(1);
-                      isTag = true;
-                    }
-                    context.push("/search/$value?isTag=$isTag");
-                  },
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    filled: true,
-                    hintText: 'Search',
-                    contentPadding: const EdgeInsets.only(
-                        left: 14.0, bottom: 8.0, top: 8.0),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Theme.of(context).cardColor),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Theme.of(context).cardColor),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-              ),
+            flexibleSpace: FlexibleSpaceBar(
+              background: getImage(null, fit),
+              titlePadding: const EdgeInsets.all(50),
             ),
           ),
-          BlocBuilder<SpaceBloc, SpaceState>(
+          BlocBuilder<UserPageBloc, UserPageState>(
             builder: (context, state) {
               switch (state.status) {
-                case SpaceStatus.failure:
+                case UserPageStatus.failure:
                   return const SliverToBoxAdapter(
                       child: Center(child: Text('failed to fetch posts')));
-                case SpaceStatus.success:
-                  if (name != "SubSpace") {
-                    context.read<TitleBloc>().add(InitEvent(
-                        context.read<SpaceBloc>().state.spaceId, name));
-                  }
+                case UserPageStatus.success:
                   if (state.posts.isEmpty) {
                     return const SliverToBoxAdapter(
                         child: Center(child: Text('no posts')));
@@ -206,10 +135,11 @@ class _SubSpaceState extends State<Subspace> {
                                 child: BottomLoader());
                           }
                           return PostCardWrapper(
-                              spaceName: name, post: state.posts[index].post);
+                              spaceName: state.posts[index].spaceName,
+                              post: state.posts[index]);
                         }, childCount: state.posts.length),
                       ));
-                case SpaceStatus.initial:
+                case UserPageStatus.initial:
                   return const SliverToBoxAdapter(
                       child: Center(child: CircularProgressIndicator()));
               }
@@ -221,8 +151,8 @@ class _SubSpaceState extends State<Subspace> {
             },
             listener: (context, state) {
               context
-                  .read<SpaceBloc>()
-                  .add(SpaceSortChanged(sortState: state.status));
+                  .read<UserPageBloc>()
+                  .add(UserPageSortChanged(sortState: state.status));
             },
             child: const SliverToBoxAdapter(child: SizedBox()),
           ),
@@ -232,8 +162,8 @@ class _SubSpaceState extends State<Subspace> {
             },
             listener: (context, state) {
               context
-                  .read<SpaceBloc>()
-                  .add(DaysSortChanged(sortDays: state.sortDays));
+                  .read<UserPageBloc>()
+                  .add(UserPageDaysSortChanged(sortDays: state.sortDays));
             },
             child: const SliverToBoxAdapter(child: SizedBox()),
           )

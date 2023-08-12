@@ -4,6 +4,7 @@ import 'package:frontend/routes/imageRoutes.dart';
 import 'package:frontend/routes/loginRoutes.dart';
 import 'package:frontend/routes/searchRoute.dart';
 import 'package:frontend/routes/spaceRoutes.dart';
+import 'package:frontend/routes/userRoutes.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 
@@ -38,6 +39,7 @@ class MainApp extends StatelessWidget {
         CreateRoutes().getSpaceCreationRoute(),
         SearchRoutes().getSearchRoute(),
         ImageRoutes().getImageRoute(),
+        UserRoutes().getUserRoute(),
       ]);
 
   @override

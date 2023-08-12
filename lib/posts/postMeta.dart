@@ -44,7 +44,9 @@ class PostMeta extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            onPressed: () {},
+            onPressed: () {
+              context.push("/u/${post.posterId}");
+            },
           ),
         ),
         if (post.spaceName != 'SubSpace' && spaceName != post.spaceName)

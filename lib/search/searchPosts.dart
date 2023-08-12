@@ -41,10 +41,7 @@ class SearchPosts extends StatelessWidget {
                     }
                     return PostCardWrapper(
                       spaceName: "",
-                      data: PostCardData(
-                          parentSpaceId: state.posts![index].spaceParentId,
-                          spaceName: state.posts![index].spaceName,
-                          post: state.posts![index]),
+                      post: state.posts![index],
                     );
                   }, childCount: state.posts!.length),
                 ));

@@ -32,9 +32,9 @@ import '../cubit/vote/voteBloc.dart';
 import '../cubit/vote/voteEvent.dart';
 
 class PostCard extends StatelessWidget {
-  const PostCard({super.key, required this.data, required this.spaceName});
+  const PostCard({super.key, required this.post, required this.spaceName});
 
-  final PostCardData data;
+  final Post post;
   final String spaceName;
 
   static const double CARD_MAX_HEIGHT = 600;
@@ -42,7 +42,6 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final post = data.post;
     final location = GoRouterState.of(context).matchedLocation;
     return Card(
         clipBehavior: Clip.hardEdge,
@@ -50,7 +49,7 @@ class PostCard extends StatelessWidget {
           splashColor: Colors.blue.withAlpha(30),
           onTap: () {
             context.push(
-                "/s/${data.post.spaceParentId}/${data.post.spaceName}/p/${post.id}");
+                "/s/${post.spaceParentId}/${post.spaceName}/p/${post.id}");
           },
           child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -61,7 +60,7 @@ class PostCard extends StatelessWidget {
                     child: PostMeta(
                   spaceName: spaceName,
                   maxUserNameLength: 16,
-                  post: data.post,
+                  post: post,
                 )),
                 if (post.topic.isNotEmpty)
                   Container(
@@ -122,10 +121,10 @@ class PostCard extends StatelessWidget {
                     Builder(
                       builder: (context) {
                         context.read<VoteBloc>().add(InitEvent(
-                            data.post.id,
-                            data.post.upVotes,
-                            data.post.downVotes,
-                            VotesUtil.getStatus(data.post.vote),
+                            post.id,
+                            post.upVotes,
+                            post.downVotes,
+                            VotesUtil.getStatus(post.vote),
                             VoteType.post));
                         return const VoteWidgetFlat();
                       },
@@ -133,7 +132,7 @@ class PostCard extends StatelessWidget {
                     Container(
                       alignment: Alignment.centerRight,
                       padding: const EdgeInsets.only(right: 10),
-                      child: TimeWidget(time: data.post.created),
+                      child: TimeWidget(time: post.created),
                     )
                   ],
                 )
