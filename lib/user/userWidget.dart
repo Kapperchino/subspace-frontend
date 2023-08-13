@@ -15,6 +15,7 @@ import 'package:frontend/cubit/space/spaceEvent.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/title/titleBloc.dart';
 import 'package:frontend/cubit/title/titleEvent.dart';
+import 'package:frontend/models/userMeta.dart';
 import 'package:frontend/subspace/sortPostsDaysWidget.dart';
 import 'package:frontend/subspace/sortPostsWidget.dart';
 import 'package:frontend/subspace/titleWidget.dart';
@@ -24,6 +25,7 @@ import 'package:transparent_image/transparent_image.dart';
 
 import '../cubit/space/spaceBlock.dart';
 import '../cubit/space/spaceState.dart';
+import '../models/appUser.dart';
 import '../posts/postCardWrapper.dart';
 import '../sidebar/sidebar.dart';
 import '../stores/store.dart';
@@ -70,48 +72,126 @@ class _UserWidgetState extends State<UserWidget> {
           context.read<UserPageBloc>().add(UserPageFetched(userId: userId));
         },
         child: CustomScrollView(cacheExtent: 8500, slivers: <Widget>[
-          SliverAppBar(
-            pinned: false,
-            snap: false,
-            floating: false,
-            expandedHeight: 200,
-            centerTitle: true,
-            bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          BlocBuilder<UserPageBloc, UserPageState>(builder: (context, state) {
+            return SliverAppBar(
+              pinned: false,
+              snap: false,
+              floating: false,
+              expandedHeight: 200,
+              centerTitle: true,
+              backgroundColor: Theme.of(context).colorScheme.background,
+              flexibleSpace: FlexibleSpaceBar(
+                background: getImage(null, fit),
+                title: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                    padding: EdgeInsets.only(
-                                        left: padding, bottom: 10),
-                                    alignment: Alignment.topLeft,
-                                    child: const SortPostsWidget()),
-                                Container(
-                                    padding: const EdgeInsets.only(
-                                        left: 5, bottom: 10),
-                                    alignment: Alignment.bottomLeft,
-                                    child: const SortPostsDaysWidget())
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
+                    const SizedBox(
+                      height: 7,
+                    ),
+                    CircleAvatar(
+                      foregroundImage: getUserImage(state.user),
+                      backgroundColor: Colors.blue,
+                      maxRadius: 60,
                     ),
                   ],
-                )),
-            backgroundColor: Theme.of(context).colorScheme.background,
-            flexibleSpace: FlexibleSpaceBar(
-              background: getImage(null, fit),
-              titlePadding: const EdgeInsets.all(50),
+                ),
+                titlePadding: const EdgeInsets.all(50),
+              ),
+            );
+          }),
+          BlocBuilder<UserPageBloc, UserPageState>(
+            builder: (context, state) {
+              return SliverToBoxAdapter(
+                  child: Card(
+                      color: Theme.of(context).colorScheme.background,
+                      margin: EdgeInsets.symmetric(horizontal: padding),
+                      child: Column(
+                        children: [
+                          BlocListener<UserPageBloc, UserPageState>(
+                            listener: (context, state) {
+                              if (state.bioStatus == BioEditStatus.success) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        backgroundColor: Colors.green,
+                                        content: Text('Bio changed')));
+                              } else if (state.bioStatus ==
+                                  BioEditStatus.failure) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        backgroundColor: Colors.red,
+                                        content: Text('Failed to change Bio')));
+                              }
+                            },
+                            child: const SizedBox(),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Spacer(
+                                flex: 2,
+                              ),
+                              Flexible(
+                                  child: Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Text(
+                                  state.user?.displayName ?? "loading",
+                                  textAlign: TextAlign.center,
+                                  style:
+                                      Theme.of(context).textTheme.headlineLarge,
+                                ),
+                              )),
+                              const Spacer(),
+                              if (isCurrentUser(state.user?.id))
+                                Flexible(
+                                    child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: IconButton(
+                                      onPressed: () {
+                                        context
+                                            .read<UserPageBloc>()
+                                            .add(UserPageBioToggle());
+                                      },
+                                      icon: const Icon(Icons.edit)),
+                                )),
+                              if (!isCurrentUser(state.user?.id)) const Spacer()
+                            ],
+                          ),
+                          Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                    enabled:
+                                        state.bioStatus == BioEditStatus.edit,
+                                    contentPadding: const EdgeInsets.all(10),
+                                    disabledBorder: InputBorder.none,
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20))),
+                                controller: state.controller,
+                                readOnly: state.bioStatus != BioEditStatus.edit,
+                                minLines: 1,
+                                maxLines: 3,
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ))
+                        ],
+                      )));
+            },
+          ),
+          SliverToBoxAdapter(
+            child: Row(
+              children: [
+                Container(
+                    padding: EdgeInsets.only(left: padding, top: 0),
+                    alignment: Alignment.topLeft,
+                    child: const SortPostsWidget()),
+                Container(
+                    padding: const EdgeInsets.only(left: 5, top: 0),
+                    alignment: Alignment.bottomLeft,
+                    child: const SortPostsDaysWidget())
+              ],
             ),
           ),
           BlocBuilder<UserPageBloc, UserPageState>(
@@ -184,5 +264,21 @@ class _UserWidgetState extends State<UserWidget> {
       placeholder: (context, url) => Image.memory(kTransparentImage),
       fit: fit,
     );
+  }
+
+  ImageProvider getUserImage(UserMeta? meta) {
+    if (meta == null) {
+      return const AssetImage('assets/default_profile_1.png');
+    }
+    final defaultProfileIndex = meta.id % 6;
+    if (meta.picture == null) {
+      return AssetImage('assets/default_profile_$defaultProfileIndex.png');
+    }
+    return NetworkImage(meta.picture!.url);
+  }
+
+  bool isCurrentUser(int? userId) {
+    final AppUser user = AppUser.fromJson(GetStorage().read("user"));
+    return user.id == userId;
   }
 }

@@ -18,7 +18,7 @@ class UserPage extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (_) => UserPageBloc(httpClient: http.Client())
-            ..add(UserPageFetched(userId: userId)),
+            ..add(UserPageInit(userId: userId)),
         ),
         BlocProvider(create: (_) => SortBloc(httpClient: http.Client()))
       ],

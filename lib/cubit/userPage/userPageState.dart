@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:frontend/models/appUser.dart';
 import 'package:frontend/models/post.dart';
 
@@ -7,21 +8,27 @@ import '../space/spaceState.dart';
 
 enum UserPageStatus { initial, success, failure }
 
+enum BioEditStatus { start, edit, success, failure }
+
 final class UserPageState extends Equatable {
   const UserPageState(
       {this.status = UserPageStatus.initial,
       this.sortState = SortStatus.latest,
+      this.bioStatus = BioEditStatus.start,
       this.posts = const <Post>[],
       this.sortDays = SortDays.week,
       this.hasReachedMax = false,
+      required this.controller,
       this.user});
 
   final UserPageStatus status;
+  final BioEditStatus bioStatus;
   final List<Post> posts;
   final bool hasReachedMax;
   final SortStatus sortState;
   final SortDays sortDays;
   final UserMeta? user;
+  final TextEditingController controller;
 
   UserPageState copyWith(
       {SortDays? days,
@@ -29,13 +36,17 @@ final class UserPageState extends Equatable {
       List<Post>? posts,
       bool? hasReachedMax,
       SortStatus? sortState,
-      UserMeta? user}) {
+      BioEditStatus? bioStatus,
+      UserMeta? user,
+      TextEditingController? controller}) {
     return UserPageState(
         status: status ?? this.status,
         posts: posts ?? this.posts,
         hasReachedMax: hasReachedMax ?? this.hasReachedMax,
         sortState: sortState ?? this.sortState,
         sortDays: days ?? sortDays,
+        controller: controller ?? this.controller,
+        bioStatus: bioStatus ?? this.bioStatus,
         user: user ?? this.user);
   }
 
@@ -46,5 +57,5 @@ final class UserPageState extends Equatable {
 
   @override
   List<Object> get props =>
-      [status, posts, hasReachedMax, sortState, user ?? -1];
+      [status, posts, hasReachedMax, sortState, user ?? -1, controller,bioStatus];
 }

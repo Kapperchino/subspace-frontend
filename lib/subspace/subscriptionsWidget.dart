@@ -87,30 +87,42 @@ class _SubscriptionsWidget extends State<SubscriptionsWidget> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                      padding: EdgeInsets.only(
-                                          left: padding, bottom: 10),
-                                      alignment: Alignment.topLeft,
-                                      child: const SortPostsWidget()),
-                                  Container(
-                                      padding: const EdgeInsets.only(
-                                          left: 5, bottom: 10),
-                                      alignment: Alignment.bottomLeft,
-                                      child: const SortPostsDaysWidget())
-                                ],
+                      Container(
+                        padding: EdgeInsets.only(left: padding + 5, bottom: 5),
+                        alignment: Alignment.bottomLeft,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints.tightFor(
+                              width: 300, height: 40),
+                          child: TextField(
+                            autofocus: false,
+                            maxLines: 1,
+                            onSubmitted: (value) {
+                              bool isTag = false;
+                              if (value.startsWith("#")) {
+                                value = value.substring(1);
+                                isTag = true;
+                              }
+                              context.push("/search/$value?isTag=$isTag");
+                            },
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(Icons.search),
+                              filled: false,
+                              hintText: 'Search',
+                              contentPadding: const EdgeInsets.only(
+                                  left: 14.0, bottom: 8.0, top: 8.0),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            ],
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).cardColor),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   )),
@@ -124,35 +136,17 @@ class _SubscriptionsWidget extends State<SubscriptionsWidget> {
                   title: const Text("Subscriptions")),
             ),
             SliverToBoxAdapter(
-              child: Container(
-                padding: EdgeInsets.only(left: padding + 5, bottom: 5),
-                alignment: Alignment.bottomLeft,
-                child: ConstrainedBox(
-                  constraints:
-                      const BoxConstraints.tightFor(width: 300, height: 40),
-                  child: TextField(
-                    autofocus: false,
-                    maxLines: 1,
-                    onSubmitted: (value) => context.push("/search/$value"),
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.search),
-                      filled: true,
-                      hintText: 'Search',
-                      contentPadding: const EdgeInsets.only(
-                          left: 14.0, bottom: 8.0, top: 8.0),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Theme.of(context).cardColor),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Theme.of(context).cardColor),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  ),
-                ),
+              child: Row(
+                children: [
+                  Container(
+                      padding: EdgeInsets.only(left: padding, bottom: 10),
+                      alignment: Alignment.topLeft,
+                      child: const SortPostsWidget()),
+                  Container(
+                      padding: const EdgeInsets.only(left: 5, bottom: 10),
+                      alignment: Alignment.bottomLeft,
+                      child: const SortPostsDaysWidget())
+                ],
               ),
             ),
             BlocBuilder<SubscriptionsBloc, SubscriptionsState>(

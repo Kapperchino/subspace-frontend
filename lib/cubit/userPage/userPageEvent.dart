@@ -6,6 +6,15 @@ sealed class UserPageEvent extends Equatable {
   List<Object> get props => [];
 }
 
+final class UserPageInit extends UserPageEvent {
+  final int userId;
+  UserPageInit({required this.userId});
+}
+
+final class UserPageBioToggle extends UserPageEvent {
+  UserPageBioToggle();
+}
+
 final class UserPageFetched extends UserPageEvent {
   final int userId;
 

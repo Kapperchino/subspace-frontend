@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter/material.dart';
 import 'package:frontend/cubit/userPage/userPageEvent.dart';
 import 'package:frontend/cubit/userPage/userPageState.dart';
 import 'package:frontend/models/pictureMeta.dart';
@@ -30,7 +31,8 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class UserPageBloc extends Bloc<UserPageEvent, UserPageState> {
-  UserPageBloc({required this.httpClient}) : super(const UserPageState()) {
+  UserPageBloc({required this.httpClient})
+      : super(UserPageState(controller: TextEditingController())) {
     on<UserPageFetched>(
       _onPostFetched,
       transformer: throttleDroppable(throttleDuration),
@@ -43,9 +45,62 @@ class UserPageBloc extends Bloc<UserPageEvent, UserPageState> {
       _onDaysChange,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<UserPageInit>(
+      _onInit,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<UserPageBioToggle>(
+      _onBioEdit,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   final http.Client httpClient;
+
+  Future<void> _onBioEdit(
+    UserPageBioToggle event,
+    Emitter<UserPageState> emit,
+  ) async {
+    if (state.hasReachedMax) return;
+    if (state.bioStatus != BioEditStatus.edit) {
+      return emit(state.copyWith(bioStatus: BioEditStatus.edit));
+    }
+    if (state.controller.text != state.user!.bio) {
+      final token = await Store.secure.read(key: 'jwt');
+      final res = await httpClient.put(
+          Uri.parse('${Config.baseUrl}/users/${state.user!.id}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({"bio": state.controller.text}));
+      if (res.statusCode == 200) {
+        return emit(state.copyWith(bioStatus: BioEditStatus.success));
+      }
+      return emit(state.copyWith(bioStatus: BioEditStatus.failure));
+    }
+    return emit(state.copyWith(bioStatus: BioEditStatus.start));
+  }
+
+  Future<void> _onInit(
+    UserPageInit event,
+    Emitter<UserPageState> emit,
+  ) async {
+    if (state.hasReachedMax) return;
+    try {
+      final posts = await getPosts(event.userId);
+      return emit(
+        state.copyWith(
+            status: UserPageStatus.success,
+            posts: posts.$1,
+            user: posts.$2,
+            hasReachedMax: false,
+            controller: TextEditingController(text: posts.$2.bio)),
+      );
+    } catch (_) {
+      emit(state.copyWith(status: UserPageStatus.failure));
+    }
+  }
 
   Future<void> _onDaysChange(
     UserPageDaysSortChanged event,

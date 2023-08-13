@@ -21,12 +21,10 @@ class SideBar extends StatelessWidget {
         // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,
         children: [
-          SizedBox(
+          SafeArea(
+              child: SizedBox(
             height: 210,
             child: DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.background,
-              ),
               child: Column(children: [
                 FutureBuilder<(AppUser, ImageProvider)>(
                   future: getProfilePic(),
@@ -59,7 +57,8 @@ class SideBar extends StatelessWidget {
                     })
               ]),
             ),
-          ),
+          )),
+          if(GoRouter.of(context).location.startsWith('/s/'))
           BlocBuilder<SpaceBloc, SpaceState>(
               builder: (context, state) => ListTile(
                     title: const Text('Create Subspace'),
