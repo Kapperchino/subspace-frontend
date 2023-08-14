@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -21,6 +22,7 @@ import 'package:frontend/subspace/sortPostsWidget.dart';
 import 'package:frontend/subspace/titleWidget.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../cubit/space/spaceBlock.dart';
@@ -89,11 +91,40 @@ class _UserWidgetState extends State<UserWidget> {
                     const SizedBox(
                       height: 7,
                     ),
-                    CircleAvatar(
-                      foregroundImage: getUserImage(state.user),
-                      backgroundColor: Colors.blue,
-                      maxRadius: 60,
-                    ),
+                    SafeArea(
+                        child: Stack(children: [
+                      CircleAvatar(
+                        foregroundImage: getUserImage(state.user),
+                        backgroundColor: Colors.blue,
+                        maxRadius: 60,
+                      ),
+                      Positioned(
+                          left: 83,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              final picker = ImagePicker();
+                              picker
+                                  .pickImage(source: ImageSource.gallery)
+                                  .then((pic) {
+                                context
+                                    .read<UserPageBloc>()
+                                    .add(UserPagePicUpload(file: pic));
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: const CircleBorder(),
+                              minimumSize: const Size(4, 4),
+                              padding: const EdgeInsets.all(3),
+                              backgroundColor: Colors.blue, // <-- Button color
+                              foregroundColor: Colors.red, // <-- Splash color
+                            ),
+                            child: const Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ))
+                    ])),
                   ],
                 ),
                 titlePadding: const EdgeInsets.all(50),
@@ -121,6 +152,26 @@ class _UserWidgetState extends State<UserWidget> {
                                     const SnackBar(
                                         backgroundColor: Colors.red,
                                         content: Text('Failed to change Bio')));
+                              }
+
+                              if (state.picEditStatus ==
+                                  PicEditStatus.success) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        backgroundColor: Colors.green,
+                                        content: Text('Picture changed')));
+                                context
+                                    .read<UserPageBloc>()
+                                    .add(UserPageFetched(userId: userId));
+                              }
+
+                              if (state.picEditStatus ==
+                                  PicEditStatus.failure) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        backgroundColor: Colors.red,
+                                        content:
+                                            Text('Failed to change picture')));
                               }
                             },
                             child: const SizedBox(),
@@ -278,7 +329,8 @@ class _UserWidgetState extends State<UserWidget> {
   }
 
   bool isCurrentUser(int? userId) {
-    final AppUser user = AppUser.fromJson(GetStorage().read("user"));
+    final AppUser user =
+        AppUser.fromJson(jsonDecode(GetStorage().read("user")));
     return user.id == userId;
   }
 }

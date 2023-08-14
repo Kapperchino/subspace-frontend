@@ -116,7 +116,8 @@ class SubscriptionsBloc extends Bloc<SubscriptionsEvent, SubscriptionsState> {
       case SortDays.week:
         intDays = 7;
     }
-    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
+    final AppUser user =
+        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
     final res = await http.get(
       Uri.parse(
           '${Config.baseUrl}/posts/users/${user.id}/subscriptions?sort=${sort.name}&days=$intDays'),

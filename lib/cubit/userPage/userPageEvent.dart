@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:frontend/cubit/space/spaceState.dart';
+import 'package:image_picker/image_picker.dart';
 
 sealed class UserPageEvent extends Equatable {
   @override
@@ -13,6 +14,11 @@ final class UserPageInit extends UserPageEvent {
 
 final class UserPageBioToggle extends UserPageEvent {
   UserPageBioToggle();
+}
+
+final class UserPagePicUpload extends UserPageEvent {
+  XFile? file;
+  UserPagePicUpload({required this.file});
 }
 
 final class UserPageFetched extends UserPageEvent {

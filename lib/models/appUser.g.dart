@@ -7,19 +7,19 @@ part of 'appUser.dart';
 // **************************************************************************
 
 AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
-      id: json['id'] as int,
-      displayName: json['displayName'] as String,
+      id: json['user_id'] as int,
+      displayName: json['display_name'] as String,
       email: json['email'] as String,
       bio: json['bio'] as String? ?? "",
-      picture: json['picture'] == null
+      picture: json['picture_meta'] == null
           ? null
-          : PictureMeta.fromJson(json['picture'] as Map<String, dynamic>),
+          : PictureMeta.fromJson(json['picture_meta'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$AppUserToJson(AppUser instance) {
   final val = <String, dynamic>{
-    'id': instance.id,
-    'displayName': instance.displayName,
+    'user_id': instance.id,
+    'display_name': instance.displayName,
     'bio': instance.bio,
     'email': instance.email,
   };
@@ -30,6 +30,6 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) {
     }
   }
 
-  writeNotNull('picture', instance.picture);
+  writeNotNull('picture_meta', instance.picture);
   return val;
 }

@@ -108,7 +108,8 @@ class TitleBloc extends Bloc<TitleEvent, TitleState> {
   }
 
   Future<int> getSubscription(int spaceId) async {
-    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
+    final AppUser user =
+        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
     final token = await Store.secure.read(key: 'jwt');
     const baseUrl = "${Config.baseUrl}/subscriptions/users";
     final res = await http.get(
@@ -122,7 +123,8 @@ class TitleBloc extends Bloc<TitleEvent, TitleState> {
   }
 
   Future<int> putSubscription() async {
-    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
+    final AppUser user =
+        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
     final token = await Store.secure.read(key: 'jwt');
     const baseUrl = "${Config.baseUrl}/subscriptions";
     final req = SubscriptionRequest(userId: user.id, spaceId: state.spaceId);
@@ -138,7 +140,8 @@ class TitleBloc extends Bloc<TitleEvent, TitleState> {
   }
 
   Future<int> deleteSubscription() async {
-    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
+    final AppUser user =
+        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
     final token = await Store.secure.read(key: 'jwt');
     const baseUrl = "${Config.baseUrl}/subscriptions";
     final res = await http.delete(

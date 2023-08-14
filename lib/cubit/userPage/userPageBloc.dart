@@ -13,10 +13,16 @@ import 'package:frontend/cubit/space/spaceEvent.dart';
 import 'package:frontend/cubit/space/spaceState.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:image_size_getter/image_size_getter.dart';
+import 'package:mime/mime.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import '../../config.dart';
 import '../../models/appUser.dart';
+import '../../models/fileUploadRequest.dart';
+import '../../models/pictureMetaResult.dart';
+import '../../models/pictureRequestMeta.dart';
 import '../../models/space.dart';
 import '../../models/userMeta.dart';
 import '../../stores/store.dart';
@@ -53,9 +59,25 @@ class UserPageBloc extends Bloc<UserPageEvent, UserPageState> {
       _onBioEdit,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<UserPagePicUpload>(
+      _onPicUpdate,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   final http.Client httpClient;
+
+  Future<void> _onPicUpdate(
+      UserPagePicUpload event, Emitter<UserPageState> emit) async {
+    if (event.file == null) {
+      return emit(state.copyWith(picEditStatus: PicEditStatus.start));
+    }
+    final res = await uploadPic(event.file!);
+    if (res != 200) {
+      return emit(state.copyWith(picEditStatus: PicEditStatus.failure));
+    }
+    return emit(state.copyWith(picEditStatus: PicEditStatus.success));
+  }
 
   Future<void> _onBioEdit(
     UserPageBioToggle event,
@@ -212,5 +234,67 @@ class UserPageBloc extends Bloc<UserPageEvent, UserPageState> {
       // then throw an exception.
       throw Exception('Failed to create album.');
     }
+  }
+
+  Future<int> uploadPic(XFile file) async {
+    final token = await Store.secure.read(key: 'jwt');
+    final mem = await file.readAsBytes();
+    final size = ImageSizeGetter.getSize(MemoryInput(mem));
+    final pictureMeta =
+        PictureRequestMeta(width: size.width, height: size.height);
+    final json = jsonEncode(FileUploadRequest(
+        fileType: FileType.picture, pictureMeta: pictureMeta));
+    final res = await http.put(
+      Uri.parse('${Config.baseUrl}/files'),
+      body: json,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    if (res.statusCode != 200) {
+      return res.statusCode;
+    }
+    final resMeta = PictureMetaResult.fromJson(jsonDecode(res.body));
+    final AppUser user =
+        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+
+    final userRes = await http.put(
+      Uri.parse('${Config.baseUrl}/users/${user.id}/picture'),
+      body: jsonEncode({'picture_id': resMeta.id}),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (userRes.statusCode != 200) {
+      return userRes.statusCode;
+    }
+    await GetStorage().write(
+        'user',
+        jsonEncode(AppUser(
+                id: user.id,
+                displayName: user.displayName,
+                email: user.email,
+                picture: PictureMeta(
+                    height: resMeta.height,
+                    width: resMeta.width,
+                    id: resMeta.id,
+                    url: resMeta.url))
+            .toJson()));
+    String? mimeStr;
+    if (file.mimeType != null) {
+      mimeStr = file.mimeType;
+    } else {
+      mimeStr = lookupMimeType(file.path);
+    }
+    Uri uri = Uri.parse(resMeta.presigned);
+    final fileRes = await http.put(uri,
+        body: await file.readAsBytes(), headers: {"Content-Type": mimeStr!});
+    if (fileRes.statusCode != 200) {
+      return fileRes.statusCode;
+    }
+    return 200;
   }
 }

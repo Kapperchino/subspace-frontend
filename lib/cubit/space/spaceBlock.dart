@@ -131,7 +131,8 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
         'Authorization': 'Bearer $token',
       },
     );
-    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
+    final AppUser user =
+        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
     final space = Space.fromJson(jsonDecode(utf8.decode(spaceInfo.bodyBytes)));
     final spaceId = space.id;
     final image = space.backgroundPicture;

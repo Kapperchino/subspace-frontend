@@ -58,7 +58,7 @@ void main() async {
             return;
           }
           final AppUser user =
-              AppUser.fromJson(await GetStorage().read("user"));
+              AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
           final token = await Store.secure.read(key: 'jwt');
           final deviceId = await getId();
           final res = await http.put(Uri.parse('${Config.baseUrl}/devices/'),

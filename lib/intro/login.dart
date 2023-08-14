@@ -200,8 +200,12 @@ class _LoginState extends State<Login> {
       await GetStorage().write("expire", expirationDate.toIso8601String());
       await GetStorage().write(
           "user",
-          AppUser(id: user.id, displayName: user.displayName, email: user.email)
-              .toJson());
+          jsonEncode(AppUser(
+                  id: user.id,
+                  displayName: user.displayName,
+                  email: user.email,
+                  picture: user.picture)
+              .toJson()));
       return res.statusCode;
     } else {
       return res.statusCode;

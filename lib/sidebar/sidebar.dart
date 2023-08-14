@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_storage/get_storage.dart';
@@ -58,14 +60,14 @@ class SideBar extends StatelessWidget {
               ]),
             ),
           )),
-          if(GoRouter.of(context).location.startsWith('/s/'))
-          BlocBuilder<SpaceBloc, SpaceState>(
-              builder: (context, state) => ListTile(
-                    title: const Text('Create Subspace'),
-                    onTap: () {
-                      context.push("/create/space/${state.spaceId}");
-                    },
-                  )),
+          if (GoRouter.of(context).location.startsWith('/s/'))
+            BlocBuilder<SpaceBloc, SpaceState>(
+                builder: (context, state) => ListTile(
+                      title: const Text('Create Subspace'),
+                      onTap: () {
+                        context.push("/create/space/${state.spaceId}");
+                      },
+                    )),
           ListTile(
             title: const Text('Subscriptions'),
             onTap: () {
@@ -76,6 +78,7 @@ class SideBar extends StatelessWidget {
             title: const Text('Sign Out'),
             onTap: () async {
               await GetStorage().remove("expire");
+              await GetStorage().remove("user");
               await Store.secure.delete(key: "jwt");
               context.go("/login");
             },
@@ -98,6 +101,6 @@ class SideBar extends StatelessWidget {
   }
 
   Future<AppUser> getUser() async {
-    return AppUser.fromJson(await GetStorage().read("user"));
+    return AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
   }
 }

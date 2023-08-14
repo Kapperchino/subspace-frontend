@@ -83,7 +83,8 @@ class VoteBloc extends Bloc<VoteEvent, VotingState> {
   }
 
   Future<int> upvote() async {
-    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
+    final AppUser user =
+        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
     final token = await Store.secure.read(key: 'jwt');
     final res = await http.post(
       Uri.parse('${Config.baseUrl}/votes'),
@@ -102,7 +103,8 @@ class VoteBloc extends Bloc<VoteEvent, VotingState> {
   }
 
   Future<int> downvote() async {
-    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
+    final AppUser user =
+        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
     final token = await Store.secure.read(key: 'jwt');
     final res = await http.post(
       Uri.parse('${Config.baseUrl}/votes'),
@@ -121,7 +123,8 @@ class VoteBloc extends Bloc<VoteEvent, VotingState> {
   }
 
   Future<(int, int, VotingStatus)> getVotes() async {
-    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
+    final AppUser user =
+        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
     final token = await Store.secure.read(key: 'jwt');
     var baseUrl = "";
     if (state.voteType == VoteType.post) {

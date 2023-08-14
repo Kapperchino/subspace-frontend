@@ -181,7 +181,8 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
 
   Future<int> postPost(String body, String topic, int spaceId,
       {String content = "", ContentType contentType = ContentType.text}) async {
-    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
+    final AppUser user =
+        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
     final token = await Store.secure.read(key: 'jwt');
     final List<int> fileIds = List.empty(growable: true);
     String? link;

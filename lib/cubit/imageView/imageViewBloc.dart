@@ -48,7 +48,8 @@ class ImageViewBloc extends Bloc<ImageViewEvent, ImageViewState> {
 
   Future<PictureMeta?> getImage(int imageId) async {
     final token = await Store.secure.read(key: 'jwt');
-    final AppUser user = AppUser.fromJson(await GetStorage().read("user"));
+    final AppUser user =
+        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
     final res = await http.get(
       Uri.parse('${Config.baseUrl}/files/$imageId'),
       headers: <String, String>{

@@ -4,10 +4,13 @@ part 'appUser.g.dart';
 
 @JsonSerializable(includeIfNull: false)
 class AppUser {
+  @JsonKey(name: 'user_id')
   final int id;
+  @JsonKey(name: 'display_name')
   final String displayName;
   final String bio;
   final String email;
+  @JsonKey(name: 'picture_meta')
   final PictureMeta? picture;
 
   const AppUser(

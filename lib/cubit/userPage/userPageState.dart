@@ -10,6 +10,8 @@ enum UserPageStatus { initial, success, failure }
 
 enum BioEditStatus { start, edit, success, failure }
 
+enum PicEditStatus { start, success, failure }
+
 final class UserPageState extends Equatable {
   const UserPageState(
       {this.status = UserPageStatus.initial,
@@ -18,6 +20,7 @@ final class UserPageState extends Equatable {
       this.posts = const <Post>[],
       this.sortDays = SortDays.week,
       this.hasReachedMax = false,
+      this.picEditStatus = PicEditStatus.start,
       required this.controller,
       this.user});
 
@@ -29,6 +32,7 @@ final class UserPageState extends Equatable {
   final SortDays sortDays;
   final UserMeta? user;
   final TextEditingController controller;
+  final PicEditStatus picEditStatus;
 
   UserPageState copyWith(
       {SortDays? days,
@@ -36,6 +40,7 @@ final class UserPageState extends Equatable {
       List<Post>? posts,
       bool? hasReachedMax,
       SortStatus? sortState,
+      PicEditStatus? picEditStatus,
       BioEditStatus? bioStatus,
       UserMeta? user,
       TextEditingController? controller}) {
@@ -47,6 +52,7 @@ final class UserPageState extends Equatable {
         sortDays: days ?? sortDays,
         controller: controller ?? this.controller,
         bioStatus: bioStatus ?? this.bioStatus,
+        picEditStatus: picEditStatus ?? this.picEditStatus,
         user: user ?? this.user);
   }
 
@@ -56,6 +62,14 @@ final class UserPageState extends Equatable {
   }
 
   @override
-  List<Object> get props =>
-      [status, posts, hasReachedMax, sortState, user ?? -1, controller,bioStatus];
+  List<Object> get props => [
+        status,
+        posts,
+        hasReachedMax,
+        sortState,
+        user ?? -1,
+        controller,
+        bioStatus,
+        picEditStatus,
+      ];
 }
