@@ -184,6 +184,7 @@ class _UserWidgetState extends State<UserWidget> {
                                 flex: 2,
                               ),
                               Flexible(
+                                flex: 3,
                                   child: Padding(
                                 padding: const EdgeInsets.only(left: 10),
                                 child: Text(
