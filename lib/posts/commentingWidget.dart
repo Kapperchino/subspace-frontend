@@ -6,57 +6,42 @@ import 'package:frontend/cubit/commenting/commentingBloc.dart';
 import 'package:frontend/cubit/commenting/commentingEvent.dart';
 import 'package:frontend/cubit/commenting/commentingState.dart';
 
-class CommentingWidget extends StatelessWidget {
-  const CommentingWidget({
-    super.key,
-  });
+import '../models/comment.dart';
+import '../models/post.dart';
+import 'commentModal.dart';
 
+class CommentingWidget extends StatelessWidget {
+  const CommentingWidget({super.key, this.comment, this.post});
+
+  final Comment? comment;
+  final Post? post;
   @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 800) / 2, 0.0);
-    return BlocBuilder<CommentingBloc, CommentingState>(
-        builder: (context, state) {
-      return AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        height: state.status == CommentingStaus.started ||
-                state.status == CommentingStaus.failure
-            ? 100
-            : 0,
-        curve: Curves.easeInOutCubicEmphasized,
-        padding: EdgeInsets.only(
-            top: 12,
-            right: state.isPostComment ? padding : 10,
-            left: state.isPostComment ? padding : 10),
-        child: TextField(
-          autofocus: false,
-          maxLines: 3,
-          enabled: state.status == CommentingStaus.failure ||
-              state.status == CommentingStaus.started,
-          controller: state.controller,
-          onChanged: (comment) => context
-              .read<CommentingBloc>()
-              .add(CommentChanged(comment: comment)),
-          decoration: InputDecoration(
-            filled: true,
-            hintText: 'Comment',
-            contentPadding:
-                const EdgeInsets.only(left: 14.0, bottom: 8.0, top: 8.0),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Theme.of(context).cardColor),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Theme.of(context).cardColor),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            disabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Theme.of(context).cardColor),
-              borderRadius: BorderRadius.circular(10),
-            ),
+  Widget build(BuildContext baseContext) {
+    return Align(
+        alignment: Alignment.centerRight,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 10, bottom: 10),
+          child: ElevatedButton(
+            onPressed: () {
+              if (comment != null) {
+                baseContext.read<CommentingBloc>().add(CommentPressed(
+                    postId: comment!.postId, parentId: comment!.id));
+              }
+              if (post != null) {
+                baseContext
+                    .read<CommentingBloc>()
+                    .add(CommentPressed(postId: post!.id));
+              }
+              showModalBottomSheet(
+                  context: baseContext,
+                  builder: (context) {
+                    return BlocProvider.value(
+                        value: BlocProvider.of<CommentingBloc>(baseContext),
+                        child: CommentModal(post: post, comment: comment));
+                  });
+            },
+            child: const Text('Comment'),
           ),
-        ),
-      );
-    });
+        ));
   }
 }

@@ -27,6 +27,11 @@ class PostMeta extends StatelessWidget {
             maxRadius: 20,
             foregroundImage: getProfilePic(post.posterPicture),
             backgroundColor: Colors.blue,
+            child: InkWell(
+              onTap: () {
+                context.push("/u/${post.posterId}");
+              },
+            ),
           ),
         ),
         Container(

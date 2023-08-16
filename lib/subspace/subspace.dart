@@ -201,7 +201,7 @@ class _SubSpaceState extends State<Subspace> {
                           }
                           return PostCardWrapper(
                               spaceName: name, post: state.posts[index].post);
-                        }, childCount: state.posts.length),
+                        }, childCount: state.posts.length,addRepaintBoundaries: false),
                       ));
                 case SpaceStatus.initial:
                   return const SliverToBoxAdapter(

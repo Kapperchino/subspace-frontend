@@ -47,6 +47,7 @@ class _UserWidgetState extends State<UserWidget> {
   _UserWidgetState({required this.userId});
 
   final int userId;
+  AppUser? currentUser;
 
   @override
   void initState() {
@@ -98,6 +99,7 @@ class _UserWidgetState extends State<UserWidget> {
                         backgroundColor: Colors.blue,
                         maxRadius: 60,
                       ),
+                      if(isCurrentUser(userId))
                       Positioned(
                           left: 83,
                           child: ElevatedButton(
@@ -184,16 +186,17 @@ class _UserWidgetState extends State<UserWidget> {
                                 flex: 2,
                               ),
                               Flexible(
-                                flex: 3,
+                                  flex: 3,
                                   child: Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text(
-                                  state.user?.displayName ?? "loading",
-                                  textAlign: TextAlign.center,
-                                  style:
-                                      Theme.of(context).textTheme.headlineLarge,
-                                ),
-                              )),
+                                    padding: const EdgeInsets.only(left: 10),
+                                    child: Text(
+                                      state.user?.displayName ?? "loading",
+                                      textAlign: TextAlign.center,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineLarge,
+                                    ),
+                                  )),
                               const Spacer(),
                               if (isCurrentUser(state.user?.id))
                                 Flexible(
@@ -330,8 +333,12 @@ class _UserWidgetState extends State<UserWidget> {
   }
 
   bool isCurrentUser(int? userId) {
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(GetStorage().read("user")));
-    return user.id == userId;
+    if (currentUser == null) {
+      final AppUser user =
+          AppUser.fromJson(jsonDecode(GetStorage().read("user")));
+      currentUser = user;
+      return user.id == userId;
+    }
+    return currentUser!.id == userId;
   }
 }

@@ -14,6 +14,10 @@ Comment _$CommentFromJson(Map<String, dynamic> json) => Comment(
       content: json['content'] as String? ?? "",
       type: $enumDecodeNullable(_$ContentTypeEnumMap, json['content_type']) ??
           ContentType.text,
+      posterPicture: json['poster_picture'] == null
+          ? null
+          : PictureMeta.fromJson(
+              json['poster_picture'] as Map<String, dynamic>),
       upVotes: json['up_votes'] as int,
       parentId: json['parent_id'] as int,
       downVotes: json['down_votes'] as int,
@@ -32,11 +36,6 @@ Map<String, dynamic> _$CommentToJson(Comment instance) {
     'post_id': instance.postId,
     'body': instance.body,
     'content': instance.content,
-    'parent_id': instance.parentId,
-    'up_votes': instance.upVotes,
-    'down_votes': instance.downVotes,
-    'created': instance.created.toIso8601String(),
-    'content_type': _$ContentTypeEnumMap[instance.type]!,
   };
 
   void writeNotNull(String key, dynamic value) {
@@ -45,6 +44,12 @@ Map<String, dynamic> _$CommentToJson(Comment instance) {
     }
   }
 
+  writeNotNull('poster_picture', instance.posterPicture);
+  val['parent_id'] = instance.parentId;
+  val['up_votes'] = instance.upVotes;
+  val['down_votes'] = instance.downVotes;
+  val['created'] = instance.created.toIso8601String();
+  val['content_type'] = _$ContentTypeEnumMap[instance.type]!;
   writeNotNull('vote', instance.vote);
   return val;
 }

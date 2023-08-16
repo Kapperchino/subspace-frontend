@@ -1,32 +1,33 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/models/comment.dart';
+import 'package:go_router/go_router.dart';
+
+import '../models/pictureMeta.dart';
 
 class CommentMeta extends StatelessWidget {
-  const CommentMeta({
-    super.key,
-    required this.userName,
-    required this.posterId,
-    required this.created,
-  });
+  const CommentMeta({super.key, required this.comment});
 
-  final String userName;
-  final int posterId;
-  final DateTime created;
+  final Comment comment;
 
   @override
   @override
   Widget build(BuildContext context) {
-    final defaultProfileIndex = posterId % 6;
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
         Container(
           padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
-          child: CircleAvatar(
-            maxRadius: 20,
-            backgroundImage:
-                AssetImage('assets/default_profile_$defaultProfileIndex.png'),
-            backgroundColor: Colors.blue,
-          ),
+          child: InkWell(
+              onTap: () {
+                context.push("/u/${comment.posterId}");
+              },
+              child: CircleAvatar(
+                maxRadius: 20,
+                backgroundImage: getProfilePic(comment.posterPicture),
+                backgroundColor: Colors.blue,
+              )),
         ),
         Container(
           alignment: Alignment.topLeft,
@@ -36,8 +37,10 @@ class CommentMeta extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 minimumSize: const Size(45, 45)),
-            child: Text(userName),
-            onPressed: () {},
+            child: Text(comment.posterName),
+            onPressed: () {
+              context.push("/u/${comment.posterId}");
+            },
           ),
         ),
         const Spacer(),
@@ -46,8 +49,8 @@ class CommentMeta extends StatelessWidget {
                 alignment: Alignment.topRight,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 5, right: 10),
-                  child: Text("${getTime(created)} ago"),
-                )))
+                  child: Text("${getTime(comment.created)} ago"),
+                ))),
       ],
     );
   }
@@ -86,5 +89,13 @@ class CommentMeta extends StatelessWidget {
 
     final seconds = diff.inSeconds;
     return '$seconds seconds';
+  }
+
+  ImageProvider getProfilePic(PictureMeta? picture) {
+    final defaultProfileIndex = comment.posterId % 6;
+    if (picture == null) {
+      return AssetImage('assets/default_profile_$defaultProfileIndex.png');
+    }
+    return CachedNetworkImageProvider(picture.url);
   }
 }

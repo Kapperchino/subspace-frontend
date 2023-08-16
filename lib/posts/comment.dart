@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +13,7 @@ import 'package:frontend/util/votesUtil.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../models/CommentData.dart';
+import 'commentModal.dart';
 import 'commentingWidget.dart';
 import '../cubit/commenting/commentingBloc.dart';
 import 'package:http/http.dart' as http;
@@ -32,10 +32,7 @@ class CommentWidget extends StatelessWidget {
     final comment = data.comment;
     return Card(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-      CommentMeta(
-          userName: comment.posterName,
-          posterId: comment.posterId,
-          created: comment.created),
+      CommentMeta(comment: data.comment),
       Row(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,34 +76,23 @@ class CommentWidget extends StatelessWidget {
                 VoteType.comment)),
             child: const VoteWidgetFlat(),
           ),
-          Flexible(
-              child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 10, bottom: 10),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        context.read<CommentingBloc>().add(CommentPressed(
-                            postId: comment.postId, parentId: comment.id));
-                      },
-                      child: const Text('Comment'),
-                    ),
-                  )))
+          CommentingWidget(
+            comment: comment,
+          )
         ],
       ),
-      const Flexible(child: CommentingWidget()),
       BlocListener<CommentingBloc, CommentingState>(
-        listener: (context, state) {
-          ScaffoldMessenger.of(context).clearSnackBars();
+        listener: (commentContext, state) {
+          ScaffoldMessenger.of(commentContext).clearSnackBars();
           if (state.status == CommentingStaus.success) {
-            context
+            commentContext
                 .read<CommentBloc>()
                 .add(CommentsFetched(postId: comment.postId));
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            ScaffoldMessenger.of(commentContext).showSnackBar(const SnackBar(
                 backgroundColor: Colors.green,
                 content: Text('Comment created')));
           } else if (state.status == CommentingStaus.failure) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            ScaffoldMessenger.of(commentContext).showSnackBar(const SnackBar(
                 backgroundColor: Colors.red, content: Text('Error input')));
           }
         },

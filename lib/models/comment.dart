@@ -1,3 +1,4 @@
+import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/models/vote.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -14,6 +15,8 @@ class Comment {
   final int postId;
   final String body;
   final String content;
+  @JsonKey(name: 'poster_picture')
+  final PictureMeta? posterPicture;
   @JsonKey(name: 'parent_id')
   final int parentId;
   @JsonKey(name: 'up_votes')
@@ -33,6 +36,7 @@ class Comment {
       required this.body,
       this.content = "",
       this.type = ContentType.text,
+      this.posterPicture,
       required this.upVotes,
       required this.parentId,
       required this.downVotes,

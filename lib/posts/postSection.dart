@@ -7,7 +7,9 @@ import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/cubit/comment/commentState.dart';
 import 'package:frontend/models/post.dart';
+import 'package:frontend/posts/commentModal.dart';
 import 'package:frontend/posts/commentingWidget.dart';
 import 'package:frontend/cubit/comment/commentBloc.dart';
 import 'package:frontend/cubit/comment/commentEvent.dart';
@@ -42,8 +44,8 @@ class PostSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final padding = max((width - 800) / 2, 0.0);
-    return BlocBuilder<PostBloc, PostState>(builder: (context, state) {
-      if (state.status == PostStatus.success) {
+    return BlocBuilder<PostBloc, PostState>(builder: (context, postState) {
+      if (postState.status == PostStatus.success) {
         var urlPrefix = "";
         if (kIsWeb) {
           urlPrefix = "https://subspace-cors.fly.dev/";
@@ -57,29 +59,32 @@ class PostSection extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  if (state.post!.topic.isEmpty)
+                  if (postState.post!.topic.isEmpty)
                     const SizedBox(
                       height: 10,
                     ),
-                  if (state.post!.topic.isNotEmpty)
+                  if (postState.post!.topic.isNotEmpty)
                     Flexible(
                         child: Padding(
                       padding: const EdgeInsets.only(top: 20, bottom: 20),
                       child: SelectableText(
-                        state.post!.topic,
+                        postState.post!.topic,
                         style: Theme.of(context).textTheme.titleLarge,
                         textScaleFactor: 1.5,
                       ),
                     )),
-                  if (state.post!.type == ContentType.text)
+                  if (postState.post!.type == ContentType.text)
                     const SizedBox(width: 0, height: 0),
-                  if (state.post!.type == ContentType.picture ||
-                      state.post!.type == ContentType.link)
+                  if (postState.post!.type == ContentType.picture ||
+                      postState.post!.type == ContentType.link)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: FutureBuilder<Widget>(
-                        future: getImage(state.post!.postPictures,
-                            state.post!.type, state.post!.link, context),
+                        future: getImage(
+                            postState.post!.postPictures,
+                            postState.post!.type,
+                            postState.post!.link,
+                            context),
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return snapshot.data!;
@@ -89,7 +94,7 @@ class PostSection extends StatelessWidget {
                         },
                       ),
                     ),
-                  if (state.post!.body.isNotEmpty)
+                  if (postState.post!.body.isNotEmpty)
                     Flexible(
                         child: Align(
                             alignment: Alignment.topLeft,
@@ -97,7 +102,7 @@ class PostSection extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.only(left: 20, right: 20),
                                 child: SelectableDetectable(
-                                    text: state.post!.body,
+                                    text: postState.post!.body,
                                     textAlign: TextAlign.left,
                                     detectionRegExp: detectionRegExp()!,
                                     trimMode: TrimMode.Line,
@@ -119,7 +124,7 @@ class PostSection extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: PostMeta(
                           spaceName: spaceName,
-                          post: state.post!,
+                          post: postState.post!,
                           maxUserNameLength: 50,
                         )),
                   ),
@@ -132,48 +137,40 @@ class PostSection extends StatelessWidget {
                           type: VoteType.post,
                         )..add(InitEvent(
                             id,
-                            state.post!.upVotes,
-                            state.post!.downVotes,
-                            VotesUtil.getStatus(state.post!.vote),
+                            postState.post!.upVotes,
+                            postState.post!.downVotes,
+                            VotesUtil.getStatus(postState.post!.vote),
                             VoteType.post)),
                         child: const VoteWidgetFlat(),
                       ),
                       Flexible(
-                          child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      context
-                                          .read<CommentingBloc>()
-                                          .add(CommentPressed(postId: id));
-                                    },
-                                    child: const Text('Comment'),
-                                  )))),
+                          child: CommentingWidget(
+                        post: postState.post,
+                      )),
                     ],
                   ),
                 ],
               ),
             )),
-            const Flexible(child: CommentingWidget()),
             BlocListener<CommentingBloc, CommentingState>(
-              listener: (context, state) {
-                ScaffoldMessenger.of(context).clearSnackBars();
+              listener: (commentContext, state) {
+                ScaffoldMessenger.of(commentContext).clearSnackBars();
                 if (state.status == CommentingStaus.success) {
-                  BlocProvider.of<CommentBloc>(context)
+                  BlocProvider.of<CommentBloc>(commentContext)
                       .add(CommentsFetched(postId: id));
                   state.controller.clear();
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      backgroundColor: Colors.green,
-                      content: Text('Comment created')));
+                  ScaffoldMessenger.of(commentContext).showSnackBar(
+                      const SnackBar(
+                          backgroundColor: Colors.green,
+                          content: Text('Comment created')));
                 } else if (state.status == CommentingStaus.failure) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      backgroundColor: Colors.red,
-                      content: Text('Error input')));
+                  ScaffoldMessenger.of(commentContext).showSnackBar(
+                      const SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text('Error input')));
                 }
               },
-              child: const SizedBox(),
+              child: SizedBox(),
             )
           ],
         );
