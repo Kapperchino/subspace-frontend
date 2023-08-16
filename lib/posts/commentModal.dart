@@ -21,65 +21,65 @@ class CommentModal extends StatelessWidget {
       builder: (context, state) {
         return Padding(
           padding: MediaQuery.of(context).viewInsets,
-          child: SizedBox(
-            height: 132,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(10),
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      if (comment != null) {
-                        context.read<CommentingBloc>().add(CommentPressed(
-                            postId: comment!.postId, parentId: comment!.id));
-                      }
-                      if (post != null) {
-                        context
-                            .read<CommentingBloc>()
-                            .add(CommentPressed(postId: post!.id));
-                      }
-                      context.pop();
-                    },
-                    child: const Text('Comment'),
-                  ),
-                ),
-                Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: TextField(
-                      autofocus: true,
-                      maxLines: 3,
-                      controller: state.controller,
-                      onChanged: (comment) => context
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (comment != null) {
+                      context.read<CommentingBloc>().add(CommentPressed(
+                          postId: comment!.postId, parentId: comment!.id));
+                    }
+                    if (post != null) {
+                      context
                           .read<CommentingBloc>()
-                          .add(CommentChanged(comment: comment)),
-                      decoration: InputDecoration(
-                        filled: true,
-                        hintText: 'Comment',
-                        contentPadding: const EdgeInsets.only(
-                            left: 14.0, bottom: 8.0, top: 8.0),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(20)),
-                          borderSide:
-                              BorderSide(color: Theme.of(context).cardColor),
-                        ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(20)),
-                          borderSide:
-                              BorderSide(color: Theme.of(context).cardColor),
-                        ),
-                        disabledBorder: UnderlineInputBorder(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(20)),
-                          borderSide:
-                              BorderSide(color: Theme.of(context).cardColor),
-                        ),
+                          .add(CommentPressed(postId: post!.id));
+                    }
+                    context.pop();
+                  },
+                  child: const Text('Comment'),
+                ),
+              ),
+              Padding(
+                  padding:
+                      const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+                  child: TextField(
+                    autofocus: true,
+                    maxLines: 8,
+                    minLines: 2,
+                    controller: state.controller,
+                    onChanged: (comment) => context
+                        .read<CommentingBloc>()
+                        .add(CommentChanged(comment: comment)),
+                    decoration: InputDecoration(
+                      filled: true,
+                      hintText: 'Comment',
+                      contentPadding: const EdgeInsets.only(
+                          left: 14.0, bottom: 8.0, top: 8.0),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
+                        borderSide:
+                            BorderSide(color: Theme.of(context).cardColor),
                       ),
-                    ))
-              ],
-            ),
+                      enabledBorder: UnderlineInputBorder(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
+                        borderSide:
+                            BorderSide(color: Theme.of(context).cardColor),
+                      ),
+                      disabledBorder: UnderlineInputBorder(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
+                        borderSide:
+                            BorderSide(color: Theme.of(context).cardColor),
+                      ),
+                    ),
+                  ))
+            ],
           ),
         );
       },

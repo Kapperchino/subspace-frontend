@@ -33,6 +33,7 @@ class CommentingWidget extends StatelessWidget {
                     .add(CommentPressed(postId: post!.id));
               }
               showModalBottomSheet(
+                  isScrollControlled: true,
                   context: baseContext,
                   builder: (context) {
                     return BlocProvider.value(
