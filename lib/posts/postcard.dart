@@ -180,6 +180,8 @@ class PostCard extends StatelessWidget {
             ),
             width: CARD_MAX_WIDTH,
             height: height,
+            memCacheHeight: height.round(),
+            memCacheWidth: CARD_MAX_WIDTH.round(),
             fit: boxfit,
           ));
     } else if (type == ContentType.link) {

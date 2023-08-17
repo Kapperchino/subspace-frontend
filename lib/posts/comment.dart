@@ -46,6 +46,8 @@ class CommentWidget extends StatelessWidget {
                 imageUrl: comment.content,
                 placeholder: (context, url) => Image.memory(kTransparentImage),
                 width: 120,
+                memCacheHeight: 120,
+                memCacheWidth: 120,
                 height: 120,
               ),
             ),

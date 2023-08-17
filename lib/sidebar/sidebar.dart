@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_storage/get_storage.dart';
@@ -97,7 +98,7 @@ class SideBar extends StatelessWidget {
         AssetImage('assets/default_profile_$defaultProfileIndex.png')
       );
     }
-    return (user, NetworkImage(user.picture!.url));
+    return (user, CachedNetworkImageProvider(user.picture!.url));
   }
 
   Future<AppUser> getUser() async {

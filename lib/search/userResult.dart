@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/models/space.dart';
@@ -67,6 +68,6 @@ class UserResult extends StatelessWidget {
     if (picture == null) {
       return AssetImage('assets/default_profile_$defaultProfileIndex.png');
     }
-    return NetworkImage(picture.url);
+    return CachedNetworkImageProvider(picture.url);
   }
 }

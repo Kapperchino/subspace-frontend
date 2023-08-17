@@ -329,7 +329,7 @@ class _UserWidgetState extends State<UserWidget> {
     if (meta.picture == null) {
       return AssetImage('assets/default_profile_$defaultProfileIndex.png');
     }
-    return NetworkImage(meta.picture!.url);
+    return CachedNetworkImageProvider(meta.picture!.url);
   }
 
   bool isCurrentUser(int? userId) {
