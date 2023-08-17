@@ -226,13 +226,13 @@ class PostSection extends StatelessWidget {
             imageUrl: "$urlPrefix${pictures[0].url}",
             placeholder: (context, url) => Image.memory(
               kTransparentImage,
-              width: CARD_MAX_WIDTH,
+              width: maxWidth,
               height: adjustedHeight,
             ),
-            width: CARD_MAX_WIDTH,
+            width: maxWidth,
             height: height,
             memCacheHeight: height.round(),
-            memCacheWidth: CARD_MAX_WIDTH.round(),
+            memCacheWidth: maxWidth.round(),
             fit: boxfit,
           ));
     } else if (type == ContentType.link) {
