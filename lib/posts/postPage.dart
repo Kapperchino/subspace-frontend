@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 
 import '../cubit/comment/commentBloc.dart';
 import '../cubit/commenting/commentingBloc.dart';
+import '../cubit/sorting/sortBloc.dart';
 
 class PostPage extends StatelessWidget {
   const PostPage({super.key, required this.id, required this.spaceName});
@@ -24,10 +25,14 @@ class PostPage extends StatelessWidget {
                 ..add(CommentsFetched(postId: id))),
           BlocProvider(
               create: (_) => CommentingBloc(
-                  httpClient: http.Client(), postId: id, parentId: 1,isPostComment: true)),
+                  httpClient: http.Client(),
+                  postId: id,
+                  parentId: 1,
+                  isPostComment: true)),
           BlocProvider(
               create: (_) => PostBloc(httpClient: http.Client())
-                ..add(PostFetched(postId: id)))
+                ..add(PostFetched(postId: id))),
+          BlocProvider(create: (_) => SortBloc(httpClient: http.Client()))
         ],
         child: PostWidget(
           id: id,

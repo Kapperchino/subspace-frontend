@@ -172,7 +172,8 @@ class UserPageBloc extends Bloc<UserPageEvent, UserPageState> {
   ) async {
     if (state.hasReachedMax) return;
     try {
-      final posts = await getPosts(event.userId);
+      final posts = await getPosts(event.userId,
+          sort: state.sortState, days: state.sortDays);
       return emit(
         state.copyWith(
           status: UserPageStatus.success,
@@ -210,7 +211,8 @@ class UserPageBloc extends Bloc<UserPageEvent, UserPageState> {
     );
     final user = UserMeta.fromJson(jsonDecode(utf8.decode(userInfo.bodyBytes)));
     final res = await http.get(
-      Uri.parse('${Config.baseUrl}/posts/users/$userId'),
+      Uri.parse(
+          '${Config.baseUrl}/posts/users/$userId?sort=${sort.name}&days=$intDays'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',

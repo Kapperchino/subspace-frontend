@@ -5,6 +5,9 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/cubit/search/searchEvent.dart';
 import 'package:frontend/cubit/search/searchState.dart';
+import 'package:frontend/cubit/sorting/sortState.dart';
+import 'package:frontend/cubit/space/spaceState.dart';
+import 'package:frontend/models/userMeta.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:stream_transform/stream_transform.dart';
@@ -29,6 +32,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       _onSearchFetched,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<SearchSortChanged>(_onSearchSortChanged,
+        transformer: throttleDroppable(throttleDuration));
+    on<SearchSortDaysChanged>(_onSearchSortDaysChanged,
+        transformer: throttleDroppable(throttleDuration));
   }
 
   final http.Client httpClient;
@@ -39,18 +46,54 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   ) async {
     try {
       List<Space> spaces = List.empty(growable: true);
-      if (!event.isTag) {
-        spaces = await searchSpaces(event.term);
-      }
+      spaces = await searchSpaces(event.term);
       final posts = await searchPosts(event.term, event.isTag);
-      return emit(SearchState(
-          spaces: spaces, posts: posts, status: SearchStatus.success));
+      final users = await searchUsers(event.term);
+      return emit(state.copyWith(
+          spaces: spaces,
+          posts: posts,
+          users: users,
+          isTag: event.isTag,
+          term: event.term,
+          status: SearchStatus.success));
     } catch (_) {
       emit(const SearchState(status: SearchStatus.failure));
     }
   }
 
-  Future<List<Space>> searchSpaces(String term) async {
+  Future<void> _onSearchSortChanged(
+    SearchSortChanged event,
+    Emitter<SearchState> emit,
+  ) async {
+    try {
+      final posts = await searchPosts(state.term, state.isTag,
+          sortStatus: event.status, days: state.sortDays);
+      return emit(state.copyWith(
+          posts: posts,
+          status: SearchStatus.success,
+          sortStatus: event.status));
+    } catch (_) {
+      emit(const SearchState(status: SearchStatus.failure));
+    }
+  }
+
+  Future<void> _onSearchSortDaysChanged(
+    SearchSortDaysChanged event,
+    Emitter<SearchState> emit,
+  ) async {
+    try {
+      final posts = await searchPosts(state.term, state.isTag,
+          sortStatus: state.sortStatus, days: event.days);
+      return emit(state.copyWith(
+          posts: posts, status: SearchStatus.success, sortDays: event.days));
+    } catch (_) {
+      emit(const SearchState(status: SearchStatus.failure));
+    }
+  }
+
+  Future<List<Space>> searchSpaces(
+    String term,
+  ) async {
     final token = await Store.secure.read(key: 'jwt');
     final res = await http.get(
       Uri.parse('${Config.baseUrl}/search/spaces?term=$term'),
@@ -72,13 +115,26 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     }
   }
 
-  Future<List<Post>> searchPosts(String term, bool isTag) async {
+  Future<List<Post>> searchPosts(String term, bool isTag,
+      {SortStatus sortStatus = SortStatus.popular,
+      SortDays days = SortDays.week}) async {
+    var intDays = 7;
+    switch (days) {
+      case SortDays.month:
+        intDays = 30;
+      case SortDays.halfYear:
+        intDays = 180;
+      case SortDays.year:
+        intDays = 365;
+      case SortDays.week:
+        intDays = 7;
+    }
     final token = await Store.secure.read(key: 'jwt');
     final AppUser user =
         AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
     final res = await http.get(
       Uri.parse(
-          '${Config.baseUrl}/search/posts?term=$term&userId=${user.id}&isTag=$isTag'),
+          '${Config.baseUrl}/search/posts?term=$term&userId=${user.id}&isTag=$isTag&sort=${sortStatus.name}&days=$intDays'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -95,6 +151,37 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       var output = List<Post>.empty(growable: true);
       for (final json in list) {
         output.add(Post.fromJson(json));
+      }
+      return output;
+    } else {
+      // If the server did not return a 201 CREATED response,
+      // then throw an exception.
+      throw Exception('Failed to create album.');
+    }
+  }
+
+  Future<List<UserMeta>> searchUsers(String term) async {
+    final token = await Store.secure.read(key: 'jwt');
+    final AppUser user =
+        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final res = await http.get(
+      Uri.parse('${Config.baseUrl}/search/users?term=$term'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    ); // If the server did return a 201 CREATED response,
+    // then parse the JSON.
+    if (res.statusCode == 200) {
+      // If the server did return a 201 CREATED response,
+      // then parse the JSON.
+      if (res.body.isEmpty || res.body == 'null') {
+        return List.empty();
+      }
+      final List<dynamic> list = jsonDecode(utf8.decode(res.bodyBytes));
+      var output = List<UserMeta>.empty(growable: true);
+      for (final json in list) {
+        output.add(UserMeta.fromJson(json));
       }
       return output;
     } else {

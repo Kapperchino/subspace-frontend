@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/cubit/comment/commentBloc.dart';
+import 'package:frontend/cubit/comment/commentEvent.dart';
 import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/posts/commentSection.dart';
 import 'package:frontend/cubit/post/postBloc.dart';
@@ -12,6 +15,10 @@ import 'package:frontend/cubit/post/postState.dart';
 import 'package:frontend/posts/postSection.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import '../cubit/sorting/sortBloc.dart';
+import '../cubit/sorting/sortState.dart';
+import '../subspace/sortPostsDaysWidget.dart';
+import '../subspace/sortPostsWidget.dart';
 
 class PostWidget extends StatelessWidget {
   const PostWidget({super.key, required this.id, required this.spaceName});
@@ -31,6 +38,8 @@ class PostWidget extends StatelessWidget {
         fit = BoxFit.fitHeight;
       }
     }
+    final width = MediaQuery.of(context).size.width;
+    final padding = max((width - 600) / 2, 0.0);
     return Scaffold(
         body: RefreshIndicator(onRefresh: () async {
       context.read<PostBloc>().add(PostFetched(postId: id));
@@ -56,6 +65,27 @@ class PostWidget extends StatelessWidget {
               spaceName: spaceName,
               id: id,
             )),
+            SliverToBoxAdapter(
+              child: Row(
+                children: [
+                  Container(
+                      padding: EdgeInsets.only(left: padding, bottom: 0),
+                      alignment: Alignment.topLeft,
+                      child: const SortPostsWidget())
+                ],
+              ),
+            ),
+            BlocListener<SortBloc, SortState>(
+              listenWhen: (previous, current) {
+                return previous.status != current.status;
+              },
+              listener: (context, state) {
+                context
+                    .read<CommentBloc>()
+                    .add(CommentsSortChange(sortStatus: state.status));
+              },
+              child: const SliverToBoxAdapter(child: SizedBox()),
+            ),
             CommentSection(postId: id)
           ],
         );

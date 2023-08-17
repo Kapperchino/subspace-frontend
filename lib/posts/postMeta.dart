@@ -22,7 +22,7 @@ class PostMeta extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
+          padding: const EdgeInsets.only(top: 5, left: 10, bottom: 5),
           child: CircleAvatar(
             maxRadius: 20,
             foregroundImage: getProfilePic(post.posterPicture),

@@ -15,6 +15,7 @@ import '../../config.dart';
 import '../../models/appUser.dart';
 import '../../models/comment.dart';
 import '../../stores/store.dart';
+import '../space/spaceState.dart';
 
 const throttleDuration = Duration(milliseconds: 100);
 
@@ -30,6 +31,8 @@ class CommentBloc extends Bloc<CommentEvent, CommentsState> {
       _onCommentsFetched,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<CommentsSortChange>(_onCommentsSortChange,
+        transformer: throttleDroppable(throttleDuration));
   }
 
   final http.Client httpClient;
@@ -45,6 +48,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentsState> {
         state.copyWith(
           status: CommentsStatus.success,
           comments: comments,
+          postId: event.postId,
           hasReachedMax: false,
         ),
       );
@@ -53,12 +57,34 @@ class CommentBloc extends Bloc<CommentEvent, CommentsState> {
     }
   }
 
-  Future<List<CommentData>>? getComments(int postId) async {
+  Future<void> _onCommentsSortChange(
+    CommentsSortChange event,
+    Emitter<CommentsState> emit,
+  ) async {
+    if (state.hasReachedMax) return;
+    try {
+      final comments = await getComments(state.postId, sort: event.sortStatus);
+      return emit(
+        state.copyWith(
+          status: CommentsStatus.success,
+          sortStatus: event.sortStatus,
+          comments: comments,
+          hasReachedMax: false,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(status: CommentsStatus.failure));
+    }
+  }
+
+  Future<List<CommentData>>? getComments(int postId,
+      {SortStatus sort = SortStatus.latest}) async {
     final token = await Store.secure.read(key: 'jwt');
     final AppUser user =
         AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
     final res = await http.get(
-      Uri.parse('${Config.baseUrl}/comments?postId=$postId&userId=${user.id}'),
+      Uri.parse(
+          '${Config.baseUrl}/comments?postId=$postId&userId=${user.id}&sort=${sort.name}&days=365'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -83,12 +109,15 @@ class CommentBloc extends Bloc<CommentEvent, CommentsState> {
       }
       map.forEach((key, value) {
         if (!map.containsKey(value.comment.parentId)) {
-          resList.add(value);
         } else {
           map[value.comment.parentId]!.children.add(value);
         }
       });
-
+      for (var comment in comments) {
+        if (!map.containsKey(comment.comment.parentId)) {
+          resList.add(comment);
+        }
+      }
       return resList;
     } else {
       // If the server did not return a 201 CREATED response,

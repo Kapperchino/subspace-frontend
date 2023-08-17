@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/search/searchBloc.dart';
 import 'package:frontend/cubit/search/searchEvent.dart';
-import 'package:frontend/search/searchPage.dart';
+import 'package:frontend/search/searchWidget.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 
+import '../search/searchPage.dart';
 import '../stores/store.dart';
 import 'package:http/http.dart' as http;
 
@@ -40,11 +41,7 @@ class SearchRoutes {
                 );
                 return ScaleTransition(scale: _animation, child: child);
               },
-              child: BlocProvider(
-                create: (_) => SearchBloc(httpClient: http.Client())
-                  ..add(SearchFetched(term: term, isTag: isTag)),
-                child: SearchPage(),
-              ));
+              child: SearchPage(term: term, isTag: isTag));
         });
   }
 }

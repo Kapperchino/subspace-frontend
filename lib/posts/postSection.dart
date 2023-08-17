@@ -6,6 +6,7 @@ import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/comment/commentState.dart';
 import 'package:frontend/models/post.dart';
@@ -20,9 +21,11 @@ import 'package:frontend/cubit/post/postState.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:frontend/util/selectableDetectables.dart';
+import 'package:go_router/go_router.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../common/timeWidget.dart';
 import '../models/pictureMeta.dart';
 import '../models/voteRequest.dart';
 import '../util/votesUtil.dart';
@@ -119,14 +122,23 @@ class PostSection extends StatelessWidget {
                                           }
                                       }
                                     })))),
-                  Flexible(
-                    child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: PostMeta(
-                          spaceName: spaceName,
-                          post: postState.post!,
-                          maxUserNameLength: 50,
-                        )),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: PostMeta(
+                              spaceName: spaceName,
+                              post: postState.post!,
+                              maxUserNameLength: 50,
+                            )),
+                      ),
+                      Container(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 10),
+                        child: TimeWidget(time: postState.post!.created),
+                      ),
+                    ],
                   ),
                   Row(
                     mainAxisSize: MainAxisSize.max,
@@ -170,7 +182,7 @@ class PostSection extends StatelessWidget {
                           content: Text('Error input')));
                 }
               },
-              child: SizedBox(),
+              child: const SizedBox(),
             )
           ],
         );
@@ -199,21 +211,32 @@ class PostSection extends StatelessWidget {
       if (imageRatio < defaultRatio) {
         boxfit = BoxFit.cover;
       }
-      return CachedNetworkImage(
-        imageUrl: "$urlPrefix${pictures[0].url}",
-        placeholder: (context, url) => Image.memory(
-          kTransparentImage,
-          width: CARD_MAX_WIDTH,
-          height: adjustedHeight,
-        ),
-        width: CARD_MAX_WIDTH,
-        height: height,
-        fit: boxfit,
-      );
+      return InkWell(
+          onTap: () {
+            if (kIsWeb) {
+              BrowserContextMenu.disableContextMenu().then((value) =>
+                  context.push("/images/${pictures[0].id}").then((value) async {
+                    await BrowserContextMenu.enableContextMenu();
+                  }));
+            } else {
+              context.push("/images/${pictures[0].id}");
+            }
+          },
+          child: CachedNetworkImage(
+            imageUrl: "$urlPrefix${pictures[0].url}",
+            placeholder: (context, url) => Image.memory(
+              kTransparentImage,
+              width: CARD_MAX_WIDTH,
+              height: adjustedHeight,
+            ),
+            width: CARD_MAX_WIDTH,
+            height: height,
+            fit: boxfit,
+          ));
     } else if (type == ContentType.link) {
       return Flexible(
           child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: AnyLinkPreview(
                   link: "$urlPrefix$link",
                   displayDirection: UIDirection.uiDirectionVertical,
@@ -236,9 +259,7 @@ class PostSection extends StatelessWidget {
                     if (!await launchUrl(url)) {
                       throw Exception('Could not launch $url');
                     }
-                  }
-                  // This disables tap event
-                  )));
+                  })));
     }
     return const SizedBox();
   }

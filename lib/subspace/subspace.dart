@@ -221,7 +221,8 @@ class _SubSpaceState extends State<Subspace> {
             child: const SliverToBoxAdapter(child: SizedBox()),
           ),
           BlocListener<SortBloc, SortState>(
-            listenWhen: (previous, current) {
+            listenWhen: 
+            (previous, current) {
               return previous.sortDays != current.sortDays;
             },
             listener: (context, state) {
