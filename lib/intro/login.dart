@@ -201,6 +201,7 @@ class _LoginState extends State<Login> {
       await GetStorage().write(
           "user",
           jsonEncode(AppUser(
+                  address: user.address,
                   id: user.id,
                   displayName: user.displayName,
                   email: user.email,

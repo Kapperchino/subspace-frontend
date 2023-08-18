@@ -10,6 +10,7 @@ AppUser _$AppUserFromJson(Map<String, dynamic> json) => AppUser(
       id: json['user_id'] as int,
       displayName: json['display_name'] as String,
       email: json['email'] as String,
+      address: json['user_address'] as String,
       bio: json['bio'] as String? ?? "",
       picture: json['picture_meta'] == null
           ? null
@@ -22,6 +23,7 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) {
     'display_name': instance.displayName,
     'bio': instance.bio,
     'email': instance.email,
+    'user_address': instance.address,
   };
 
   void writeNotNull(String key, dynamic value) {

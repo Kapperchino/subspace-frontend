@@ -180,6 +180,7 @@ class PostCard extends StatelessWidget {
             ),
             width: maxWidth,
             height: height,
+            filterQuality: FilterQuality.medium,
             memCacheHeight: height.round(),
             memCacheWidth: maxWidth.round(),
             fit: boxfit,

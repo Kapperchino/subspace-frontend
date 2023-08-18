@@ -279,6 +279,7 @@ class UserPageBloc extends Bloc<UserPageEvent, UserPageState> {
                 id: user.id,
                 displayName: user.displayName,
                 email: user.email,
+                address: user.address,
                 picture: PictureMeta(
                     height: resMeta.height,
                     width: resMeta.width,

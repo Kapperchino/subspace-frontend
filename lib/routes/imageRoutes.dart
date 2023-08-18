@@ -33,7 +33,7 @@ class ImageRoutes {
           return BlocProvider(
             create: (_) => ImageViewBloc(httpClient: http.Client())
               ..add(ImageFetched(imageId: id)),
-            child: const ImageView(),
+            child: ImageView(),
           );
         });
   }

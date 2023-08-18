@@ -7,12 +7,16 @@ import 'package:http/http.dart' as http;
 import 'package:image_downloader_web/image_downloader_web.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:transparent_image/transparent_image.dart';
-
 import '../cubit/imageView/imageViewBloc.dart';
 import '../cubit/imageView/imageViewState.dart';
 
 class ImageView extends StatelessWidget {
-  const ImageView({super.key});
+  ImageView({
+    super.key,
+  });
+
+  final _transformationController = TransformationController();
+  TapDownDetails? _doubleTapDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -23,37 +27,56 @@ class ImageView extends StatelessWidget {
           return FutureBuilder(
             future: disableContext(),
             builder: (context, snapshot) {
-              return _ContextMenuRegion(
-                  child: Center(
-                    child: InteractiveViewer(
-                      boundaryMargin: const EdgeInsets.all(20.0),
-                      panAxis: PanAxis.aligned,
-                      minScale: 0.1,
-                      maxScale: 20,
-                      child: getPicture(state.pictureMeta?.url),
-                    ),
-                  ),
-                  contextMenuBuilder: (context, offset) {
-                    // The custom context menu will look like the default context menu
-                    // on the current platform with a single 'Print' button.
-                    return AdaptiveTextSelectionToolbar.buttonItems(
-                      anchors: TextSelectionToolbarAnchors(
-                        primaryAnchor: offset,
-                      ),
-                      buttonItems: <ContextMenuButtonItem>[
-                        ContextMenuButtonItem(
-                          onPressed: () {
-                            ContextMenuController.removeAny();
-                            _saveNetworkImage(state.pictureMeta?.url);
-                          },
-                          label: 'Save',
+              return GestureDetector(
+                  onDoubleTapDown: (d) => _doubleTapDetails = d,
+                  onDoubleTap: _handleDoubleTap,
+                  child: _ContextMenuRegion(
+                      child: Center(
+                        child: InteractiveViewer(
+                          transformationController: _transformationController,
+                          boundaryMargin: const EdgeInsets.all(20.0),
+                          panAxis: PanAxis.aligned,
+                          minScale: 0.1,
+                          maxScale: 20,
+                          child: getPicture(state.pictureMeta?.url),
                         ),
-                      ],
-                    );
-                  });
+                      ),
+                      contextMenuBuilder: (context, offset) {
+                        // The custom context menu will look like the default context menu
+                        // on the current platform with a single 'Print' button.
+                        return AdaptiveTextSelectionToolbar.buttonItems(
+                          anchors: TextSelectionToolbarAnchors(
+                            primaryAnchor: offset,
+                          ),
+                          buttonItems: <ContextMenuButtonItem>[
+                            ContextMenuButtonItem(
+                              onPressed: () {
+                                ContextMenuController.removeAny();
+                                _saveNetworkImage(state.pictureMeta?.url);
+                              },
+                              label: 'Save',
+                            ),
+                          ],
+                        );
+                      }));
             },
           );
         }));
+  }
+
+  void _handleDoubleTap() {
+    if (_transformationController.value != Matrix4.identity()) {
+      _transformationController.value = Matrix4.identity();
+    } else {
+      final position = _doubleTapDetails!.localPosition;
+      // For a 3x zoom
+      _transformationController.value = Matrix4.identity()
+        ..translate(-position.dx * 2, -position.dy * 2)
+        ..scale(3.0);
+      // Fox a 2x zoom
+      // ..translate(-position.dx, -position.dy)
+      // ..scale(2.0);
+    }
   }
 
   _saveNetworkImage(String? url) async {

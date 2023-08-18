@@ -14,12 +14,15 @@ class AppUserRes {
   final String token;
   @JsonKey(name: 'picture_meta')
   final PictureMeta? picture;
+  @JsonKey(name: 'user_address')
+  final String address;
 
   const AppUserRes({
     required this.id,
     required this.displayName,
     required this.email,
     required this.token,
+    required this.address,
     this.picture,
     this.bio = "",
   });

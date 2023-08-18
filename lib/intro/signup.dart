@@ -25,6 +25,7 @@ class _SignupState extends State<Signup> {
   final FocusNode _focusNodePassword = FocusNode();
   final FocusNode _focusNodeConfirmPassword = FocusNode();
   final TextEditingController _controllerDisplayName = TextEditingController();
+  final TextEditingController _controllerUserAt = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerConFirmPassword =
@@ -61,6 +62,31 @@ class _SignupState extends State<Signup> {
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
                       labelText: "Display Name",
+                      prefixIcon: const Icon(Icons.person_outline),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter username.";
+                      }
+                      return null;
+                    },
+                    onEditingComplete: () => _focusNodeEmail.requestFocus(),
+                  )),
+              const SizedBox(height: 10),
+              ConstrainedBox(
+                  constraints:
+                      const BoxConstraints.expand(width: 600, height: 70),
+                  child: TextFormField(
+                    controller: _controllerUserAt,
+                    keyboardType: TextInputType.name,
+                    decoration: InputDecoration(
+                      labelText: "User @",
                       prefixIcon: const Icon(Icons.person_outline),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -251,7 +277,8 @@ class _SignupState extends State<Signup> {
     final req = SignUpRequest(
         password: _controllerPassword.text,
         displayName: _controllerDisplayName.text,
-        email: _controllerEmail.text.toLowerCase());
+        email: _controllerEmail.text.toLowerCase(),
+        address: _controllerUserAt.text.toLowerCase());
     final res = await http.post(
       Uri.parse('${Config.baseUrl}/auth/user'),
       body: jsonEncode(req.toJson()),
@@ -266,7 +293,11 @@ class _SignupState extends State<Signup> {
       await Store.secure.write(key: "jwt", value: user.token);
       await GetStorage().write(
           "user",
-          AppUser(id: user.id, displayName: user.displayName, email: user.email)
+          AppUser(
+                  id: user.id,
+                  displayName: user.displayName,
+                  email: user.email,
+                  address: user.address)
               .toJson());
       return res;
     } else {

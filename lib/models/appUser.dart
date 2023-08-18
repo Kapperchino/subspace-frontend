@@ -10,6 +10,8 @@ class AppUser {
   final String displayName;
   final String bio;
   final String email;
+  @JsonKey(name: 'user_address')
+  final String address;
   @JsonKey(name: 'picture_meta')
   final PictureMeta? picture;
 
@@ -17,6 +19,7 @@ class AppUser {
       {required this.id,
       required this.displayName,
       required this.email,
+      required this.address,
       this.bio = "",
       this.picture});
 
