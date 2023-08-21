@@ -174,6 +174,8 @@ class PostCard extends StatelessWidget {
       if (imageRatio < defaultRatio) {
         boxfit = BoxFit.cover;
       }
+      final cachedRatio =
+          min(pictures[0].width / maxWidth, pictures[0].height / height);
       return InkWell(
           onTap: () {
             if (kIsWeb) {
@@ -190,13 +192,13 @@ class PostCard extends StatelessWidget {
             placeholder: (context, url) => Image.memory(
               kTransparentImage,
               width: maxWidth,
-              height: adjustedHeight,
+              height: height,
             ),
             width: maxWidth,
             height: height,
             filterQuality: FilterQuality.medium,
-            memCacheHeight: height.round(),
-            memCacheWidth: maxWidth.round(),
+            memCacheHeight: (height * cachedRatio).round(),
+            memCacheWidth: (maxWidth * cachedRatio).round(),
             fit: boxfit,
           ));
     } else if (type == ContentType.link) {
