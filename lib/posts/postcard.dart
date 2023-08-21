@@ -176,35 +176,37 @@ class PostCard extends StatelessWidget {
       }
       final cachedRatio =
           min(pictures[0].width / maxWidth, pictures[0].height / height);
-      return ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: InkWell(
-              onTap: () {
-                if (kIsWeb) {
-                  BrowserContextMenu.disableContextMenu().then((value) =>
-                      context
-                          .push("/images/${pictures[0].id}")
-                          .then((value) async {
-                        await BrowserContextMenu.enableContextMenu();
-                      }));
-                } else {
-                  context.push("/images/${pictures[0].id}");
-                }
-              },
-              child: CachedNetworkImage(
-                imageUrl: "$urlPrefix${pictures[0].url}",
-                placeholder: (context, url) => Image.memory(
-                  kTransparentImage,
-                  width: maxWidth,
-                  height: height,
-                ),
-                width: maxWidth,
-                height: height,
-                filterQuality: FilterQuality.medium,
-                memCacheHeight: (height * cachedRatio).round(),
-                memCacheWidth: (maxWidth * cachedRatio).round(),
-                fit: boxfit,
-              )));
+      return Padding(
+          padding: const EdgeInsets.only(left: 6),
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: InkWell(
+                  onTap: () {
+                    if (kIsWeb) {
+                      BrowserContextMenu.disableContextMenu().then((value) =>
+                          context
+                              .push("/images/${pictures[0].id}")
+                              .then((value) async {
+                            await BrowserContextMenu.enableContextMenu();
+                          }));
+                    } else {
+                      context.push("/images/${pictures[0].id}");
+                    }
+                  },
+                  child: CachedNetworkImage(
+                    imageUrl: "$urlPrefix${pictures[0].url}",
+                    placeholder: (context, url) => Image.memory(
+                      kTransparentImage,
+                      width: maxWidth,
+                      height: height,
+                    ),
+                    width: maxWidth,
+                    height: height,
+                    filterQuality: FilterQuality.medium,
+                    memCacheHeight: (height * cachedRatio).round(),
+                    memCacheWidth: (maxWidth * cachedRatio).round(),
+                    fit: boxfit,
+                  ))));
     } else if (type == ContentType.link) {
       return Flexible(
           child: Padding(
