@@ -201,7 +201,8 @@ class _SubSpaceState extends State<Subspace> {
                           }
                           return PostCardWrapper(
                               spaceName: name, post: state.posts[index].post);
-                        }, childCount: state.posts.length,addRepaintBoundaries: false),
+                        },
+                            childCount: state.posts.length,),
                       ));
                 case SpaceStatus.initial:
                   return const SliverToBoxAdapter(
@@ -221,8 +222,7 @@ class _SubSpaceState extends State<Subspace> {
             child: const SliverToBoxAdapter(child: SizedBox()),
           ),
           BlocListener<SortBloc, SortState>(
-            listenWhen: 
-            (previous, current) {
+            listenWhen: (previous, current) {
               return previous.sortDays != current.sortDays;
             },
             listener: (context, state) {

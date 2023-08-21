@@ -110,7 +110,21 @@ class PostCard extends StatelessWidget {
                       if (snapshot.hasData) {
                         return snapshot.data!;
                       } else {
-                        return const CircularProgressIndicator();
+                        if (post.postPictures != null) {
+                          final deviceWidth =
+                              MediaQuery.of(context).size.width - 20;
+                          final maxWidth = min(deviceWidth, CARD_MAX_WIDTH);
+                          final imageRatio = post.postPictures![0].width /
+                              post.postPictures![0].height;
+                          final adjustedHeight = maxWidth / imageRatio;
+                          final double height =
+                              min(CARD_MAX_HEIGHT, adjustedHeight);
+                          return SizedBox(
+                            width: maxWidth,
+                            height: height,
+                          );
+                        }
+                        return const SizedBox();
                       }
                     },
                   ),
