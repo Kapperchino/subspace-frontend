@@ -224,19 +224,21 @@ class PostSection extends StatelessWidget {
               context.push("/images/${pictures[0].id}");
             }
           },
-          child: CachedNetworkImage(
-            imageUrl: "$urlPrefix${pictures[0].url}",
-            placeholder: (context, url) => Image.memory(
-              kTransparentImage,
-              width: maxWidth,
-              height: height,
-            ),
-            width: maxWidth,
-            height: height,
-            memCacheHeight: (height * cachedRatio).round(),
-            memCacheWidth: (maxWidth * cachedRatio).round(),
-            fit: boxfit,
-          ));
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: CachedNetworkImage(
+                imageUrl: "$urlPrefix${pictures[0].url}",
+                placeholder: (context, url) => Image.memory(
+                  kTransparentImage,
+                  width: maxWidth,
+                  height: height,
+                ),
+                width: maxWidth,
+                height: height,
+                memCacheHeight: (height * cachedRatio).round(),
+                memCacheWidth: (maxWidth * cachedRatio).round(),
+                fit: boxfit,
+              )));
     } else if (type == ContentType.link) {
       return Flexible(
           child: Padding(
