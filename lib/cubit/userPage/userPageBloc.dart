@@ -8,8 +8,6 @@ import 'package:frontend/cubit/userPage/userPageEvent.dart';
 import 'package:frontend/cubit/userPage/userPageState.dart';
 import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/models/post.dart';
-import 'package:frontend/models/postCardData.dart';
-import 'package:frontend/cubit/space/spaceEvent.dart';
 import 'package:frontend/cubit/space/spaceState.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -23,7 +21,6 @@ import '../../models/appUser.dart';
 import '../../models/fileUploadRequest.dart';
 import '../../models/pictureMetaResult.dart';
 import '../../models/pictureRequestMeta.dart';
-import '../../models/space.dart';
 import '../../models/userMeta.dart';
 import '../../stores/store.dart';
 

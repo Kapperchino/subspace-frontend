@@ -13,12 +13,10 @@ import 'package:frontend/util/votesUtil.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import '../models/CommentData.dart';
-import 'commentModal.dart';
 import 'commentingWidget.dart';
 import '../cubit/commenting/commentingBloc.dart';
 import 'package:http/http.dart' as http;
 
-import '../cubit/commenting/commentingEvent.dart';
 import '../cubit/commenting/commentingState.dart';
 
 class CommentWidget extends StatelessWidget {

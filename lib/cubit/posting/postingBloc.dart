@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
@@ -13,7 +12,6 @@ import 'package:frontend/cubit/posting/postingState.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:image_size_getter/file_input.dart';
 import 'package:image_size_getter/image_size_getter.dart';
 import 'package:mime/mime.dart';
 import 'package:stream_transform/stream_transform.dart';

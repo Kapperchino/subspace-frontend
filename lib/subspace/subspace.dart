@@ -15,7 +15,6 @@ import 'package:frontend/cubit/title/titleEvent.dart';
 import 'package:frontend/subspace/sortPostsDaysWidget.dart';
 import 'package:frontend/subspace/sortPostsWidget.dart';
 import 'package:frontend/subspace/titleWidget.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -23,7 +22,6 @@ import '../cubit/space/spaceBlock.dart';
 import '../cubit/space/spaceState.dart';
 import '../posts/postCardWrapper.dart';
 import '../sidebar/sidebar.dart';
-import '../stores/store.dart';
 
 class Subspace extends StatefulWidget {
   const Subspace({super.key, required this.name, required this.parentId});

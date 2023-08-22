@@ -5,7 +5,6 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/cubit/search/searchEvent.dart';
 import 'package:frontend/cubit/search/searchState.dart';
-import 'package:frontend/cubit/sorting/sortState.dart';
 import 'package:frontend/cubit/space/spaceState.dart';
 import 'package:frontend/models/userMeta.dart';
 import 'package:get_storage/get_storage.dart';

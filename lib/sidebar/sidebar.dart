@@ -61,7 +61,7 @@ class SideBar extends StatelessWidget {
               ]),
             ),
           )),
-          if (GoRouter.of(context).location.startsWith('/s/'))
+          if (GoRouterState.of(context).uri.toString().startsWith('/s/'))
             BlocBuilder<SpaceBloc, SpaceState>(
                 builder: (context, state) => ListTile(
                       title: const Text('Create Subspace'),

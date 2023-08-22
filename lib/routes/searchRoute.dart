@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/cubit/search/searchBloc.dart';
-import 'package:frontend/cubit/search/searchEvent.dart';
-import 'package:frontend/search/searchWidget.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 
 import '../search/searchPage.dart';
 import '../stores/store.dart';
-import 'package:http/http.dart' as http;
 
 class SearchRoutes {
   GoRoute getSearchRoute() {
@@ -31,7 +26,7 @@ class SearchRoutes {
         },
         pageBuilder: (BuildContext context, GoRouterState state) {
           var term = state.pathParameters['term']!;
-          bool isTag = state.queryParameters['isTag']! == 'true';
+          bool isTag = state.uri.queryParameters['isTag']! == 'true';
           return CustomTransitionPage<void>(
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {

@@ -17,7 +17,6 @@ import 'package:transparent_image/transparent_image.dart';
 
 import '../cubit/sorting/sortBloc.dart';
 import '../cubit/sorting/sortState.dart';
-import '../subspace/sortPostsDaysWidget.dart';
 import '../subspace/sortPostsWidget.dart';
 
 class PostWidget extends StatelessWidget {

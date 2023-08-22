@@ -1,10 +1,8 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/commenting/commentingBloc.dart';
 import 'package:frontend/cubit/commenting/commentingEvent.dart';
-import 'package:frontend/cubit/commenting/commentingState.dart';
 
 import '../models/comment.dart';
 import '../models/post.dart';

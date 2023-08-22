@@ -12,25 +12,17 @@ import 'package:frontend/cubit/userPage/userPageState.dart';
 import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/cubit/sorting/sortBloc.dart';
 import 'package:frontend/cubit/sorting/sortState.dart';
-import 'package:frontend/cubit/space/spaceEvent.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/cubit/title/titleBloc.dart';
-import 'package:frontend/cubit/title/titleEvent.dart';
 import 'package:frontend/models/userMeta.dart';
 import 'package:frontend/subspace/sortPostsDaysWidget.dart';
 import 'package:frontend/subspace/sortPostsWidget.dart';
-import 'package:frontend/subspace/titleWidget.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../cubit/space/spaceBlock.dart';
-import '../cubit/space/spaceState.dart';
 import '../models/appUser.dart';
 import '../posts/postCardWrapper.dart';
 import '../sidebar/sidebar.dart';
-import '../stores/store.dart';
 
 class UserWidget extends StatefulWidget {
   const UserWidget({super.key, required this.userId});

@@ -3,20 +3,15 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/buttomLoader.dart';
 import 'package:frontend/cubit/search/searchEvent.dart';
-import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/cubit/search/searchBloc.dart';
-import 'package:frontend/cubit/search/searchState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/search/searchPosts.dart';
-import 'package:frontend/search/searchResult.dart';
 import 'package:frontend/search/searchSpaces.dart';
 import 'package:frontend/search/searchUsers.dart';
 
 import '../cubit/sorting/sortBloc.dart';
 import '../cubit/sorting/sortState.dart';
-import '../posts/postCardWrapper.dart';
 import '../subspace/sortPostsDaysWidget.dart';
 import '../subspace/sortPostsWidget.dart';
 

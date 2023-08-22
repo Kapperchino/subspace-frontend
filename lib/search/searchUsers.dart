@@ -1,17 +1,12 @@
-import 'dart:io';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
-import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/cubit/search/searchBloc.dart';
 import 'package:frontend/cubit/search/searchState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/search/searchResult.dart';
 import 'package:frontend/search/userResult.dart';
 
-import '../posts/postCardWrapper.dart';
 
 class SearchUsers extends StatelessWidget {
   const SearchUsers({super.key});

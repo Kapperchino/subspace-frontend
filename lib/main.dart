@@ -27,12 +27,15 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 void main() async {
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await GetStorage.init();
-  GoRouter.optionURLReflectsImperativeAPIs = true;
+  WidgetsFlutterBinding.ensureInitialized(); 
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await GetStorage.init();
+  GoRouter.optionURLReflectsImperativeAPIs = true;
+
 
   if (!kIsWeb) {
     if (Platform.isAndroid || Platform.isIOS) {

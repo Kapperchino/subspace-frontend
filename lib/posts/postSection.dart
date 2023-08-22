@@ -8,9 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/cubit/comment/commentState.dart';
 import 'package:frontend/models/post.dart';
-import 'package:frontend/posts/commentModal.dart';
 import 'package:frontend/posts/commentingWidget.dart';
 import 'package:frontend/cubit/comment/commentBloc.dart';
 import 'package:frontend/cubit/comment/commentEvent.dart';
@@ -29,7 +27,6 @@ import '../common/timeWidget.dart';
 import '../models/pictureMeta.dart';
 import '../models/voteRequest.dart';
 import '../util/votesUtil.dart';
-import '../cubit/commenting/commentingEvent.dart';
 import '../cubit/vote/voteBloc.dart';
 import 'package:http/http.dart' as http;
 
