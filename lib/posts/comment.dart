@@ -20,103 +20,114 @@ import 'package:http/http.dart' as http;
 import '../cubit/commenting/commentingState.dart';
 
 class CommentWidget extends StatelessWidget {
-  const CommentWidget({super.key, required this.parentId, required this.data});
+  const CommentWidget(
+      {super.key,
+      required this.parentId,
+      required this.data,
+      this.elevation = 1});
 
   final int parentId;
   final CommentData data;
+  final double elevation;
 
   @override
   Widget build(BuildContext context) {
     final comment = data.comment;
     return Card(
+        elevation: elevation,
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-      CommentMeta(comment: data.comment),
-      Row(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          if (comment.type == ContentType.text)
-            const SizedBox(width: 0, height: 0),
-          if (comment.type == ContentType.picture)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: CachedNetworkImage(
-                imageUrl: comment.content,
-                placeholder: (context, url) => Image.memory(kTransparentImage),
-                width: 120,
-                memCacheHeight: 120,
-                memCacheWidth: 120,
-                height: 120,
-              ),
-            ),
-          Expanded(
-              flex: 9,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20),
-                child: SelectableText(
-                  comment.body,
-                  textAlign: TextAlign.left,
-                  style: Theme.of(context).textTheme.bodyMedium,
+          CommentMeta(comment: data.comment),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              if (comment.type == ContentType.text)
+                const SizedBox(width: 0, height: 0),
+              if (comment.type == ContentType.picture)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: CachedNetworkImage(
+                    imageUrl: comment.content,
+                    placeholder: (context, url) =>
+                        Image.memory(kTransparentImage),
+                    width: 120,
+                    memCacheHeight: 120,
+                    memCacheWidth: 120,
+                    height: 120,
+                  ),
                 ),
-              )),
-        ],
-      ),
-      Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          BlocProvider(
-            create: (_) => VoteBloc(
-              httpClient: http.Client(),
-              type: VoteType.comment,
-            )..add(InitEvent(
-                data.comment.id,
-                data.comment.upVotes,
-                data.comment.downVotes,
-                VotesUtil.getStatus(data.comment.vote),
-                VoteType.comment)),
-            child: const VoteWidgetFlat(),
+              Expanded(
+                  flex: 9,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: SelectableText(
+                      comment.body,
+                      textAlign: TextAlign.left,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  )),
+            ],
           ),
-          CommentingWidget(
-            comment: comment,
-          )
-        ],
-      ),
-      BlocListener<CommentingBloc, CommentingState>(
-        listener: (commentContext, state) {
-          ScaffoldMessenger.of(commentContext).clearSnackBars();
-          if (state.status == CommentingStaus.success) {
-            commentContext
-                .read<CommentBloc>()
-                .add(CommentsFetched(postId: comment.postId));
-            ScaffoldMessenger.of(commentContext).showSnackBar(const SnackBar(
-                backgroundColor: Colors.green,
-                content: Text('Comment created')));
-          } else if (state.status == CommentingStaus.failure) {
-            ScaffoldMessenger.of(commentContext).showSnackBar(const SnackBar(
-                backgroundColor: Colors.red, content: Text('Error input')));
-          }
-        },
-        child: const SizedBox(),
-      ),
-      if (data.children.isNotEmpty)
-        Column(
-            mainAxisSize: MainAxisSize.min,
-            children: data.children
-                .map((e) => BlocProvider(
-                    create: (_) => CommentingBloc(
-                        httpClient: http.Client(),
-                        parentId: data.comment.id,
-                        isPostComment: false,
-                        postId: data.comment.postId),
-                    child: Flexible(
-                        child: Padding(
-                      padding: const EdgeInsets.only(left: 50),
-                      child: CommentWidget(
-                        data: e,
-                        parentId: data.comment.id,
-                      ),
-                    ))))
-                .toList())
-    ]));
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              BlocProvider(
+                create: (_) => VoteBloc(
+                  httpClient: http.Client(),
+                  type: VoteType.comment,
+                )..add(InitEvent(
+                    data.comment.id,
+                    data.comment.upVotes,
+                    data.comment.downVotes,
+                    VotesUtil.getStatus(data.comment.vote),
+                    VoteType.comment)),
+                child: const VoteWidgetFlat(),
+              ),
+              CommentingWidget(
+                comment: comment,
+              )
+            ],
+          ),
+          BlocListener<CommentingBloc, CommentingState>(
+            listener: (commentContext, state) {
+              ScaffoldMessenger.of(commentContext).clearSnackBars();
+              if (state.status == CommentingStaus.success) {
+                commentContext
+                    .read<CommentBloc>()
+                    .add(CommentsFetched(postId: comment.postId));
+                ScaffoldMessenger.of(commentContext).showSnackBar(
+                    const SnackBar(
+                        backgroundColor: Colors.green,
+                        content: Text('Comment created')));
+              } else if (state.status == CommentingStaus.failure) {
+                ScaffoldMessenger.of(commentContext).showSnackBar(
+                    const SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Text('Error input')));
+              }
+            },
+            child: const SizedBox(),
+          ),
+          if (data.children.isNotEmpty)
+            Column(
+                mainAxisSize: MainAxisSize.min,
+                children: data.children
+                    .map((e) => BlocProvider(
+                        create: (_) => CommentingBloc(
+                            httpClient: http.Client(),
+                            parentId: data.comment.id,
+                            isPostComment: false,
+                            postId: data.comment.postId),
+                        child: Flexible(
+                            child: Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: CommentWidget(
+                            data: e,
+                            parentId: data.comment.id,
+                            elevation: elevation + 3,
+                          ),
+                        ))))
+                    .toList())
+        ]));
   }
 }

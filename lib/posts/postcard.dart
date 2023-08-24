@@ -38,8 +38,8 @@ class PostCard extends StatelessWidget {
     final location = GoRouterState.of(context).matchedLocation;
     return Card(
         clipBehavior: Clip.hardEdge,
+        elevation: 1,
         child: InkWell(
-          splashColor: Colors.blue.withAlpha(30),
           onTap: () {
             context.push(
                 "/s/${post.spaceParentId}/${post.spaceName}/p/${post.id}");

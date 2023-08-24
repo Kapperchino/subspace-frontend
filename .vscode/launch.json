@@ -10,7 +10,7 @@
             "request": "attach",
             "args": [
                 "--dart-define",
-                "BASE_URL=http://localhost:3000"
+                "BASE_URL=https://subspace-backend.fly.dev"
             ],
         },
         {
@@ -19,7 +19,7 @@
             "type": "dart",
             "args": [
                 "--dart-define",
-                "BASE_URL=http://localhost:3000"
+                "BASE_URL=https://subspace-backend.fly.dev"
             ],
         },
         {
