@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/routes/postRoutes.dart';
-import 'package:frontend/subspace/subscriptionPage.dart';
+import 'package:frontend/subspace/homePageWrapper.dart';
+import 'package:frontend/subspace/subspaceHome.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 
@@ -39,9 +40,9 @@ class SpaceRoutes {
         );
   }
 
-  GoRoute getSubsriptionRoute() {
+  GoRoute getHome() {
     return GoRoute(
-        path: '/subscriptions',
+        path: '/home',
         redirect: (context, state) async {
           String? expire = GetStorage().read("expire");
           final jwt = await Store.secure.read(key: "jwt");
@@ -58,7 +59,33 @@ class SpaceRoutes {
           return "/login";
         },
         builder: (BuildContext context, GoRouterState state) {
-          return const SubscriptionPage();
+          return const HomePageWrapper();
         });
+  }
+
+  GoRoute getSpaceHome() {
+    return GoRoute(
+        path: '/s/home',
+        redirect: (context, state) async {
+          String? expire = GetStorage().read("expire");
+          final jwt = await Store.secure.read(key: "jwt");
+          if (jwt == null) {
+            return "/login";
+          }
+          if (expire != null) {
+            final time = DateTime.parse(expire);
+            if (time.isBefore(DateTime.now())) {
+              return "/login";
+            }
+            return null;
+          }
+          return "/login";
+        },
+        routes: [PostRoutes().getPostRoute()],
+        builder: (BuildContext context, GoRouterState state) {
+          return SubSpaceHome();
+        }
+        //TODO: add user count
+        );
   }
 }

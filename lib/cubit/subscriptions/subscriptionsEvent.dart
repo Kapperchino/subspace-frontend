@@ -16,8 +16,8 @@ final class SubscriptionsSortChanged extends SubscriptionsEvent {
   SubscriptionsSortChanged({required this.sortState});
 }
 
-final class DaysSortChanged extends SubscriptionsEvent {
+final class SubscriptionDaysSortChanged extends SubscriptionsEvent {
   final SortDays sortDays;
 
-  DaysSortChanged({required this.sortDays});
+  SubscriptionDaysSortChanged({required this.sortDays});
 }

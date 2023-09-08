@@ -36,7 +36,7 @@ class SubscriptionsBloc extends Bloc<SubscriptionsEvent, SubscriptionsState> {
       _onSortChange,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<DaysSortChanged>(
+    on<SubscriptionDaysSortChanged>(
       _onDaysChange,
       transformer: throttleDroppable(throttleDuration),
     );
@@ -45,7 +45,7 @@ class SubscriptionsBloc extends Bloc<SubscriptionsEvent, SubscriptionsState> {
   final http.Client httpClient;
 
   Future<void> _onDaysChange(
-    DaysSortChanged event,
+    SubscriptionDaysSortChanged event,
     Emitter<SubscriptionsState> emit,
   ) async {
     try {

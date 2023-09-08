@@ -9,14 +9,14 @@ class VoteWidgetFlat extends StatelessWidget {
 
   Color getColorUpVote(VotingStatus status, BuildContext context) {
     if (status == VotingStatus.liked) {
-      return Theme.of(context).colorScheme.primary;
+      return Theme.of(context).colorScheme.secondary;
     }
     return Theme.of(context).hintColor;
   }
 
   Color getColorDownVote(VotingStatus status, BuildContext context) {
     if (status == VotingStatus.disliked) {
-      return Theme.of(context).primaryColor;
+      return Theme.of(context).colorScheme.secondary;
     }
     return Theme.of(context).hintColor;
   }
@@ -29,19 +29,44 @@ class VoteWidgetFlat extends StatelessWidget {
             child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_upward_rounded),
-              splashRadius: 20,
-              color: getColorUpVote(state.status, context),
+            TextButton(
+              style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  minimumSize: const Size(35, 45)),
+              child: Text(
+                String.fromCharCode(Icons.arrow_upward_rounded.codePoint),
+                style: TextStyle(
+                  color: getColorUpVote(state.status, context),
+                  inherit: false,
+                  fontSize: 25,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: Icons.space_dashboard_outlined.fontFamily,
+                ),
+              ),
               onPressed: () {
                 context.read<VoteBloc>().add(UpvoteEvent());
               },
             ),
-            Text((state.likes - state.dislikes).toString()),
-            IconButton(
-              icon: const Icon(Icons.arrow_downward_rounded),
-              color: getColorDownVote(state.status, context),
-              splashRadius: 20,
+            Text(
+              (state.likes - state.dislikes).toString(),
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  minimumSize: const Size(35, 45)),
+              child: Text(
+                String.fromCharCode(Icons.arrow_downward_rounded.codePoint),
+                style: TextStyle(
+                  color: getColorDownVote(state.status, context),
+                  inherit: false,
+                  fontSize: 25,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: Icons.space_dashboard_outlined.fontFamily,
+                ),
+              ),
               onPressed: () {
                 context.read<VoteBloc>().add(DownvoteEvent());
               },

@@ -49,6 +49,9 @@ class UserResult extends StatelessWidget {
                     user.displayName.length > 20
                         ? '${user.displayName.substring(0, 20)}...'
                         : user.displayName,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.secondary),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

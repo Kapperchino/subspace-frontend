@@ -61,20 +61,6 @@ class SideBar extends StatelessWidget {
               ]),
             ),
           )),
-          if (GoRouterState.of(context).uri.toString().startsWith('/s/'))
-            BlocBuilder<SpaceBloc, SpaceState>(
-                builder: (context, state) => ListTile(
-                      title: const Text('Create Subspace'),
-                      onTap: () {
-                        context.push("/create/space/${state.spaceId}");
-                      },
-                    )),
-          ListTile(
-            title: const Text('Subscriptions'),
-            onTap: () {
-              context.push("/subscriptions");
-            },
-          ),
           ListTile(
             title: const Text('Sign Out'),
             onTap: () async {

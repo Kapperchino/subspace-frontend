@@ -12,8 +12,7 @@ import 'package:frontend/cubit/space/spaceEvent.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/title/titleBloc.dart';
 import 'package:frontend/cubit/title/titleEvent.dart';
-import 'package:frontend/subspace/sortPostsDaysWidget.dart';
-import 'package:frontend/subspace/sortPostsWidget.dart';
+import 'package:frontend/common/navBar.dart';
 import 'package:frontend/subspace/titleWidget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -21,7 +20,7 @@ import 'package:transparent_image/transparent_image.dart';
 import '../cubit/space/spaceBlock.dart';
 import '../cubit/space/spaceState.dart';
 import '../posts/postCardWrapper.dart';
-import '../sidebar/sidebar.dart';
+import '../common/sidebar.dart';
 
 class Subspace extends StatefulWidget {
   const Subspace({super.key, required this.name, required this.parentId});
@@ -52,19 +51,25 @@ class _SubSpaceState extends State<Subspace> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 600) / 2, 0.0);
-    var fit = BoxFit.none;
-    if (kIsWeb) {
-      fit = BoxFit.fitWidth;
-    } else {
-      if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
-        fit = BoxFit.fitWidth;
-      } else {
-        fit = BoxFit.fitHeight;
-      }
-    }
+    final padding = max((width - 600) / 2, 8.0);
+    var fit = BoxFit.fitWidth;
     return Scaffold(
       endDrawer: const SideBar(),
+      floatingActionButton: BlocBuilder<SpaceBloc, SpaceState>(
+        builder: (context, state) {
+          return FloatingActionButton(
+            shape: const CircleBorder(),
+            child: const Icon(Icons.add),
+            onPressed: () async {
+              context.push("/create/space/${state.spaceId}/post").then(
+                  (value) => context
+                      .read<SpaceBloc>()
+                      .add(SpaceFetched(parentId: parentId, spaceName: name)));
+            },
+          );
+        },
+      ),
+      bottomNavigationBar: const NavBar(),
       body: RefreshIndicator(
         onRefresh: () async {
           context
@@ -75,104 +80,18 @@ class _SubSpaceState extends State<Subspace> {
           SliverAppBar(
             pinned: false,
             snap: false,
-            floating: false,
-            expandedHeight: 200,
+            floating: true,
             centerTitle: true,
-            bottom: PreferredSize(
-                preferredSize: const Size.fromHeight(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding:
-                              EdgeInsets.only(left: padding + 5, bottom: 5),
-                          alignment: Alignment.bottomLeft,
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints.tightFor(
-                                width: 300, height: 40),
-                            child: TextField(
-                              autofocus: false,
-                              maxLines: 1,
-                              onSubmitted: (value) {
-                                bool isTag = false;
-                                if (value.startsWith("#")) {
-                                  value = value.substring(1);
-                                  isTag = true;
-                                }
-                                context.push("/search/$value?isTag=$isTag");
-                              },
-                              decoration: InputDecoration(
-                                prefixIcon: const Icon(Icons.search),
-                                filled: false,
-                                hintText: 'Search',
-                                contentPadding: const EdgeInsets.only(
-                                    left: 14.0, bottom: 8.0, top: 8.0),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide:
-                                      const BorderSide(color: Colors.white),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Theme.of(context).cardColor),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(right: padding, bottom: 10),
-                      alignment: Alignment.bottomRight,
-                      child: BlocBuilder<SpaceBloc, SpaceState>(
-                        builder: (context, state) {
-                          return ElevatedButton(
-                            onPressed: () async {
-                              context
-                                  .push("/create/space/${state.spaceId}/post")
-                                  .then((value) => context
-                                      .read<SpaceBloc>()
-                                      .add(SpaceFetched(
-                                          parentId: parentId,
-                                          spaceName: name)));
-                            },
-                            child: const Text('Post'),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                )),
             backgroundColor: Theme.of(context).colorScheme.background,
             flexibleSpace: BlocBuilder<SpaceBloc, SpaceState>(
                 builder: (context, state) => FlexibleSpaceBar(
                       background: getImage(state.backgroundPicture, fit),
-                      titlePadding: const EdgeInsets.all(50),
                       title: TitleWidget(
                         title: name,
                       ),
                     )),
           ),
-          SliverToBoxAdapter(
-            child: Row(
-              children: [
-                Container(
-                    padding: EdgeInsets.only(left: padding, bottom: 0),
-                    alignment: Alignment.topLeft,
-                    child: const SortPostsWidget()),
-                Container(
-                    padding: const EdgeInsets.only(left: 5, bottom: 0),
-                    alignment: Alignment.bottomLeft,
-                    child: const SortPostsDaysWidget())
-              ],
-            ),
-          ),
+          const SliverPadding(padding: EdgeInsets.only(bottom: 5)),
           BlocBuilder<SpaceBloc, SpaceState>(
             builder: (context, state) {
               switch (state.status) {
@@ -192,15 +111,16 @@ class _SubSpaceState extends State<Subspace> {
                       padding: EdgeInsets.symmetric(horizontal: padding),
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                          if (index >= state.posts.length) {
-                            return const SliverToBoxAdapter(
-                                child: BottomLoader());
-                          }
-                          return PostCardWrapper(
-                              spaceName: name, post: state.posts[index].post);
-                        },
-                            childCount: state.posts.length,),
+                          (BuildContext context, int index) {
+                            if (index >= state.posts.length) {
+                              return const SliverToBoxAdapter(
+                                  child: BottomLoader());
+                            }
+                            return PostCardWrapper(
+                                spaceName: name, post: state.posts[index].post);
+                          },
+                          childCount: state.posts.length,
+                        ),
                       ));
                 case SpaceStatus.initial:
                   return const SliverToBoxAdapter(

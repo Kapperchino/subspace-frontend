@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/search/searchHome.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,7 +9,7 @@ import '../stores/store.dart';
 class SearchRoutes {
   GoRoute getSearchRoute() {
     return GoRoute(
-        path: '/search/:term',
+        path: '/search/results/:term',
         redirect: (context, state) async {
           String? expire = GetStorage().read("expire");
           final jwt = await Store.secure.read(key: "jwt");
@@ -38,5 +39,29 @@ class SearchRoutes {
               },
               child: SearchPage(term: term, isTag: isTag));
         });
+  }
+
+  GoRoute getSearchRouteHome() {
+    return GoRoute(
+      path: '/search/home',
+      redirect: (context, state) async {
+        String? expire = GetStorage().read("expire");
+        final jwt = await Store.secure.read(key: "jwt");
+        if (jwt == null) {
+          return "/login";
+        }
+        if (expire != null) {
+          final time = DateTime.parse(expire);
+          if (time.isBefore(DateTime.now())) {
+            return "/login";
+          }
+          return null;
+        }
+        return "/login";
+      },
+      builder: (context, state) {
+        return SearchHome();
+      },
+    );
   }
 }

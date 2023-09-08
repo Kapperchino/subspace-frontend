@@ -49,6 +49,10 @@ class PostMeta extends StatelessWidget {
                   : post.posterName,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             onPressed: () {
               context.push("/u/${post.posterId}");
@@ -83,7 +87,12 @@ class PostMeta extends StatelessWidget {
                   onPressed: () {
                     context.push("/s/${post.spaceParentId}/${post.spaceName}");
                   },
-                  child: Text('s/${post.spaceName}'),
+                  child: Text(
+                    's/${post.spaceName}',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.secondary),
+                  ),
                 ),
               ),
             ],

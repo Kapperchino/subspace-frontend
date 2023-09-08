@@ -1,34 +1,25 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/common/navBar.dart';
-import 'package:frontend/cubit/search/searchEvent.dart';
-import 'package:frontend/cubit/search/searchBloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/search/searchPosts.dart';
-import 'package:frontend/search/searchSpaces.dart';
-import 'package:frontend/search/searchUsers.dart';
+import 'package:frontend/common/sidebar.dart';
 
-import '../cubit/sorting/sortBloc.dart';
-import '../cubit/sorting/sortState.dart';
-import '../subspace/sortPostsDaysWidget.dart';
-import '../subspace/sortPostsWidget.dart';
-
-class SearchWidget extends StatelessWidget {
-  SearchWidget({super.key});
+class SubSpaceHome extends StatelessWidget {
+  SubSpaceHome({super.key});
 
   final TextEditingController controllerSearch = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final padding = max((width - 600) / 2, 0.0);
-    var fit = BoxFit.fitWidth;
+    var fit = BoxFit.none;
+    fit = BoxFit.fitWidth;
     return DefaultTabController(
-      length: 3, // This is the number of tabs.
+      length: 2, // This is the number of tabs.
       child: Scaffold(
         bottomNavigationBar: const NavBar(),
+        endDrawer: const SideBar(),
         body: NestedScrollView(
           floatHeaderSlivers: true,
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -59,6 +50,7 @@ class SearchWidget extends StatelessWidget {
                       "assets/search_background.png",
                       fit: fit,
                     ),
+                    title: const Text("Spaces"),
                   ),
                   bottom: TabBar(
                     labelStyle: const TextStyle(fontWeight: FontWeight.bold),
@@ -70,16 +62,12 @@ class SearchWidget extends StatelessWidget {
                     tabs: const [
                       Tab(
                         height: 40,
-                        text: "Posts",
+                        text: "Popular",
                       ),
                       Tab(
                         height: 40,
-                        text: "Spaces",
+                        text: "New",
                       ),
-                      Tab(
-                        height: 40,
-                        text: "Users",
-                      )
                     ],
                   ),
                 ),
@@ -94,40 +82,12 @@ class SearchWidget extends StatelessWidget {
                 builder: (BuildContext context) {
                   return CustomScrollView(
                     cacheExtent: 8500,
-                    key: const PageStorageKey<String>("Post"),
+                    key: const PageStorageKey<String>("Popular"),
                     slivers: <Widget>[
                       SliverOverlapInjector(
                         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
                             context),
                       ),
-                      SliverToBoxAdapter(
-                        child: Row(
-                          children: [
-                            BlocListener<SortBloc, SortState>(
-                              listenWhen: (previous, current) {
-                                return previous.status != current.status;
-                              },
-                              listener: (context, state) {
-                                context.read<SearchBloc>().add(
-                                    SearchSortChanged(status: state.status));
-                              },
-                              child: const SizedBox(),
-                            ),
-                            BlocListener<SortBloc, SortState>(
-                              listenWhen: (previous, current) {
-                                return previous.sortDays != current.sortDays;
-                              },
-                              listener: (context, state) {
-                                context.read<SearchBloc>().add(
-                                    SearchSortDaysChanged(
-                                        days: state.sortDays));
-                              },
-                              child: const SizedBox(),
-                            )
-                          ],
-                        ),
-                      ),
-                      const SearchPosts()
                     ],
                   );
                 },
@@ -140,32 +100,14 @@ class SearchWidget extends StatelessWidget {
                 builder: (BuildContext context) {
                   return CustomScrollView(
                     cacheExtent: 8500,
-                    key: const PageStorageKey<String>("Space"),
+                    key: const PageStorageKey<String>("New"),
                     slivers: <Widget>[
                       SliverOverlapInjector(
+                        // This is the flip side of the SliverOverlapAbsorber
+                        // above.
                         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
                             context),
                       ),
-                      const SearchSpaces()
-                    ],
-                  );
-                },
-              ),
-            ),
-            SafeArea(
-              top: false,
-              bottom: false,
-              child: Builder(
-                builder: (BuildContext context) {
-                  return CustomScrollView(
-                    cacheExtent: 8500,
-                    key: const PageStorageKey<String>("Users"),
-                    slivers: <Widget>[
-                      SliverOverlapInjector(
-                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                            context),
-                      ),
-                      const SearchUsers()
                     ],
                   );
                 },

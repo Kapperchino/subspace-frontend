@@ -84,7 +84,7 @@ class PostCard extends StatelessWidget {
                           case "#":
                             {
                               text = text.substring(1);
-                              context.push("/search/$text?isTag=true");
+                              context.push("/search/results/$text?isTag=true");
                             }
                           case "@":
                             {
@@ -157,7 +157,7 @@ class PostCard extends StatelessWidget {
       return const SizedBox();
     }
     if (type == ContentType.picture) {
-      final deviceWidth = MediaQuery.of(context).size.width - 20;
+      final deviceWidth = MediaQuery.of(context).size.width - 40;
       final maxWidth = min(deviceWidth, CARD_MAX_WIDTH);
       final defaultRatio = maxWidth / CARD_MAX_HEIGHT;
       final imageRatio = pictures![0].width / pictures[0].height;
@@ -170,7 +170,7 @@ class PostCard extends StatelessWidget {
       final cachedRatio =
           min(pictures[0].width / maxWidth, pictures[0].height / height);
       return Padding(
-          padding: const EdgeInsets.only(left: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: InkWell(

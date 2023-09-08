@@ -22,7 +22,7 @@ import 'package:transparent_image/transparent_image.dart';
 
 import '../models/appUser.dart';
 import '../posts/postCardWrapper.dart';
-import '../sidebar/sidebar.dart';
+import '../common/sidebar.dart';
 
 class UserWidget extends StatefulWidget {
   const UserWidget({super.key, required this.userId});
