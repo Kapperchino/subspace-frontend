@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/comment/commentBloc.dart';
 import 'package:frontend/cubit/navBar/navBarBloc.dart';
+import 'package:frontend/cubit/sorting/sortBloc.dart';
 import 'package:frontend/routes/createRoutes.dart';
 import 'package:frontend/routes/imageRoutes.dart';
 import 'package:frontend/routes/loginRoutes.dart';
@@ -53,15 +54,17 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var theme = const ColorScheme.dark();
-    return BlocProvider(
-      create: (_) => NavBarBloc(httpClient: http.Client()),
-      child: MaterialApp.router(
-        theme: ThemeData(
-            // Define the default brightness and colors.
-            colorScheme: theme,
-            useMaterial3: true),
-        routerConfig: _router,
-      ),
-    );
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => NavBarBloc(httpClient: http.Client())),
+          BlocProvider(create: (_) => SortBloc(httpClient: http.Client())),
+        ],
+        child: MaterialApp.router(
+          theme: ThemeData(
+              // Define the default brightness and colors.
+              colorScheme: theme,
+              useMaterial3: true),
+          routerConfig: _router,
+        ));
   }
 }

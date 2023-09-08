@@ -66,13 +66,13 @@ class HomePage extends StatelessWidget {
                     title: const Text("Subspace"),
                   ),
                   bottom: TabBar(
-                    labelStyle: TextStyle(fontWeight: FontWeight.bold),
+                    labelStyle: const TextStyle(fontWeight: FontWeight.bold),
                     labelColor: Theme.of(context).colorScheme.secondary,
                     indicatorColor: Theme.of(context).colorScheme.secondary,
                     labelPadding: EdgeInsets.zero,
                     indicatorPadding: EdgeInsets.zero,
                     // These are the widgets to put in each tab in the tab bar.
-                    tabs: [
+                    tabs: const [
                       Tab(
                         height: 40,
                         text: "Home",

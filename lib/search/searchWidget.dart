@@ -13,8 +13,6 @@ import 'package:frontend/search/searchUsers.dart';
 
 import '../cubit/sorting/sortBloc.dart';
 import '../cubit/sorting/sortState.dart';
-import '../subspace/sortPostsDaysWidget.dart';
-import '../subspace/sortPostsWidget.dart';
 
 class SearchWidget extends StatelessWidget {
   SearchWidget({super.key});
@@ -23,7 +21,7 @@ class SearchWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 600) / 2, 0.0);
+    final padding = max((width - 600) / 2, 8.0);
     var fit = BoxFit.fitWidth;
     return DefaultTabController(
       length: 3, // This is the number of tabs.

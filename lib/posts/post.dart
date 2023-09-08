@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/common/navBar.dart';
 import 'package:frontend/cubit/comment/commentBloc.dart';
 import 'package:frontend/cubit/comment/commentEvent.dart';
 import 'package:frontend/models/pictureMeta.dart';
@@ -17,7 +18,6 @@ import 'package:transparent_image/transparent_image.dart';
 
 import '../cubit/sorting/sortBloc.dart';
 import '../cubit/sorting/sortState.dart';
-import '../subspace/sortPostsWidget.dart';
 
 class PostWidget extends StatelessWidget {
   const PostWidget({super.key, required this.id, required this.spaceName});
@@ -28,68 +28,51 @@ class PostWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var fit = BoxFit.none;
-    if (kIsWeb) {
-      fit = BoxFit.fitWidth;
-    } else {
-      if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
-        fit = BoxFit.fitWidth;
-      } else {
-        fit = BoxFit.fitHeight;
-      }
-    }
+    fit = BoxFit.fitWidth;
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 600) / 2, 0.0);
+    final padding = max((width - 600) / 2, 8.0);
     return Scaffold(
+        bottomNavigationBar: const NavBar(),
         body: RefreshIndicator(onRefresh: () async {
-      context.read<PostBloc>().add(PostFetched(postId: id));
-    }, child: BlocBuilder<PostBloc, PostState>(
-      builder: (context, state) {
-        return CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              centerTitle: true,
-              pinned: false,
-              snap: false,
-              floating: false,
-              expandedHeight: 200.0,
-              backgroundColor: Theme.of(context).colorScheme.background,
-              flexibleSpace: FlexibleSpaceBar(
-                background: getImage(state.post?.spacePicture, fit),
-                titlePadding: const EdgeInsets.all(50),
-                title: Text(spaceName),
-              ),
-            ),
-            SliverToBoxAdapter(
-                child: PostSection(
-              spaceName: spaceName,
-              id: id,
-            )),
-            SliverToBoxAdapter(
-              child: Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.only(left: padding, bottom: 0),
-                      alignment: Alignment.topLeft,
-                      child: const SortPostsWidget())
-                ],
-              ),
-            ),
-            BlocListener<SortBloc, SortState>(
-              listenWhen: (previous, current) {
-                return previous.status != current.status;
-              },
-              listener: (context, state) {
-                context
-                    .read<CommentBloc>()
-                    .add(CommentsSortChange(sortStatus: state.status));
-              },
-              child: const SliverToBoxAdapter(child: SizedBox()),
-            ),
-            CommentSection(postId: id)
-          ],
-        );
-      },
-    )));
+          context.read<PostBloc>().add(PostFetched(postId: id));
+        }, child: BlocBuilder<PostBloc, PostState>(
+          builder: (context, state) {
+            return CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  pinned: true,
+                  snap: false,
+                  floating: false,
+                  centerTitle: true,
+                  backgroundColor: Theme.of(context).colorScheme.background,
+                  expandedHeight: 80,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: getImage(state.post?.spacePicture, fit),
+                    title: Text(spaceName),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                    child: PostSection(
+                  spaceName: spaceName,
+                  id: id,
+                )),
+                BlocListener<SortBloc, SortState>(
+                  listenWhen: (previous, current) {
+                    return previous.status != current.status;
+                  },
+                  listener: (context, state) {
+                    context
+                        .read<CommentBloc>()
+                        .add(CommentsSortChange(sortStatus: state.status));
+                  },
+                  child: const SliverToBoxAdapter(child: SizedBox()),
+                ),
+                SliverPadding(padding: EdgeInsets.only(bottom: 10)),
+                CommentSection(postId: id)
+              ],
+            );
+          },
+        )));
   }
 
   Widget getImage(PictureMeta? picture, BoxFit fit) {

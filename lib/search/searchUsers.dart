@@ -14,7 +14,7 @@ class SearchUsers extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 600) / 2, 0.0);
+    final padding = max((width - 600) / 2, 8.0);
 
     return BlocBuilder<SearchBloc, SearchState>(
       builder: (context, state) {
@@ -25,7 +25,7 @@ class SearchUsers extends StatelessWidget {
           case SearchStatus.success:
             if (state.posts!.isEmpty) {
               return const SliverToBoxAdapter(
-                  child: Center(child: Text('no posts')));
+                  child: Center(child: Text('no users')));
             }
             return SliverPadding(
                 padding: EdgeInsets.symmetric(horizontal: padding),

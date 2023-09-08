@@ -15,7 +15,7 @@ class CommentSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 600) / 2, 0.0);
+    final padding = max((width - 600) / 2, 8.0);
     return BlocBuilder<CommentBloc, CommentsState>(builder: (context, state) {
       switch (state.status) {
         case CommentsStatus.failure:
@@ -24,7 +24,7 @@ class CommentSection extends StatelessWidget {
         case CommentsStatus.success:
           if (state.comments.isEmpty) {
             return const SliverToBoxAdapter(
-                child: Center(child: Text('no posts')));
+                child: Center(child: Text('no comments')));
           }
           return SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: padding),

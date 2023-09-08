@@ -1,59 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/models/post.dart';
+import 'package:frontend/cubit/sorting/sortBloc.dart';
+import 'package:frontend/cubit/sorting/sortState.dart';
+import 'package:frontend/cubit/space/spaceState.dart';
 import 'package:go_router/go_router.dart';
-
-import '../cubit/commenting/commentingBloc.dart';
-import '../cubit/commenting/commentingEvent.dart';
-import '../cubit/commenting/commentingState.dart';
-import '../models/comment.dart';
-
-enum SortDaysEnum { day, week, month, halfYear, year }
+import '../cubit/sorting/sortEvent.dart';
 
 class SortDaysModal extends StatelessWidget {
-  SortDaysModal({super.key, this.comment, this.post});
-
-  final Comment? comment;
-  final Post? post;
-  SortDaysEnum? _groceryItem = SortDaysEnum.month;
+  const SortDaysModal({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile<SortDaysEnum>(
-              value: SortDaysEnum.day,
-              groupValue: _groceryItem,
-              onChanged: (SortDaysEnum? value) {},
-              title: const Text('Today'),
-            ),
-            RadioListTile<SortDaysEnum>(
-              value: SortDaysEnum.week,
-              groupValue: _groceryItem,
-              onChanged: (SortDaysEnum? value) {},
-              title: const Text('This Week'),
-            ),
-            RadioListTile<SortDaysEnum>(
-              value: SortDaysEnum.month,
-              groupValue: _groceryItem,
-              onChanged: (SortDaysEnum? value) {},
-              title: const Text('This Month'),
-            ),
-            RadioListTile<SortDaysEnum>(
-              value: SortDaysEnum.year,
-              groupValue: _groceryItem,
-              onChanged: (SortDaysEnum? value) {},
-              title: const Text('This Year'),
-            ),
-          ],
+    return BlocBuilder<SortBloc, SortState>(builder: (context, state) {
+      return Padding(
+        padding: MediaQuery.of(context).viewInsets,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 40),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RadioListTile<SortDays>(
+                value: SortDays.week,
+                groupValue: state.sortDays,
+                onChanged: (SortDays? value) {
+                  context
+                      .read<SortBloc>()
+                      .add(DaysSortChanged(sortDays: value!));
+                  context.pop();
+                },
+                title: const Text('This Week'),
+              ),
+              RadioListTile<SortDays>(
+                value: SortDays.month,
+                groupValue: state.sortDays,
+                onChanged: (SortDays? value) {
+                  context
+                      .read<SortBloc>()
+                      .add(DaysSortChanged(sortDays: value!));
+                  context.pop();
+                },
+                title: const Text('This Month'),
+              ),
+              RadioListTile<SortDays>(
+                value: SortDays.year,
+                groupValue: state.sortDays,
+                onChanged: (SortDays? value) {
+                  context
+                      .read<SortBloc>()
+                      .add(DaysSortChanged(sortDays: value!));
+                  context.pop();
+                },
+                title: const Text('This Year'),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

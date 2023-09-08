@@ -43,7 +43,7 @@ class PostSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 800) / 2, 0.0);
+    final padding = max((width - 600) / 2, 8.0);
     return BlocBuilder<PostBloc, PostState>(builder: (context, postState) {
       if (postState.status == PostStatus.success) {
         var urlPrefix = "";

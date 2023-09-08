@@ -30,7 +30,7 @@ class _SubspaceCreationWidget extends State<SubspaceCreationWidget> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 600) / 2, 0.0);
+    final padding = max((width - 600) / 2, 8.0);
     var fit = BoxFit.none;
     if (kIsWeb) {
       fit = BoxFit.fitWidth;

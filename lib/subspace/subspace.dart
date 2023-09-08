@@ -78,10 +78,12 @@ class _SubSpaceState extends State<Subspace> {
         },
         child: CustomScrollView(cacheExtent: 8500, slivers: <Widget>[
           SliverAppBar(
-            pinned: false,
+            pinned: true,
             snap: false,
-            floating: true,
+            floating: false,
             centerTitle: true,
+            expandedHeight: 80,
+            toolbarHeight: 0,
             backgroundColor: Theme.of(context).colorScheme.background,
             flexibleSpace: BlocBuilder<SpaceBloc, SpaceState>(
                 builder: (context, state) => FlexibleSpaceBar(

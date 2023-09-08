@@ -21,7 +21,7 @@ class PostFileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 600) / 2, 0.0);
+    final padding = max((width - 600) / 2, 8.0);
     return Card(
       margin: EdgeInsets.symmetric(horizontal: padding),
       child: Column(mainAxisSize: MainAxisSize.min, children: [

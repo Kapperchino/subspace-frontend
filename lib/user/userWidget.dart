@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
+import 'package:frontend/common/navBar.dart';
 import 'package:frontend/cubit/userPage/userPageBloc.dart';
 import 'package:frontend/cubit/userPage/userPageEvent.dart';
 import 'package:frontend/cubit/userPage/userPageState.dart';
@@ -14,8 +15,6 @@ import 'package:frontend/cubit/sorting/sortBloc.dart';
 import 'package:frontend/cubit/sorting/sortState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/models/userMeta.dart';
-import 'package:frontend/subspace/sortPostsDaysWidget.dart';
-import 'package:frontend/subspace/sortPostsWidget.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -49,7 +48,7 @@ class _UserWidgetState extends State<UserWidget> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 600) / 2, 0.0);
+    final padding = max((width - 600) / 2, 8.0);
     var fit = BoxFit.none;
     if (kIsWeb) {
       fit = BoxFit.fitWidth;
@@ -62,6 +61,7 @@ class _UserWidgetState extends State<UserWidget> {
     }
     return Scaffold(
       endDrawer: const SideBar(),
+      bottomNavigationBar: const NavBar(),
       body: RefreshIndicator(
         onRefresh: () async {
           context.read<UserPageBloc>().add(UserPageFetched(userId: userId));
@@ -91,33 +91,34 @@ class _UserWidgetState extends State<UserWidget> {
                         backgroundColor: Colors.blue,
                         maxRadius: 60,
                       ),
-                      if(isCurrentUser(userId))
-                      Positioned(
-                          left: 83,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              final picker = ImagePicker();
-                              picker
-                                  .pickImage(source: ImageSource.gallery)
-                                  .then((pic) {
-                                context
-                                    .read<UserPageBloc>()
-                                    .add(UserPagePicUpload(file: pic));
-                              });
-                            },
-                            style: ElevatedButton.styleFrom(
-                              shape: const CircleBorder(),
-                              minimumSize: const Size(4, 4),
-                              padding: const EdgeInsets.all(3),
-                              backgroundColor: Colors.blue, // <-- Button color
-                              foregroundColor: Colors.red, // <-- Splash color
-                            ),
-                            child: const Icon(
-                              Icons.edit,
-                              color: Colors.white,
-                              size: 18,
-                            ),
-                          ))
+                      if (isCurrentUser(userId))
+                        Positioned(
+                            left: 83,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                final picker = ImagePicker();
+                                picker
+                                    .pickImage(source: ImageSource.gallery)
+                                    .then((pic) {
+                                  context
+                                      .read<UserPageBloc>()
+                                      .add(UserPagePicUpload(file: pic));
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shape: const CircleBorder(),
+                                minimumSize: const Size(4, 4),
+                                padding: const EdgeInsets.all(3),
+                                backgroundColor:
+                                    Colors.blue, // <-- Button color
+                                foregroundColor: Colors.red, // <-- Splash color
+                              ),
+                              child: const Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                            ))
                     ])),
                   ],
                 ),
@@ -226,20 +227,6 @@ class _UserWidgetState extends State<UserWidget> {
                         ],
                       )));
             },
-          ),
-          SliverToBoxAdapter(
-            child: Row(
-              children: [
-                Container(
-                    padding: EdgeInsets.only(left: padding, top: 0),
-                    alignment: Alignment.topLeft,
-                    child: const SortPostsWidget()),
-                Container(
-                    padding: const EdgeInsets.only(left: 5, top: 0),
-                    alignment: Alignment.bottomLeft,
-                    child: const SortPostsDaysWidget())
-              ],
-            ),
           ),
           BlocBuilder<UserPageBloc, UserPageState>(
             builder: (context, state) {
