@@ -25,54 +25,63 @@ class VoteWidgetFlat extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<VoteBloc, VotingState>(
       builder: (context, state) {
-        return Flexible(
+        return ElevatedButton(
+            onPressed: () {
+              return null;
+            },
+            style: ElevatedButton.styleFrom(
+                elevation: 6,
+                padding: EdgeInsets.zero,
+                minimumSize: Size(80, 35)),
             child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            TextButton(
-              style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  minimumSize: const Size(35, 45)),
-              child: Text(
-                String.fromCharCode(Icons.arrow_upward_rounded.codePoint),
-                style: TextStyle(
-                  color: getColorUpVote(state.status, context),
-                  inherit: false,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: Icons.space_dashboard_outlined.fontFamily,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                TextButton(
+                  style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      minimumSize: const Size(35, 35)),
+                  child: Text(
+                    String.fromCharCode(Icons.arrow_upward_rounded.codePoint),
+                    style: TextStyle(
+                      color: getColorUpVote(state.status, context),
+                      inherit: false,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: Icons.space_dashboard_outlined.fontFamily,
+                    ),
+                  ),
+                  onPressed: () {
+                    context.read<VoteBloc>().add(UpvoteEvent());
+                  },
                 ),
-              ),
-              onPressed: () {
-                context.read<VoteBloc>().add(UpvoteEvent());
-              },
-            ),
-            Text(
-              (state.likes - state.dislikes).toString(),
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  minimumSize: const Size(35, 45)),
-              child: Text(
-                String.fromCharCode(Icons.arrow_downward_rounded.codePoint),
-                style: TextStyle(
-                  color: getColorDownVote(state.status, context),
-                  inherit: false,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: Icons.space_dashboard_outlined.fontFamily,
+                Text(
+                  (state.likes - state.dislikes).toString(),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).textTheme.bodyMedium!.color),
                 ),
-              ),
-              onPressed: () {
-                context.read<VoteBloc>().add(DownvoteEvent());
-              },
-            ),
-          ],
-        ));
+                TextButton(
+                  style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      minimumSize: const Size(35, 35)),
+                  child: Text(
+                    String.fromCharCode(Icons.arrow_downward_rounded.codePoint),
+                    style: TextStyle(
+                      color: getColorDownVote(state.status, context),
+                      inherit: false,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: Icons.space_dashboard_outlined.fontFamily,
+                    ),
+                  ),
+                  onPressed: () {
+                    context.read<VoteBloc>().add(DownvoteEvent());
+                  },
+                ),
+              ],
+            ));
       },
     );
   }

@@ -18,6 +18,7 @@ Space _$SpaceFromJson(Map<String, dynamic> json) => Space(
       smallPicture: json['small_picture'] == null
           ? null
           : PictureMeta.fromJson(json['small_picture'] as Map<String, dynamic>),
+      subCount: json['sub_count'] as int,
     );
 
 Map<String, dynamic> _$SpaceToJson(Space instance) {
@@ -36,5 +37,6 @@ Map<String, dynamic> _$SpaceToJson(Space instance) {
 
   writeNotNull('small_picture', instance.smallPicture);
   writeNotNull('background_picture', instance.backgroundPicture);
+  val['sub_count'] = instance.subCount;
   return val;
 }

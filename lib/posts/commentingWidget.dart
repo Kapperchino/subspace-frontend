@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/commenting/commentingBloc.dart';
@@ -18,8 +17,13 @@ class CommentingWidget extends StatelessWidget {
     return Align(
         alignment: Alignment.centerRight,
         child: Padding(
-          padding: const EdgeInsets.only(right: 10, bottom: 10),
+          padding: const EdgeInsets.only(right: 10),
           child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              elevation: 6,
+              padding: EdgeInsets.zero,
+              minimumSize: Size(90, 35)
+            ),
             onPressed: () {
               if (comment != null) {
                 baseContext.read<CommentingBloc>().add(CommentPressed(
@@ -39,7 +43,11 @@ class CommentingWidget extends StatelessWidget {
                         child: CommentModal(post: post, comment: comment));
                   });
             },
-            child: const Text('Comment'),
+            child: Text(
+              'Comment',
+              style:
+                  TextStyle(color: Theme.of(baseContext).colorScheme.secondary),
+            ),
           ),
         ));
   }

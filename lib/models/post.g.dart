@@ -34,6 +34,7 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
           ? null
           : PictureMeta.fromJson(
               json['poster_picture'] as Map<String, dynamic>),
+      commentsCount: json['comments_count'] as int,
     );
 
 Map<String, dynamic> _$PostToJson(Post instance) {
@@ -63,6 +64,7 @@ Map<String, dynamic> _$PostToJson(Post instance) {
   writeNotNull('vote', instance.vote);
   val['space_parent_id'] = instance.spaceParentId;
   val['space_name'] = instance.spaceName;
+  val['comments_count'] = instance.commentsCount;
   return val;
 }
 

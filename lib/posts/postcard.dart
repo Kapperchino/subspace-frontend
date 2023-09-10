@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/common/timeWidget.dart';
 import 'package:frontend/models/post.dart';
+import 'package:frontend/posts/commentCount.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:go_router/go_router.dart';
@@ -125,6 +126,8 @@ class PostCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
+                    const Padding(
+                        padding: EdgeInsets.only(left: 5, bottom: 10)),
                     Builder(
                       builder: (context) {
                         context.read<VoteBloc>().add(InitEvent(
@@ -136,11 +139,13 @@ class PostCard extends StatelessWidget {
                         return const VoteWidgetFlat();
                       },
                     ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.only(right: 10),
-                      child: TimeWidget(time: post.created),
-                    )
+                    const Padding(padding: EdgeInsets.only(left: 5)),
+                    CommentCount(
+                      count: post.commentsCount,
+                    ),
+                    const Spacer(),
+                    TimeWidget(time: post.created),
+                    const Padding(padding: EdgeInsets.only(right: 5)),
                   ],
                 )
               ]),

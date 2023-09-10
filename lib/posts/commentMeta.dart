@@ -35,8 +35,12 @@ class CommentMeta extends StatelessWidget {
             style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                minimumSize: const Size(45, 45)),
-            child: Text(comment.posterName),
+                minimumSize: const Size(35, 45)),
+            child: Text(
+              comment.posterName,
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary,
+              fontWeight: FontWeight.bold),
+            ),
             onPressed: () {
               context.push("/u/${comment.posterId}");
             },

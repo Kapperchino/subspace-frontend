@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/routes/postRoutes.dart';
 import 'package:frontend/subspace/homePageWrapper.dart';
 import 'package:frontend/subspace/subspaceHome.dart';
+import 'package:frontend/subspace/subspaceHomeWrapper.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:go_router/go_router.dart';
 
@@ -83,7 +84,7 @@ class SpaceRoutes {
         },
         routes: [PostRoutes().getPostRoute()],
         builder: (BuildContext context, GoRouterState state) {
-          return SubSpaceHome();
+          return const SubSpaceHomeWrapper();
         }
         //TODO: add user count
         );

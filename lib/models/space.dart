@@ -15,6 +15,8 @@ class Space {
   final PictureMeta? smallPicture;
   @JsonKey(name: 'background_picture')
   final PictureMeta? backgroundPicture;
+  @JsonKey(name: 'sub_count')
+  final int subCount;
 
   const Space(
       {required this.id,
@@ -22,7 +24,8 @@ class Space {
       required this.name,
       required this.description,
       this.backgroundPicture,
-      this.smallPicture});
+      this.smallPicture,
+      required this.subCount});
 
   factory Space.fromJson(Map<String, dynamic> json) {
     return _$SpaceFromJson(json);

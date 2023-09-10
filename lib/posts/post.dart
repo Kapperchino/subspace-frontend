@@ -67,7 +67,7 @@ class PostWidget extends StatelessWidget {
                   },
                   child: const SliverToBoxAdapter(child: SizedBox()),
                 ),
-                SliverPadding(padding: EdgeInsets.only(bottom: 10)),
+                const SliverPadding(padding: EdgeInsets.only(bottom: 10)),
                 CommentSection(postId: id)
               ],
             );

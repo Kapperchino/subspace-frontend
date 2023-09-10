@@ -27,6 +27,7 @@ class CommentModal extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(5),
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(elevation: 6),
                   onPressed: () async {
                     if (comment != null) {
                       context.read<CommentingBloc>().add(CommentPressed(
@@ -39,7 +40,11 @@ class CommentModal extends StatelessWidget {
                     }
                     context.pop();
                   },
-                  child: const Text('Comment'),
+                  child: Text(
+                    'Comment',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary),
+                  ),
                 ),
               ),
               Padding(

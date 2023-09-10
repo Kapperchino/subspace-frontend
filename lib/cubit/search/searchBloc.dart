@@ -102,8 +102,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       },
     );
     if (res.statusCode == 200) {
-      // If the server did return a 201 CREATED response,
-      // then parse the JSON.
+      if (res.body == 'null' || res.body.isEmpty) {
+        return List.empty();
+      }
       final List<dynamic> list = jsonDecode(utf8.decode(res.bodyBytes));
       final spaces = list.map((e) => Space.fromJson(e));
       return spaces.toList();

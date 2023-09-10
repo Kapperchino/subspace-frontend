@@ -23,15 +23,13 @@ class SearchResult extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              FutureBuilder<Widget>(
-                future: getImage(space.smallPicture),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return snapshot.data!;
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                },
+              Container(
+                padding: const EdgeInsets.only(left: 10, top: 10, bottom: 10),
+                child: const CircleAvatar(
+                  maxRadius: 20,
+                  backgroundImage: AssetImage('assets/default_space_small.png'),
+                  backgroundColor: Colors.blue,
+                ),
               ),
               Expanded(
                   flex: 8,
@@ -46,6 +44,22 @@ class SearchResult extends StatelessWidget {
                       space.description,
                       maxLines: 4,
                       overflow: TextOverflow.fade,
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                            child: Icon(
+                          Icons.person,
+                          color: Theme.of(context).colorScheme.secondary,
+                        )),
+                        const Padding(padding: EdgeInsets.only(left: 5)),
+                        Flexible(
+                            child: Text(
+                          "${space.subCount}",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ))
+                      ],
                     ),
                   )),
             ],

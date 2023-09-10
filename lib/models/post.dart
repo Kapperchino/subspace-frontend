@@ -48,6 +48,8 @@ class Post {
   final int spaceParentId;
   @JsonKey(name: 'space_name')
   final String spaceName;
+  @JsonKey(name: 'comments_count')
+  final int commentsCount;
 
   const Post(
       {required this.id,
@@ -66,7 +68,8 @@ class Post {
       required this.spaceParentId,
       required this.vote,
       required this.spaceName,
-      required this.posterPicture});
+      required this.posterPicture,
+      required this.commentsCount});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return _$PostFromJson(json);
