@@ -7,8 +7,8 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/models/subscriptionRequest.dart';
 import 'package:frontend/cubit/title/titleEvent.dart';
 import 'package:frontend/cubit/title/titleState.dart';
+import 'package:frontend/util/userUtil.dart';
 
-import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:stream_transform/stream_transform.dart';
 
@@ -108,12 +108,11 @@ class TitleBloc extends Bloc<TitleEvent, TitleState> {
   }
 
   Future<int> getSubscription(int spaceId) async {
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final AppUser? user = await UserUtil.getAppUser();
     final token = await Store.secure.read(key: 'jwt');
     const baseUrl = "${Config.baseUrl}/subscriptions/users";
     final res = await http.get(
-      Uri.parse('$baseUrl/${user.id}?spaceId=$spaceId'),
+      Uri.parse('$baseUrl/${user!.id}?spaceId=$spaceId'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -123,11 +122,10 @@ class TitleBloc extends Bloc<TitleEvent, TitleState> {
   }
 
   Future<int> putSubscription() async {
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final AppUser? user = await UserUtil.getAppUser();
     final token = await Store.secure.read(key: 'jwt');
     const baseUrl = "${Config.baseUrl}/subscriptions";
-    final req = SubscriptionRequest(userId: user.id, spaceId: state.spaceId);
+    final req = SubscriptionRequest(userId: user!.id, spaceId: state.spaceId);
     final res = await http.put(
       Uri.parse('$baseUrl/'),
       headers: <String, String>{
@@ -140,12 +138,11 @@ class TitleBloc extends Bloc<TitleEvent, TitleState> {
   }
 
   Future<int> deleteSubscription() async {
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final AppUser? user = await UserUtil.getAppUser();
     final token = await Store.secure.read(key: 'jwt');
     const baseUrl = "${Config.baseUrl}/subscriptions";
     final res = await http.delete(
-      Uri.parse('$baseUrl/?userId=${user.id}&spaceId=${state.spaceId}'),
+      Uri.parse('$baseUrl/?userId=${user!.id}&spaceId=${state.spaceId}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',

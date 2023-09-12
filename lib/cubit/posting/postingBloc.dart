@@ -9,7 +9,7 @@ import 'package:frontend/models/pictureMetaResult.dart';
 import 'package:frontend/models/pictureRequestMeta.dart';
 import 'package:frontend/cubit/posting/postingEvent.dart';
 import 'package:frontend/cubit/posting/postingState.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:image_size_getter/image_size_getter.dart';
@@ -179,8 +179,7 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
 
   Future<int> postPost(String body, String topic, int spaceId,
       {String content = "", ContentType contentType = ContentType.text}) async {
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final AppUser? user = await UserUtil.getAppUser();
     final token = await Store.secure.read(key: 'jwt');
     final List<int> fileIds = List.empty(growable: true);
     String? link;
@@ -254,7 +253,7 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
             type: contentType,
             topic: topic,
             spaceId: spaceId,
-            posterId: user.id,
+            posterId: user!.id,
             fileIds: fileIds,
             body: body,
             link: link)

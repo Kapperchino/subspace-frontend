@@ -15,7 +15,8 @@ import 'package:frontend/cubit/sorting/sortBloc.dart';
 import 'package:frontend/cubit/sorting/sortState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/models/userMeta.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -91,34 +92,42 @@ class _UserWidgetState extends State<UserWidget> {
                         backgroundColor: Colors.blue,
                         maxRadius: 60,
                       ),
-                      if (isCurrentUser(userId))
-                        Positioned(
-                            left: 83,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                final picker = ImagePicker();
-                                picker
-                                    .pickImage(source: ImageSource.gallery)
-                                    .then((pic) {
-                                  context
-                                      .read<UserPageBloc>()
-                                      .add(UserPagePicUpload(file: pic));
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shape: const CircleBorder(),
-                                minimumSize: const Size(4, 4),
-                                padding: const EdgeInsets.all(3),
-                                backgroundColor:
-                                    Colors.blue, // <-- Button color
-                                foregroundColor: Colors.red, // <-- Splash color
-                              ),
-                              child: const Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                            ))
+                      FutureBuilder(
+                        future: isCurrentUser(userId),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData && snapshot.data! == true) {
+                            return Positioned(
+                                left: 83,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    final picker = ImagePicker();
+                                    picker
+                                        .pickImage(source: ImageSource.gallery)
+                                        .then((pic) {
+                                      context
+                                          .read<UserPageBloc>()
+                                          .add(UserPagePicUpload(file: pic));
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shape: const CircleBorder(),
+                                    minimumSize: const Size(4, 4),
+                                    padding: const EdgeInsets.all(3),
+                                    backgroundColor:
+                                        Colors.blue, // <-- Button color
+                                    foregroundColor:
+                                        Colors.red, // <-- Splash color
+                                  ),
+                                  child: const Icon(
+                                    Icons.edit,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                ));
+                          }
+                          return const SizedBox();
+                        },
+                      ),
                     ])),
                   ],
                 ),
@@ -191,19 +200,26 @@ class _UserWidgetState extends State<UserWidget> {
                                     ),
                                   )),
                               const Spacer(),
-                              if (isCurrentUser(state.user?.id))
-                                Flexible(
-                                    child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: IconButton(
-                                      onPressed: () {
-                                        context
-                                            .read<UserPageBloc>()
-                                            .add(UserPageBioToggle());
-                                      },
-                                      icon: const Icon(Icons.edit)),
-                                )),
-                              if (!isCurrentUser(state.user?.id)) const Spacer()
+                              FutureBuilder(
+                                future: isCurrentUser(userId),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData &&
+                                      snapshot.data == true) {
+                                    return Flexible(
+                                        child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: IconButton(
+                                          onPressed: () {
+                                            context
+                                                .read<UserPageBloc>()
+                                                .add(UserPageBioToggle());
+                                          },
+                                          icon: const Icon(Icons.edit)),
+                                    ));
+                                  }
+                                  return const Spacer();
+                                },
+                              )
                             ],
                           ),
                           Padding(
@@ -311,12 +327,11 @@ class _UserWidgetState extends State<UserWidget> {
     return CachedNetworkImageProvider(meta.picture!.url);
   }
 
-  bool isCurrentUser(int? userId) {
+  Future<bool> isCurrentUser(int? userId) async {
     if (currentUser == null) {
-      final AppUser user =
-          AppUser.fromJson(jsonDecode(GetStorage().read("user")));
+      final AppUser? user = await UserUtil.getAppUser();
       currentUser = user;
-      return user.id == userId;
+      return user!.id == userId;
     }
     return currentUser!.id == userId;
   }

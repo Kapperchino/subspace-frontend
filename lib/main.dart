@@ -7,12 +7,16 @@ import 'package:flutter/foundation.dart';
 import 'package:frontend/mainapp.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/messageHandler.dart';
+import 'package:frontend/models/replyNotification.dart';
 import 'package:frontend/models/updateDeviceReq.dart';
 import 'package:frontend/stores/store.dart';
 import 'package:frontend/util/deviceUtil.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:localstore/localstore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:path_provider/path_provider.dart';
 import 'config.dart';
 import 'firebase_options.dart';
 import 'models/appUser.dart';
@@ -20,22 +24,34 @@ import 'package:http/http.dart' as http;
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
   await Firebase.initializeApp();
-  print("Handling a background message: ${message.messageId}");
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); 
+  WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await GetStorage.init();
   GoRouter.optionURLReflectsImperativeAPIs = true;
 
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: await getApplicationCacheDirectory(),
+  );
+
+  final db = Localstore.instance;
+
+  final id = db.collection("notification-reply").doc().id;
+  await db.collection("notification-reply").doc(id).set(ReplyNotification(
+          spaceId: 1,
+          postId: 2,
+          commentId: 3,
+          sentDate: DateTime.now(),
+          title: "Joe Biden",
+          body: "reaplied",
+          key: id)
+      .toJson());
 
   if (!kIsWeb) {
     if (Platform.isAndroid || Platform.isIOS) {
@@ -51,28 +67,29 @@ void main() async {
         sound: true,
       );
 
-      print('User granted permission: ${settings.authorizationStatus}');
-
       FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) async {
-        String? expire = GetStorage().read("expire");
+        final expire = await UserUtil.getExpire();
         if (expire != null) {
-          final time = DateTime.parse(expire);
-          if (time.isAfter(DateTime.now())) {
+          if (expire.isAfter(DateTime.now())) {
             return;
           }
-          final AppUser user =
-              AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+          final AppUser? user = await UserUtil.getAppUser();
+          if (user == null) {
+            return;
+          }
           final token = await Store.secure.read(key: 'jwt');
           final deviceId = await getId();
-          final res = await http.put(Uri.parse('${Config.baseUrl}/devices/'),
-              headers: <String, String>{
-                'Content-Type': 'application/json; charset=UTF-8',
-                'Authorization': 'Bearer $token',
-              },
-              body: jsonEncode(UpdateDeviceReq(
-                  deviceId: deviceId!,
-                  registration: fcmToken,
-                  userId: user.id)));
+          if (deviceId != null) {
+            await http.put(Uri.parse('${Config.baseUrl}/devices/'),
+                headers: <String, String>{
+                  'Content-Type': 'application/json; charset=UTF-8',
+                  'Authorization': 'Bearer $token',
+                },
+                body: jsonEncode(UpdateDeviceReq(
+                    deviceId: deviceId,
+                    registration: fcmToken,
+                    userId: user.id)));
+          }
         }
       }).onError((err) {
         log(err);

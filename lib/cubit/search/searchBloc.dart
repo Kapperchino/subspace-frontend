@@ -7,7 +7,7 @@ import 'package:frontend/cubit/search/searchEvent.dart';
 import 'package:frontend/cubit/search/searchState.dart';
 import 'package:frontend/cubit/space/spaceState.dart';
 import 'package:frontend/models/userMeta.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
 import 'package:http/http.dart' as http;
 import 'package:stream_transform/stream_transform.dart';
 
@@ -130,11 +130,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         intDays = 7;
     }
     final token = await Store.secure.read(key: 'jwt');
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final AppUser? user = await UserUtil.getAppUser();
     final res = await http.get(
       Uri.parse(
-          '${Config.baseUrl}/search/posts?term=$term&userId=${user.id}&isTag=$isTag&sort=${sortStatus.name}&days=$intDays'),
+          '${Config.baseUrl}/search/posts?term=$term&userId=${user!.id}&isTag=$isTag&sort=${sortStatus.name}&days=$intDays'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -162,8 +161,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<List<UserMeta>> searchUsers(String term) async {
     final token = await Store.secure.read(key: 'jwt');
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final AppUser? user = await UserUtil.getAppUser();
     final res = await http.get(
       Uri.parse('${Config.baseUrl}/search/users?term=$term'),
       headers: <String, String>{

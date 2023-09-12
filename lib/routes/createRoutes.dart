@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/spaceCreation/spaceCreationBloc.dart';
 import 'package:frontend/subspace/postingWidget.dart';
 import 'package:frontend/subspace/subspaceCreationWidget.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
+
 import 'package:go_router/go_router.dart';
 
 import '../cubit/posting/postingBloc.dart';
@@ -15,14 +16,13 @@ class CreateRoutes {
     return GoRoute(
         path: '/create/space/:id/post',
         redirect: (context, state) async {
-          String? expire = GetStorage().read("expire");
+          DateTime? expire = await UserUtil.getExpire();
           final jwt = await Store.secure.read(key: "jwt");
           if (jwt == null) {
             return "/login";
           }
           if (expire != null) {
-            final time = DateTime.parse(expire);
-            if (time.isBefore(DateTime.now())) {
+            if (expire.isBefore(DateTime.now())) {
               return "/login";
             }
             return null;
@@ -53,14 +53,13 @@ class CreateRoutes {
     return GoRoute(
         path: '/create/space/:parentId',
         redirect: (context, state) async {
-          String? expire = GetStorage().read("expire");
+          DateTime? expire = await UserUtil.getExpire();
           final jwt = await Store.secure.read(key: "jwt");
           if (jwt == null) {
             return "/login";
           }
           if (expire != null) {
-            final time = DateTime.parse(expire);
-            if (time.isBefore(DateTime.now())) {
+            if (expire.isBefore(DateTime.now())) {
               return "/login";
             }
             return null;

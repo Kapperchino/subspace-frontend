@@ -74,4 +74,8 @@ class Post {
   factory Post.fromJson(Map<String, dynamic> json) {
     return _$PostFromJson(json);
   }
+
+  Map<String, dynamic> toJson() {
+    return _$PostToJson(this);
+  }
 }

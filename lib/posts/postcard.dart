@@ -89,7 +89,6 @@ class PostCard extends StatelessWidget {
                             }
                           case "@":
                             {
-                              print(text);
                             }
                         }
                       },

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../cubit/space/spaceBlock.dart';
@@ -48,8 +48,8 @@ class SideBar extends StatelessWidget {
                     }
                   },
                 ),
-                FutureBuilder<AppUser>(
-                    future: getUser(),
+                FutureBuilder<AppUser?>(
+                    future: UserUtil.getAppUser(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return Padding(
@@ -64,8 +64,7 @@ class SideBar extends StatelessWidget {
           ListTile(
             title: const Text('Sign Out'),
             onTap: () async {
-              await GetStorage().remove("expire");
-              await GetStorage().remove("user");
+              UserUtil.deleteUser();
               await Store.secure.delete(key: "jwt");
               context.go("/login");
             },
@@ -76,8 +75,8 @@ class SideBar extends StatelessWidget {
   }
 
   Future<(AppUser, ImageProvider)> getProfilePic() async {
-    final AppUser user = await getUser();
-    final defaultProfileIndex = user.id % 6;
+    final AppUser? user = await UserUtil.getAppUser();
+    final defaultProfileIndex = user!.id % 6;
     if (user.picture == null) {
       return (
         user,
@@ -85,9 +84,5 @@ class SideBar extends StatelessWidget {
       );
     }
     return (user, CachedNetworkImageProvider(user.picture!.url));
-  }
-
-  Future<AppUser> getUser() async {
-    return AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
   }
 }

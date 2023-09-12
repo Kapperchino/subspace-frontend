@@ -9,7 +9,8 @@ import 'package:frontend/cubit/userPage/userPageState.dart';
 import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/cubit/space/spaceState.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:image_size_getter/image_size_getter.dart';
@@ -255,11 +256,10 @@ class UserPageBloc extends Bloc<UserPageEvent, UserPageState> {
       return res.statusCode;
     }
     final resMeta = PictureMetaResult.fromJson(jsonDecode(res.body));
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final AppUser? user = await UserUtil.getAppUser();
 
     final userRes = await http.put(
-      Uri.parse('${Config.baseUrl}/users/${user.id}/picture'),
+      Uri.parse('${Config.baseUrl}/users/${user!.id}/picture'),
       body: jsonEncode({'picture_id': resMeta.id}),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -270,19 +270,16 @@ class UserPageBloc extends Bloc<UserPageEvent, UserPageState> {
     if (userRes.statusCode != 200) {
       return userRes.statusCode;
     }
-    await GetStorage().write(
-        'user',
-        jsonEncode(AppUser(
-                id: user.id,
-                displayName: user.displayName,
-                email: user.email,
-                address: user.address,
-                picture: PictureMeta(
-                    height: resMeta.height,
-                    width: resMeta.width,
-                    id: resMeta.id,
-                    url: resMeta.url))
-            .toJson()));
+    await UserUtil.saveUser(AppUser(
+        id: user.id,
+        displayName: user.displayName,
+        email: user.email,
+        address: user.address,
+        picture: PictureMeta(
+            height: resMeta.height,
+            width: resMeta.width,
+            id: resMeta.id,
+            url: resMeta.url)));
     String? mimeStr;
     if (file.mimeType != null) {
       mimeStr = file.mimeType;

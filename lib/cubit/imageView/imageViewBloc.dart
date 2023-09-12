@@ -6,7 +6,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/cubit/imageView/imageViewEvent.dart';
 import 'package:frontend/cubit/imageView/imageViewState.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
 import 'package:http/http.dart' as http;
 import 'package:stream_transform/stream_transform.dart';
 
@@ -48,8 +48,7 @@ class ImageViewBloc extends Bloc<ImageViewEvent, ImageViewState> {
 
   Future<PictureMeta?> getImage(int imageId) async {
     final token = await Store.secure.read(key: 'jwt');
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final AppUser? user = await UserUtil.getAppUser();
     final res = await http.get(
       Uri.parse('${Config.baseUrl}/files/$imageId'),
       headers: <String, String>{

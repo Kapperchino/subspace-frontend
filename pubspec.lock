@@ -528,22 +528,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.0"
-  get:
-    dependency: transitive
-    description:
-      name: get
-      sha256: "2ba20a47c8f1f233bed775ba2dd0d3ac97b4cf32fc17731b3dfc672b06b0e92a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.6.5"
-  get_storage:
-    dependency: "direct main"
-    description:
-      name: get_storage
-      sha256: "39db1fffe779d0c22b3a744376e86febe4ade43bf65e06eab5af707dc84185a2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.1"
   glob:
     dependency: transitive
     description:
@@ -576,6 +560,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  hive:
+    dependency: transitive
+    description:
+      name: hive
+      sha256: "8dcf6db979d7933da8217edcec84e9df1bdb4e4edc7fc77dbd5aa74356d6d941"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.3"
   html:
     dependency: transitive
     description:
@@ -608,6 +600,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  hydrated_bloc:
+    dependency: "direct main"
+    description:
+      name: hydrated_bloc
+      sha256: "24994e61f64904d911683cce1a31dc4ef611619da5253f1de2b7b8fc6f79a118"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.2"
   image_downloader_web:
     dependency: "direct main"
     description:
@@ -744,6 +744,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  localstore:
+    dependency: "direct main"
+    description:
+      name: localstore
+      sha256: "42a0afb7696cfab1b4bd7d08355b4ee01f975fd364553b28d51496eccaf11cce"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.5"
   logging:
     dependency: transitive
     description:
@@ -817,13 +825,13 @@ packages:
     source: hosted
     version: "1.8.3"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
-      sha256: "909b84830485dbcd0308edf6f7368bc8fd76afa26a270420f34cabea2a6467a0"
+      sha256: a1aa8aaa2542a6bc57e381f132af822420216c80d4781f7aa085ca3229208aaa
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   path_provider_android:
     dependency: transitive
     description:

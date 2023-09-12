@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/posts/postPage.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
+
 import 'package:go_router/go_router.dart';
 
 import '../stores/store.dart';
@@ -10,14 +11,13 @@ class PostRoutes {
     return GoRoute(
         path: 'p/:id',
         redirect: (context, state) async {
-          String? expire = GetStorage().read("expire");
+          DateTime? expire = await UserUtil.getExpire();
           final jwt = await Store.secure.read(key: "jwt");
           if (jwt == null) {
             return "/login";
           }
           if (expire != null) {
-            final time = DateTime.parse(expire);
-            if (time.isBefore(DateTime.now())) {
+            if (expire.isBefore(DateTime.now())) {
               return "/login";
             }
             return null;

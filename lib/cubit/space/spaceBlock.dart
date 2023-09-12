@@ -8,8 +8,9 @@ import 'package:frontend/models/post.dart';
 import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/cubit/space/spaceEvent.dart';
 import 'package:frontend/cubit/space/spaceState.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
 import 'package:http/http.dart' as http;
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import '../../config.dart';
@@ -26,7 +27,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
   };
 }
 
-class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
+class SpaceBloc extends HydratedBloc<SpaceEvent, SpaceState> {
   SpaceBloc({required this.httpClient}) : super(const SpaceState()) {
     on<SpaceFetched>(
       _onPostFetched,
@@ -131,14 +132,13 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
         'Authorization': 'Bearer $token',
       },
     );
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final AppUser? user = await UserUtil.getAppUser();
     final space = Space.fromJson(jsonDecode(utf8.decode(spaceInfo.bodyBytes)));
     final spaceId = space.id;
     final image = space.backgroundPicture;
     final res = await http.get(
       Uri.parse(
-          '${Config.baseUrl}/posts/spaces/$spaceId?sort=${sort.name}&days=$intDays&userId=${user.id}'),
+          '${Config.baseUrl}/posts/spaces/$spaceId?sort=${sort.name}&days=$intDays&userId=${user!.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -165,5 +165,22 @@ class SpaceBloc extends Bloc<SpaceEvent, SpaceState> {
       // then throw an exception.
       throw Exception('Failed to create album.');
     }
+  }
+
+  @override
+  SpaceState? fromJson(Map<String, dynamic> json) {
+    var res = SpaceState.fromJson(json);
+    if (res.status != SpaceStatus.success) {
+      return null;
+    }
+    return res;
+  }
+
+  @override
+  Map<String, dynamic>? toJson(SpaceState state) {
+    if (state.status != SpaceStatus.success) {
+      return null;
+    }
+    return state.toJson();
   }
 }

@@ -7,7 +7,8 @@ import 'package:frontend/models/appUser.dart';
 import 'package:frontend/models/appUserRes.dart';
 import 'package:frontend/models/device.dart';
 import 'package:frontend/models/login.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
@@ -197,16 +198,13 @@ class _LoginState extends State<Login> {
       DateTime expirationDate = JwtDecoder.getExpirationDate(user.token);
       await Store.secure.delete(key: "jwt");
       await Store.secure.write(key: "jwt", value: user.token);
-      await GetStorage().write("expire", expirationDate.toIso8601String());
-      await GetStorage().write(
-          "user",
-          jsonEncode(AppUser(
-                  address: user.address,
-                  id: user.id,
-                  displayName: user.displayName,
-                  email: user.email,
-                  picture: user.picture)
-              .toJson()));
+      await UserUtil.saveExpire(expirationDate);
+      await UserUtil.saveUser(AppUser(
+          address: user.address,
+          id: user.id,
+          displayName: user.displayName,
+          email: user.email,
+          picture: user.picture));
       return res.statusCode;
     } else {
       return res.statusCode;

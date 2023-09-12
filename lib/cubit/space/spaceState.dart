@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/models/postCardData.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'spaceState.g.dart';
 
 enum SpaceStatus { initial, success, failure }
 
@@ -8,6 +11,7 @@ enum SortStatus { latest, popular }
 
 enum SortDays { week, month, halfYear, year }
 
+@JsonSerializable(includeIfNull: false)
 final class SpaceState extends Equatable {
   const SpaceState(
       {this.status = SpaceStatus.initial,
@@ -60,4 +64,12 @@ final class SpaceState extends Equatable {
   @override
   List<Object> get props =>
       [status, posts, hasReachedMax, sortState, spaceId, parentId, spaceName];
+
+  factory SpaceState.fromJson(Map<String, dynamic> json) {
+    return _$SpaceStateFromJson(json);
+  }
+
+  Map<String, dynamic> toJson() {
+    return _$SpaceStateToJson(this);
+  }
 }

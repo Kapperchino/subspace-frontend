@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/comment/commentBloc.dart';
 import 'package:frontend/cubit/navBar/navBarBloc.dart';
+import 'package:frontend/cubit/notification/notificationBloc.dart';
+import 'package:frontend/cubit/notification/notificationEvent.dart';
 import 'package:frontend/cubit/sorting/sortBloc.dart';
 import 'package:frontend/routes/createRoutes.dart';
 import 'package:frontend/routes/imageRoutes.dart';
@@ -10,7 +12,8 @@ import 'package:frontend/routes/notificationRoutes.dart';
 import 'package:frontend/routes/searchRoute.dart';
 import 'package:frontend/routes/spaceRoutes.dart';
 import 'package:frontend/routes/userRoutes.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,11 +27,10 @@ class MainApp extends StatelessWidget {
       routes: <RouteBase>[
         GoRoute(
           path: '/',
-          redirect: (context, state) {
-            String? expire = GetStorage().read("expire");
+          redirect: (context, state) async {
+            DateTime? expire = await UserUtil.getExpire();
             if (expire != null) {
-              final time = DateTime.parse(expire);
-              if (time.isBefore(DateTime.now())) {
+              if (expire.isBefore(DateTime.now())) {
                 return "/login";
               } else {
                 return "/home";
@@ -58,6 +60,9 @@ class MainApp extends StatelessWidget {
         providers: [
           BlocProvider(create: (_) => NavBarBloc(httpClient: http.Client())),
           BlocProvider(create: (_) => SortBloc(httpClient: http.Client())),
+          BlocProvider(
+              create: (_) => NotificationBloc(httpClient: http.Client())
+                ..add(NotificationsFetched()))
         ],
         child: MaterialApp.router(
           theme: ThemeData(

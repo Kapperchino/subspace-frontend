@@ -47,4 +47,8 @@ class Comment {
   factory Comment.fromJson(Map<String, dynamic> json) {
     return _$CommentFromJson(json);
   }
+
+  Map<String, dynamic> toJson() {
+    return _$CommentToJson(this);
+  }
 }

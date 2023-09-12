@@ -7,7 +7,8 @@ import 'package:frontend/models/post.dart';
 import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/cubit/subscriptions/subscriptionsEvent.dart';
 import 'package:frontend/cubit/subscriptions/subscriptionsState.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:stream_transform/stream_transform.dart';
 
@@ -116,11 +117,10 @@ class SubscriptionsBloc extends Bloc<SubscriptionsEvent, SubscriptionsState> {
       case SortDays.week:
         intDays = 7;
     }
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final AppUser? user = await UserUtil.getAppUser();
     final res = await http.get(
       Uri.parse(
-          '${Config.baseUrl}/posts/users/${user.id}/subscriptions?sort=${sort.name}&days=$intDays'),
+          '${Config.baseUrl}/posts/users/${user!.id}/subscriptions?sort=${sort.name}&days=$intDays'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',

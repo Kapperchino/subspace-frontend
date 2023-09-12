@@ -1,10 +1,14 @@
 import 'package:equatable/equatable.dart';
 import 'package:frontend/models/CommentData.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 import '../space/spaceState.dart';
 
+part 'commentState.g.dart';
+
 enum CommentsStatus { initial, success, failure }
 
+@JsonSerializable(includeIfNull: false)
 final class CommentsState extends Equatable {
   const CommentsState(
       {this.status = CommentsStatus.initial,
@@ -41,4 +45,12 @@ final class CommentsState extends Equatable {
   @override
   List<Object> get props =>
       [status, comments, hasReachedMax, postId, sortStatus];
+
+  factory CommentsState.fromJson(Map<String, dynamic> json) {
+    return _$CommentsStateFromJson(json);
+  }
+
+  Map<String, dynamic> toJson() {
+    return _$CommentsStateToJson(this);
+  }
 }

@@ -3,10 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/navBar/navBarBloc.dart';
 import 'package:frontend/cubit/navBar/navBarEvent.dart';
 import 'package:frontend/cubit/navBar/navBarState.dart';
+import 'package:frontend/cubit/notification/notificationBloc.dart';
+import 'package:frontend/cubit/notification/notificationState.dart';
 import 'package:frontend/cubit/sorting/sortBloc.dart';
 import 'package:frontend/posts/sortByModal.dart';
 import 'package:frontend/posts/sortDaysModal.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localstore/localstore.dart';
 
 class NavBarWidget extends StatelessWidget {
   const NavBarWidget({super.key});
@@ -60,9 +63,9 @@ class NavBarWidget extends StatelessWidget {
                     icon: Icon(Icons.search_outlined),
                     label: 'Search',
                   ),
-                  const NavigationDestination(
-                    selectedIcon: Icon(Icons.notifications),
-                    icon: Icon(Icons.notifications_outlined),
+                  NavigationDestination(
+                    selectedIcon: getIcons(),
+                    icon: getIconOutlines(),
                     label: 'Notifications',
                   ),
                   MenuAnchor(
@@ -111,5 +114,36 @@ class NavBarWidget extends StatelessWidget {
                 ]));
       },
     );
+  }
+
+  Widget getIconOutlines() {
+    return BlocBuilder<NotificationBloc, NotificationState>(
+      builder: (context, state) {
+        final mentions = state.mentions;
+        if (mentions != null && mentions.isNotEmpty) {
+          return const Icon(Icons.notifications_active_outlined);
+        }
+        final replies = state.notifications;
+        if (replies != null && replies.isNotEmpty) {
+          return const Icon(Icons.notifications_active_outlined);
+        }
+        return const Icon(Icons.notifications_none_outlined);
+      },
+    );
+  }
+
+  Widget getIcons() {
+    return BlocBuilder<NotificationBloc, NotificationState>(
+        builder: (context, state) {
+      final mentions = state.mentions;
+      if (mentions != null && mentions.isNotEmpty) {
+        return const Icon(Icons.notifications_active);
+      }
+      final replies = state.notifications;
+      if (replies != null && replies.isNotEmpty) {
+        return const Icon(Icons.notifications_active);
+      }
+      return const Icon(Icons.notifications_none);
+    });
   }
 }

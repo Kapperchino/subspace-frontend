@@ -6,7 +6,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/cubit/commenting/commentingEvent.dart';
 import 'package:frontend/cubit/commenting/commentingState.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
 import 'package:http/http.dart' as http;
 import 'package:stream_transform/stream_transform.dart';
 
@@ -96,15 +96,14 @@ class CommentingBloc extends Bloc<CommentingEvent, CommentingState> {
 }
 
 Future<int> postComment(String comment, int postId, int parentId) async {
-  final AppUser user =
-      AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+  final AppUser? user = await UserUtil.getAppUser();
   final token = await Store.secure.read(key: 'jwt');
   final res = await http.post(
     Uri.parse('${Config.baseUrl}/comments'),
     body: jsonEncode(CommentRequest(
       postId: postId,
       parentId: parentId,
-      posterId: user.id,
+      posterId: user!.id,
       body: comment,
     ).toJson()),
     headers: <String, String>{

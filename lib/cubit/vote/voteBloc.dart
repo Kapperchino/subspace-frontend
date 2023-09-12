@@ -7,7 +7,8 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/models/votesMeta.dart';
 import 'package:frontend/cubit/vote/voteEvent.dart';
 import 'package:frontend/cubit/vote/voteState.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:stream_transform/stream_transform.dart';
 
@@ -83,14 +84,13 @@ class VoteBloc extends Bloc<VoteEvent, VotingState> {
   }
 
   Future<int> upvote() async {
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final AppUser? user = await UserUtil.getAppUser();
     final token = await Store.secure.read(key: 'jwt');
     final res = await http.post(
       Uri.parse('${Config.baseUrl}/votes'),
       body: jsonEncode(VoteRequest(
               isUpvote: true,
-              userId: user.id,
+              userId: user!.id,
               postOrCommentId: state.id,
               voteType: state.voteType)
           .toJson()),
@@ -103,14 +103,13 @@ class VoteBloc extends Bloc<VoteEvent, VotingState> {
   }
 
   Future<int> downvote() async {
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final AppUser? user = await UserUtil.getAppUser();
     final token = await Store.secure.read(key: 'jwt');
     final res = await http.post(
       Uri.parse('${Config.baseUrl}/votes'),
       body: jsonEncode(VoteRequest(
               isUpvote: false,
-              userId: user.id,
+              userId: user!.id,
               postOrCommentId: state.id,
               voteType: state.voteType)
           .toJson()),
@@ -123,8 +122,7 @@ class VoteBloc extends Bloc<VoteEvent, VotingState> {
   }
 
   Future<(int, int, VotingStatus)> getVotes() async {
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final AppUser? user = await UserUtil.getAppUser();
     final token = await Store.secure.read(key: 'jwt');
     var baseUrl = "";
     if (state.voteType == VoteType.post) {
@@ -133,7 +131,7 @@ class VoteBloc extends Bloc<VoteEvent, VotingState> {
       baseUrl = "${Config.baseUrl}/votes/comments";
     }
     final res = await http.get(
-      Uri.parse('$baseUrl/${state.id}?userId=${user.id}'),
+      Uri.parse('$baseUrl/${state.id}?userId=${user!.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',

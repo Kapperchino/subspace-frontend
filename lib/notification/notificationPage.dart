@@ -2,7 +2,14 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/common/navBar.dart';
+import 'package:frontend/cubit/notification/notificationBloc.dart';
+import 'package:frontend/cubit/notification/notificationState.dart';
+import 'package:frontend/models/mentionNotification.dart';
+import 'package:frontend/models/replyNotification.dart';
+import 'package:frontend/notification/notificationWidget.dart';
+import 'package:localstore/localstore.dart';
 
 class NotificationPage extends StatelessWidget {
   const NotificationPage({super.key});
@@ -10,7 +17,7 @@ class NotificationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final padding = max((width - 600) / 2, 0.0);
+    final padding = max((width - 600) / 2, 8.0);
     var fit = BoxFit.none;
     fit = BoxFit.fitWidth;
     return DefaultTabController(
@@ -23,13 +30,6 @@ class NotificationPage extends StatelessWidget {
             // These are the slivers that show up in the "outer" scroll view.
             return <Widget>[
               SliverOverlapAbsorber(
-                // This widget takes the overlapping behavior of the SliverAppBar,
-                // and redirects it to the SliverOverlapInjector below. If it is
-                // missing, then it is possible for the nested "inner" scroll view
-                // below to end up under the SliverAppBar even when the inner
-                // scroll view thinks it has not been scrolled.
-                // This is not necessary if the "headerSliverBuilder" only builds
-                // widgets that do not overlap the next sliver.
                 handle:
                     NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: SliverAppBar(
@@ -86,6 +86,31 @@ class NotificationPage extends StatelessWidget {
                         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
                             context),
                       ),
+                      BlocBuilder<NotificationBloc, NotificationState>(
+                          builder: (context, state) {
+                        switch (state.status) {
+                          case NotificationStatus.failure:
+                            return const SliverToBoxAdapter(
+                                child: Center(
+                                    child: Text('failed to fetch posts')));
+                          case NotificationStatus.success:
+                            return SliverPadding(
+                                padding:
+                                    EdgeInsets.symmetric(horizontal: padding),
+                                sliver: SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                    (BuildContext context, int index) {
+                                      return state.notifications?[index];
+                                    },
+                                    childCount: state.notifications?.length,
+                                  ),
+                                ));
+                          case NotificationStatus.initial:
+                            return const SliverToBoxAdapter(
+                                child:
+                                    Center(child: CircularProgressIndicator()));
+                        }
+                      })
                     ],
                   );
                 },
@@ -104,6 +129,32 @@ class NotificationPage extends StatelessWidget {
                         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
                             context),
                       ),
+                      BlocBuilder<NotificationBloc, NotificationState>(
+                        builder: (context, state) {
+                          switch (state.status) {
+                            case NotificationStatus.failure:
+                              return const SliverToBoxAdapter(
+                                  child: Center(
+                                      child: Text('failed to fetch posts')));
+                            case NotificationStatus.success:
+                              return SliverPadding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: padding),
+                                  sliver: SliverList(
+                                    delegate: SliverChildBuilderDelegate(
+                                      (BuildContext context, int index) {
+                                        return state.mentions?[index];
+                                      },
+                                      childCount: state.mentions?.length,
+                                    ),
+                                  ));
+                            case NotificationStatus.initial:
+                              return const SliverToBoxAdapter(
+                                  child: Center(
+                                      child: CircularProgressIndicator()));
+                          }
+                        },
+                      )
                     ],
                   );
                 },

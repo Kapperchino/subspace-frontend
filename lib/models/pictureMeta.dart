@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'pictureMeta.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class PictureMeta {
   @JsonKey(name: 'width')
   final int width;

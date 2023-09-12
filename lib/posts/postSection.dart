@@ -111,11 +111,9 @@ class PostSection extends StatelessWidget {
                                       switch (text.characters.first) {
                                         case "#":
                                           {
-                                            print(text);
                                           }
                                         case "@":
                                           {
-                                            print(text);
                                           }
                                       }
                                     })))),

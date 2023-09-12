@@ -2,8 +2,14 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/buttomLoader.dart';
 import 'package:frontend/common/navBar.dart';
 import 'package:frontend/common/sidebar.dart';
+import 'package:frontend/cubit/trending/trendingBloc.dart';
+import 'package:frontend/cubit/trending/trendingState.dart';
+import 'package:frontend/models/tagMeta.dart';
+import 'package:frontend/search/tagWidget.dart';
 import 'package:go_router/go_router.dart';
 
 class SearchHome extends StatelessWidget {
@@ -15,6 +21,7 @@ class SearchHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final padding = max((width - 600) / 2, 8.0);
     var fit = BoxFit.none;
     fit = BoxFit.fitWidth;
     return DefaultTabController(
@@ -25,20 +32,11 @@ class SearchHome extends StatelessWidget {
         body: NestedScrollView(
           floatHeaderSlivers: false,
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            // These are the slivers that show up in the "outer" scroll view.
             return <Widget>[
               SliverOverlapAbsorber(
-                // This widget takes the overlapping behavior of the SliverAppBar,
-                // and redirects it to the SliverOverlapInjector below. If it is
-                // missing, then it is possible for the nested "inner" scroll view
-                // below to end up under the SliverAppBar even when the inner
-                // scroll view thinks it has not been scrolled.
-                // This is not necessary if the "headerSliverBuilder" only builds
-                // widgets that do not overlap the next sliver.
                 handle:
                     NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: SliverAppBar(
-                  // This is the title in the app bar.
                   pinned: true,
                   snap: false,
                   floating: false,
@@ -109,7 +107,60 @@ class SearchHome extends StatelessWidget {
                 builder: (BuildContext context) {
                   return CustomScrollView(
                     cacheExtent: 8500,
-                    key: const PageStorageKey<String>("Post"),
+                    key: const PageStorageKey<String>("Trending"),
+                    slivers: <Widget>[
+                      SliverOverlapInjector(
+                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                            context),
+                      ),
+                      BlocBuilder<TrendingBloc, TrendingState>(
+                        builder: (context, state) {
+                          switch (state.status) {
+                            case TrendingStatus.failure:
+                              return const SliverToBoxAdapter(
+                                  child: Center(
+                                      child: Text('failed to fetch posts')));
+                            case TrendingStatus.success:
+                              if (state.tags!.isEmpty) {
+                                return const SliverToBoxAdapter(
+                                    child: Center(child: Text('no posts')));
+                              }
+                              return SliverPadding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: padding),
+                                  sliver: SliverList(
+                                    delegate: SliverChildBuilderDelegate(
+                                      (BuildContext context, int index) {
+                                        if (index >= state.tags!.length) {
+                                          return const SliverToBoxAdapter(
+                                              child: BottomLoader());
+                                        }
+                                        return TagWidget(
+                                            tag: state.tags![index]);
+                                      },
+                                      childCount: state.tags!.length,
+                                    ),
+                                  ));
+                            case TrendingStatus.initial:
+                              return const SliverToBoxAdapter(
+                                  child: Center(
+                                      child: CircularProgressIndicator()));
+                          }
+                        },
+                      )
+                    ],
+                  );
+                },
+              ),
+            ),
+            SafeArea(
+              top: false,
+              bottom: false,
+              child: Builder(
+                builder: (BuildContext context) {
+                  return CustomScrollView(
+                    cacheExtent: 8500,
+                    key: const PageStorageKey<String>("News"),
                     slivers: <Widget>[
                       SliverOverlapInjector(
                         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
@@ -127,25 +178,7 @@ class SearchHome extends StatelessWidget {
                 builder: (BuildContext context) {
                   return CustomScrollView(
                     cacheExtent: 8500,
-                    key: const PageStorageKey<String>("Space"),
-                    slivers: <Widget>[
-                      SliverOverlapInjector(
-                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                            context),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-            SafeArea(
-              top: false,
-              bottom: false,
-              child: Builder(
-                builder: (BuildContext context) {
-                  return CustomScrollView(
-                    cacheExtent: 8500,
-                    key: const PageStorageKey<String>("Users"),
+                    key: const PageStorageKey<String>("Sports"),
                     slivers: <Widget>[
                       SliverOverlapInjector(
                         // This is the flip side of the SliverOverlapAbsorber

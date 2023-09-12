@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/models/signUp.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
@@ -291,14 +292,11 @@ class _SignupState extends State<Signup> {
       // then parse the JSON.
       final user = AppUserRes.fromJson(jsonDecode(res.body));
       await Store.secure.write(key: "jwt", value: user.token);
-      await GetStorage().write(
-          "user",
-          AppUser(
-                  id: user.id,
-                  displayName: user.displayName,
-                  email: user.email,
-                  address: user.address)
-              .toJson());
+      await UserUtil.saveUser(AppUser(
+          id: user.id,
+          displayName: user.displayName,
+          email: user.email,
+          address: user.address));
       return res;
     } else {
       // If the server did not return a 201 CREATED response,

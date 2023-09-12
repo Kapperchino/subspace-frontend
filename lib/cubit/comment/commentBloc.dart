@@ -7,8 +7,10 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/models/CommentData.dart';
 import 'package:frontend/cubit/comment/commentEvent.dart';
 import 'package:frontend/cubit/comment/commentState.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:frontend/util/userUtil.dart';
+
 import 'package:http/http.dart' as http;
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import '../../config.dart';
@@ -25,7 +27,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
   };
 }
 
-class CommentBloc extends Bloc<CommentEvent, CommentsState> {
+class CommentBloc extends HydratedBloc<CommentEvent, CommentsState> {
   CommentBloc({required this.httpClient}) : super(const CommentsState()) {
     on<CommentsFetched>(
       _onCommentsFetched,
@@ -80,11 +82,10 @@ class CommentBloc extends Bloc<CommentEvent, CommentsState> {
   Future<List<CommentData>>? getComments(int postId,
       {SortStatus sort = SortStatus.latest}) async {
     final token = await Store.secure.read(key: 'jwt');
-    final AppUser user =
-        AppUser.fromJson(jsonDecode(await GetStorage().read("user")));
+    final AppUser? user = await UserUtil.getAppUser();
     final res = await http.get(
       Uri.parse(
-          '${Config.baseUrl}/comments?postId=$postId&userId=${user.id}&sort=${sort.name}&days=365'),
+          '${Config.baseUrl}/comments?postId=$postId&userId=${user!.id}&sort=${sort.name}&days=365'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -124,5 +125,15 @@ class CommentBloc extends Bloc<CommentEvent, CommentsState> {
       // then throw an exception.
       throw Exception('Failed to create album.');
     }
+  }
+
+  @override
+  CommentsState? fromJson(Map<String, dynamic> json) {
+    return CommentsState.fromJson(json);
+  }
+
+  @override
+  Map<String, dynamic>? toJson(CommentsState state) {
+    return state.toJson();
   }
 }
