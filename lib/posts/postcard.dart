@@ -88,8 +88,7 @@ class PostCard extends StatelessWidget {
                               context.push("/search/results/$text?isTag=true");
                             }
                           case "@":
-                            {
-                            }
+                            {}
                         }
                       },
                     ),
@@ -141,6 +140,7 @@ class PostCard extends StatelessWidget {
                     const Padding(padding: EdgeInsets.only(left: 5)),
                     CommentCount(
                       count: post.commentsCount,
+                      post: post,
                     ),
                     const Spacer(),
                     TimeWidget(time: post.created),

@@ -3,15 +3,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/vote/voteBloc.dart';
 import 'package:frontend/cubit/vote/voteEvent.dart';
 import 'package:frontend/cubit/vote/voteState.dart';
+import 'package:frontend/models/post.dart';
+import 'package:go_router/go_router.dart';
 
 class CommentCount extends StatelessWidget {
-  const CommentCount({super.key, required this.count});
+  const CommentCount({super.key, required this.count, required this.post});
 
   final int count;
+  final Post post;
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          context
+              .push("/s/${post.spaceParentId}/${post.spaceName}/p/${post.id}");
+        },
         style: ElevatedButton.styleFrom(
             elevation: 5,
             padding: EdgeInsets.zero,

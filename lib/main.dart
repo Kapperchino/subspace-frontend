@@ -40,19 +40,6 @@ void main() async {
     storageDirectory: await getApplicationCacheDirectory(),
   );
 
-  final db = Localstore.instance;
-
-  final id = db.collection("notification-reply").doc().id;
-  await db.collection("notification-reply").doc(id).set(ReplyNotification(
-          spaceId: 1,
-          postId: 2,
-          commentId: 3,
-          sentDate: DateTime.now(),
-          title: "Joe Biden",
-          body: "reaplied",
-          key: id)
-      .toJson());
-
   if (!kIsWeb) {
     if (Platform.isAndroid || Platform.isIOS) {
       FirebaseMessaging messaging = FirebaseMessaging.instance;

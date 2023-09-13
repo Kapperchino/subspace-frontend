@@ -85,32 +85,7 @@ class NotificationPage extends StatelessWidget {
                       SliverOverlapInjector(
                         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
                             context),
-                      ),
-                      BlocBuilder<NotificationBloc, NotificationState>(
-                          builder: (context, state) {
-                        switch (state.status) {
-                          case NotificationStatus.failure:
-                            return const SliverToBoxAdapter(
-                                child: Center(
-                                    child: Text('failed to fetch posts')));
-                          case NotificationStatus.success:
-                            return SliverPadding(
-                                padding:
-                                    EdgeInsets.symmetric(horizontal: padding),
-                                sliver: SliverList(
-                                  delegate: SliverChildBuilderDelegate(
-                                    (BuildContext context, int index) {
-                                      return state.notifications?[index];
-                                    },
-                                    childCount: state.notifications?.length,
-                                  ),
-                                ));
-                          case NotificationStatus.initial:
-                            return const SliverToBoxAdapter(
-                                child:
-                                    Center(child: CircularProgressIndicator()));
-                        }
-                      })
+                      )
                     ],
                   );
                 },
@@ -128,32 +103,6 @@ class NotificationPage extends StatelessWidget {
                       SliverOverlapInjector(
                         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
                             context),
-                      ),
-                      BlocBuilder<NotificationBloc, NotificationState>(
-                        builder: (context, state) {
-                          switch (state.status) {
-                            case NotificationStatus.failure:
-                              return const SliverToBoxAdapter(
-                                  child: Center(
-                                      child: Text('failed to fetch posts')));
-                            case NotificationStatus.success:
-                              return SliverPadding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: padding),
-                                  sliver: SliverList(
-                                    delegate: SliverChildBuilderDelegate(
-                                      (BuildContext context, int index) {
-                                        return state.mentions?[index];
-                                      },
-                                      childCount: state.mentions?.length,
-                                    ),
-                                  ));
-                            case NotificationStatus.initial:
-                              return const SliverToBoxAdapter(
-                                  child: Center(
-                                      child: CircularProgressIndicator()));
-                          }
-                        },
                       )
                     ],
                   );

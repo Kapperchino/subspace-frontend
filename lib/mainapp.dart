@@ -60,9 +60,6 @@ class MainApp extends StatelessWidget {
         providers: [
           BlocProvider(create: (_) => NavBarBloc(httpClient: http.Client())),
           BlocProvider(create: (_) => SortBloc(httpClient: http.Client())),
-          BlocProvider(
-              create: (_) => NotificationBloc(httpClient: http.Client())
-                ..add(NotificationsFetched()))
         ],
         child: MaterialApp.router(
           theme: ThemeData(

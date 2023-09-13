@@ -63,9 +63,9 @@ class NavBarWidget extends StatelessWidget {
                     icon: Icon(Icons.search_outlined),
                     label: 'Search',
                   ),
-                  NavigationDestination(
-                    selectedIcon: getIcons(),
-                    icon: getIconOutlines(),
+                  const NavigationDestination(
+                    selectedIcon: Icon(Icons.notifications),
+                    icon: Icon(Icons.notifications_outlined),
                     label: 'Notifications',
                   ),
                   MenuAnchor(
@@ -114,36 +114,5 @@ class NavBarWidget extends StatelessWidget {
                 ]));
       },
     );
-  }
-
-  Widget getIconOutlines() {
-    return BlocBuilder<NotificationBloc, NotificationState>(
-      builder: (context, state) {
-        final mentions = state.mentions;
-        if (mentions != null && mentions.isNotEmpty) {
-          return const Icon(Icons.notifications_active_outlined);
-        }
-        final replies = state.notifications;
-        if (replies != null && replies.isNotEmpty) {
-          return const Icon(Icons.notifications_active_outlined);
-        }
-        return const Icon(Icons.notifications_none_outlined);
-      },
-    );
-  }
-
-  Widget getIcons() {
-    return BlocBuilder<NotificationBloc, NotificationState>(
-        builder: (context, state) {
-      final mentions = state.mentions;
-      if (mentions != null && mentions.isNotEmpty) {
-        return const Icon(Icons.notifications_active);
-      }
-      final replies = state.notifications;
-      if (replies != null && replies.isNotEmpty) {
-        return const Icon(Icons.notifications_active);
-      }
-      return const Icon(Icons.notifications_none);
-    });
   }
 }
