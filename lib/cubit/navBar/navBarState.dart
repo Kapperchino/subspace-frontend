@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-import '../space/spaceState.dart';
 
 enum NavBarPage {
   home(0),

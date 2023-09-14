@@ -1,4 +1,3 @@
-import 'package:frontend/models/post.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'mentionNotification.g.dart';
 

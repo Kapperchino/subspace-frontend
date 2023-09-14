@@ -28,7 +28,7 @@ class UserResult extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 10, left: 10, bottom: 10),
                 child: CircleAvatar(
                   maxRadius: 20,
-                  foregroundImage: getProfilePic(user.picture),
+                  backgroundImage: getProfilePic(user.picture),
                   backgroundColor: Colors.blue,
                   child: InkWell(
                     onTap: () {

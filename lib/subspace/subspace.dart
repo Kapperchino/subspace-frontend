@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
 import 'package:frontend/models/pictureMeta.dart';

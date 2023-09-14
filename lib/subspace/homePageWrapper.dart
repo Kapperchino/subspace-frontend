@@ -5,7 +5,6 @@ import 'package:frontend/cubit/sorting/sortBloc.dart';
 import 'package:frontend/cubit/subscriptions/subscriptionsBloc.dart';
 import 'package:frontend/cubit/subscriptions/subscriptionsEvent.dart';
 import 'package:frontend/subspace/homePage.dart';
-import 'package:frontend/subspace/subspace.dart';
 import 'package:http/http.dart' as http;
 
 import '../cubit/space/spaceBlock.dart';
@@ -31,7 +30,6 @@ class HomePageWrapper extends StatelessWidget {
         BlocProvider(
           create: (_) => TitleBloc(httpClient: http.Client()),
         ),
-        BlocProvider(create: (_) => SortBloc(httpClient: http.Client()))
       ],
       child: HomePage(),
     );

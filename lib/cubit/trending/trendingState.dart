@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:frontend/models/tagMeta.dart';
-import '../../models/space.dart';
 
 enum TrendingStatus { initial, success, failure }
 

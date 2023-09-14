@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/cubit/comment/commentBloc.dart';
 import 'package:frontend/cubit/navBar/navBarBloc.dart';
-import 'package:frontend/cubit/notification/notificationBloc.dart';
-import 'package:frontend/cubit/notification/notificationEvent.dart';
 import 'package:frontend/cubit/sorting/sortBloc.dart';
 import 'package:frontend/routes/createRoutes.dart';
 import 'package:frontend/routes/imageRoutes.dart';
@@ -58,8 +55,8 @@ class MainApp extends StatelessWidget {
     var theme = const ColorScheme.dark();
     return MultiBlocProvider(
         providers: [
-          BlocProvider(create: (_) => NavBarBloc(httpClient: http.Client())),
-          BlocProvider(create: (_) => SortBloc(httpClient: http.Client())),
+          BlocProvider(create: (_) => NavBarBloc()),
+          BlocProvider(create: (_) => SortBloc()),
         ],
         child: MaterialApp.router(
           theme: ThemeData(

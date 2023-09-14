@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -88,7 +87,7 @@ class _UserWidgetState extends State<UserWidget> {
                     SafeArea(
                         child: Stack(children: [
                       CircleAvatar(
-                        foregroundImage: getUserImage(state.user),
+                        backgroundImage: getUserImage(state.user),
                         backgroundColor: Colors.blue,
                         maxRadius: 60,
                       ),

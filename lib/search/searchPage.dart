@@ -20,7 +20,6 @@ class SearchPage extends StatelessWidget {
           create: (_) => SearchBloc(httpClient: http.Client())
             ..add(SearchFetched(term: term, isTag: isTag)),
         ),
-        BlocProvider(create: (_) => SortBloc(httpClient: http.Client()))
       ],
       child: SearchWidget(),
     );

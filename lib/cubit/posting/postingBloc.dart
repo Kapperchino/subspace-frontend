@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/models/fileUploadRequest.dart';
 import 'package:frontend/models/pictureMetaResult.dart';

@@ -1,13 +1,9 @@
-import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/util/userUtil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../cubit/space/spaceBlock.dart';
-import '../cubit/space/spaceState.dart';
 import '../models/appUser.dart';
 import '../stores/store.dart';
 
@@ -39,7 +35,7 @@ class SideBar extends StatelessWidget {
                             context.push("/u/$id");
                           },
                           child: CircleAvatar(
-                            foregroundImage: snapshot.data!.$2,
+                            backgroundImage: snapshot.data!.$2,
                             backgroundColor: Colors.blue,
                             maxRadius: 70,
                           ));

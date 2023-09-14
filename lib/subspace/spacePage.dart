@@ -26,7 +26,6 @@ class SpacePage extends StatelessWidget {
         BlocProvider(
           create: (_) => TitleBloc(httpClient: http.Client()),
         ),
-        BlocProvider(create: (_) => SortBloc(httpClient: http.Client()))
       ],
       child: Subspace(
         parentId: parentId,

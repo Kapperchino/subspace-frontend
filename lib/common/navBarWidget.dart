@@ -3,13 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/navBar/navBarBloc.dart';
 import 'package:frontend/cubit/navBar/navBarEvent.dart';
 import 'package:frontend/cubit/navBar/navBarState.dart';
-import 'package:frontend/cubit/notification/notificationBloc.dart';
-import 'package:frontend/cubit/notification/notificationState.dart';
 import 'package:frontend/cubit/sorting/sortBloc.dart';
 import 'package:frontend/posts/sortByModal.dart';
 import 'package:frontend/posts/sortDaysModal.dart';
 import 'package:go_router/go_router.dart';
-import 'package:localstore/localstore.dart';
 
 class NavBarWidget extends StatelessWidget {
   const NavBarWidget({super.key});

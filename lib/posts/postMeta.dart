@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/pictureMeta.dart';
+import 'package:frontend/posts/avatarWidget.dart';
 import 'package:go_router/go_router.dart';
 
 import '../models/post.dart';
@@ -24,15 +25,9 @@ class PostMeta extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.only(top: 5, left: 10, bottom: 5),
-          child: CircleAvatar(
-            maxRadius: 20,
-            foregroundImage: getProfilePic(post.posterPicture),
-            backgroundColor: Colors.blue,
-            child: InkWell(
-              onTap: () {
-                context.push("/u/${post.posterId}");
-              },
-            ),
+          child: AvatarWidget(
+            pictureMeta: post.posterPicture,
+            post: post,
           ),
         ),
         Container(
@@ -99,13 +94,5 @@ class PostMeta extends StatelessWidget {
           ),
       ],
     );
-  }
-
-  ImageProvider getProfilePic(PictureMeta? picture) {
-    final defaultProfileIndex = post.posterId % 6;
-    if (picture == null) {
-      return AssetImage('assets/default_profile_$defaultProfileIndex.png');
-    }
-    return CachedNetworkImageProvider(picture.url);
   }
 }

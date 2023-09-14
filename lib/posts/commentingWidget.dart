@@ -22,7 +22,7 @@ class CommentingWidget extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               elevation: 6,
               padding: EdgeInsets.zero,
-              minimumSize: Size(90, 35)
+              minimumSize: const Size(90, 35)
             ),
             onPressed: () {
               if (comment != null) {

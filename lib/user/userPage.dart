@@ -5,7 +5,6 @@ import 'package:frontend/cubit/userPage/userPageEvent.dart';
 import 'package:frontend/user/userWidget.dart';
 import 'package:http/http.dart' as http;
 
-import '../cubit/sorting/sortBloc.dart';
 
 class UserPage extends StatelessWidget {
   const UserPage({super.key, required this.userId});
@@ -20,7 +19,6 @@ class UserPage extends StatelessWidget {
           create: (_) => UserPageBloc(httpClient: http.Client())
             ..add(UserPageInit(userId: userId)),
         ),
-        BlocProvider(create: (_) => SortBloc(httpClient: http.Client()))
       ],
       child: UserWidget(
         userId: userId,

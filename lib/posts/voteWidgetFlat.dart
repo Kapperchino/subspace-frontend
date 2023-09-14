@@ -27,12 +27,12 @@ class VoteWidgetFlat extends StatelessWidget {
       builder: (context, state) {
         return ElevatedButton(
             onPressed: () {
-              return null;
+              return;
             },
             style: ElevatedButton.styleFrom(
                 elevation: 6,
                 padding: EdgeInsets.zero,
-                minimumSize: Size(80, 35)),
+                minimumSize: const Size(80, 35)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [

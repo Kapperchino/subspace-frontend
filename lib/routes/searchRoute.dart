@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/search/searchHome.dart';
 import 'package:frontend/search/searchHomeWrapper.dart';
 import 'package:frontend/util/userUtil.dart';
 
@@ -32,11 +31,11 @@ class SearchRoutes {
           return CustomTransitionPage<void>(
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
-                late final Animation<double> _animation = CurvedAnimation(
+                late final Animation<double> curvedAnimation = CurvedAnimation(
                   parent: animation,
                   curve: Curves.easeInOutSine,
                 );
-                return ScaleTransition(scale: _animation, child: child);
+                return ScaleTransition(scale: curvedAnimation, child: child);
               },
               child: SearchPage(term: term, isTag: isTag));
         });
@@ -60,7 +59,7 @@ class SearchRoutes {
         return "/login";
       },
       builder: (context, state) {
-        return SearchHomeWrapper();
+        return const SearchHomeWrapper();
       },
     );
   }

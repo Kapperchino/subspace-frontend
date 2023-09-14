@@ -32,7 +32,6 @@ class PostPage extends StatelessWidget {
           BlocProvider(
               create: (_) => PostBloc(httpClient: http.Client())
                 ..add(PostFetched(postId: id))),
-          BlocProvider(create: (_) => SortBloc(httpClient: http.Client()))
         ],
         child: PostWidget(
           id: id,

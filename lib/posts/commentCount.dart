@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/cubit/vote/voteBloc.dart';
-import 'package:frontend/cubit/vote/voteEvent.dart';
-import 'package:frontend/cubit/vote/voteState.dart';
 import 'package:frontend/models/post.dart';
 import 'package:go_router/go_router.dart';
 

@@ -36,7 +36,6 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final location = GoRouterState.of(context).matchedLocation;
     return Card(
         clipBehavior: Clip.hardEdge,
         elevation: 1,

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:frontend/common/navBar.dart';
 import 'package:frontend/common/sidebar.dart';
 import 'package:frontend/cubit/trending/trendingBloc.dart';
 import 'package:frontend/cubit/trending/trendingState.dart';
-import 'package:frontend/models/tagMeta.dart';
 import 'package:frontend/search/tagWidget.dart';
 import 'package:go_router/go_router.dart';
 

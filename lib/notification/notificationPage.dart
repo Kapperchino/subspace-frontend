@@ -1,15 +1,7 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/common/navBar.dart';
-import 'package:frontend/cubit/notification/notificationBloc.dart';
-import 'package:frontend/cubit/notification/notificationState.dart';
-import 'package:frontend/models/mentionNotification.dart';
-import 'package:frontend/models/replyNotification.dart';
-import 'package:frontend/notification/notificationWidget.dart';
-import 'package:localstore/localstore.dart';
 
 class NotificationPage extends StatelessWidget {
   const NotificationPage({super.key});

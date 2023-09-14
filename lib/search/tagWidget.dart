@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/pictureMeta.dart';
-import 'package:frontend/models/space.dart';
 import 'package:frontend/models/tagMeta.dart';
 import 'package:go_router/go_router.dart';
 

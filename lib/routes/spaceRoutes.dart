@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/routes/postRoutes.dart';
 import 'package:frontend/subspace/homePageWrapper.dart';
-import 'package:frontend/subspace/subspaceHome.dart';
 import 'package:frontend/subspace/subspaceHomeWrapper.dart';
 import 'package:frontend/util/userUtil.dart';
 import 'package:go_router/go_router.dart';

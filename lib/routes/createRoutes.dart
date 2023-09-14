@@ -34,11 +34,11 @@ class CreateRoutes {
           return CustomTransitionPage<void>(
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
-                late final Animation<double> _animation = CurvedAnimation(
+                late final Animation<double> curvedAnimation = CurvedAnimation(
                   parent: animation,
                   curve: Curves.easeInOutSine,
                 );
-                return ScaleTransition(scale: _animation, child: child);
+                return ScaleTransition(scale: curvedAnimation, child: child);
               },
               child: BlocProvider(
                 create: (_) => PostingBloc(httpClient: http.Client()),
@@ -71,11 +71,11 @@ class CreateRoutes {
           return CustomTransitionPage<void>(
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
-                late final Animation<double> _animation = CurvedAnimation(
+                late final Animation<double> curvedAnimation = CurvedAnimation(
                   parent: animation,
                   curve: Curves.easeInOutSine,
                 );
-                return ScaleTransition(scale: _animation, child: child);
+                return ScaleTransition(scale: curvedAnimation, child: child);
               },
               child: BlocProvider(
                 create: (_) => SpaceCreationBloc(

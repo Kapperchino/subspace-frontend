@@ -1,17 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/cubit/notification/notificationEvent.dart';
 import 'package:frontend/cubit/notification/notificationState.dart';
-import 'package:frontend/cubit/spaceHome/spaceHomeEvent.dart';
-import 'package:frontend/cubit/spaceHome/spaceHomeState.dart';
-import 'package:frontend/cubit/trending/trendingEvent.dart';
-import 'package:frontend/cubit/trending/trendingState.dart';
 import 'package:frontend/models/mentionNotification.dart';
 import 'package:frontend/models/replyNotification.dart';
-import 'package:frontend/models/tagMeta.dart';
 import 'package:frontend/notification/notificationWidget.dart';
 import 'package:http/http.dart' as http;
 import 'package:localstore/localstore.dart';
