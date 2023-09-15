@@ -123,8 +123,9 @@ class PostCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    const Padding(
-                        padding: EdgeInsets.only(left: 5, bottom: 10)),
+                    const Padding(padding: EdgeInsets.only(left: 10)),
+                    TimeWidget(time: post.created),
+                    const Spacer(),
                     Builder(
                       builder: (context) {
                         context.read<VoteBloc>().add(InitEvent(
@@ -136,14 +137,13 @@ class PostCard extends StatelessWidget {
                         return const VoteWidgetFlat();
                       },
                     ),
-                    const Padding(padding: EdgeInsets.only(left: 5)),
+                    const Padding(padding: EdgeInsets.only(right: 5)),
                     CommentCount(
                       count: post.commentsCount,
                       post: post,
                     ),
-                    const Spacer(),
-                    TimeWidget(time: post.created),
-                    const Padding(padding: EdgeInsets.only(right: 5)),
+                    const Padding(
+                        padding: EdgeInsets.only(right: 5, bottom: 10)),
                   ],
                 )
               ]),

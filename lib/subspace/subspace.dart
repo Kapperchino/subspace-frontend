@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/title/titleBloc.dart';
 import 'package:frontend/cubit/title/titleEvent.dart';
 import 'package:frontend/common/navBar.dart';
+import 'package:frontend/subspace/spaceAbout.dart';
 import 'package:frontend/subspace/titleWidget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -50,109 +51,312 @@ class _SubSpaceState extends State<Subspace> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final padding = max((width - 600) / 2, 8.0);
-    var fit = BoxFit.fitWidth;
-    return Scaffold(
-      endDrawer: const SideBar(),
-      floatingActionButton: BlocBuilder<SpaceBloc, SpaceState>(
-        builder: (context, state) {
-          return FloatingActionButton(
-            shape: const CircleBorder(),
-            child: const Icon(Icons.add),
-            onPressed: () async {
-              context.push("/create/space/${state.spaceId}/post").then(
-                  (value) => context
-                      .read<SpaceBloc>()
-                      .add(SpaceFetched(parentId: parentId, spaceName: name)));
-            },
-          );
-        },
-      ),
-      bottomNavigationBar: const NavBar(),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          context
-              .read<SpaceBloc>()
-              .add(SpaceFetched(parentId: parentId, spaceName: name));
-        },
-        child: CustomScrollView(cacheExtent: 8500, slivers: <Widget>[
-          SliverAppBar(
-            pinned: true,
-            snap: false,
-            floating: false,
-            centerTitle: true,
-            expandedHeight: 80,
-            toolbarHeight: 0,
-            backgroundColor: Theme.of(context).colorScheme.background,
-            flexibleSpace: BlocBuilder<SpaceBloc, SpaceState>(
-                builder: (context, state) => FlexibleSpaceBar(
-                      background: getImage(state.backgroundPicture, fit),
-                      title: TitleWidget(
-                        title: name,
+    var fit = BoxFit.fitHeight;
+    return DefaultTabController(
+      length: 2, // This is the number of tabs.
+      child: Scaffold(
+        bottomNavigationBar: const NavBar(),
+        endDrawer: const SideBar(),
+        floatingActionButton: BlocBuilder<SpaceBloc, SpaceState>(
+          builder: (context, state) {
+            return FloatingActionButton(
+              shape: const CircleBorder(),
+              child: const Icon(Icons.add),
+              onPressed: () async {
+                context.push("/create/space/${state.spaceId}/post").then(
+                    (value) => context.read<SpaceBloc>().add(
+                        SpaceFetched(parentId: parentId, spaceName: name)));
+              },
+            );
+          },
+        ),
+        body: NestedScrollView(
+          floatHeaderSlivers: false,
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              BlocBuilder<SpaceBloc, SpaceState>(
+                builder: (context, state) {
+                  return SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                        context),
+                    sliver: SliverAppBar(
+                      // This is the title in the app bar.
+                      pinned: false,
+                      snap: false,
+                      floating: false,
+                      centerTitle: true,
+                      stretchTriggerOffset: 10,
+                      toolbarHeight: 137,
+                      leading: const SizedBox(),
+                      actions: <Widget>[
+                        new Container(),
+                      ],
+                      expandedHeight: 300,
+                      forceElevated: innerBoxIsScrolled,
+                      backgroundColor: Theme.of(context).colorScheme.background,
+                      flexibleSpace: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          FlexibleSpaceBar(
+                            background: Image.asset(
+                              "assets/default_space_background.png",
+                              fit: fit,
+                            ),
+                          ),
+                          SafeArea(
+                              top: false,
+                              child: Flexible(
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                    SpaceAbout(
+                                      meta: state.spaceMeta,
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.only(bottom: 20))
+                                  ]))),
+                        ],
                       ),
-                    )),
-          ),
-          const SliverPadding(padding: EdgeInsets.only(bottom: 5)),
-          BlocBuilder<SpaceBloc, SpaceState>(
-            builder: (context, state) {
-              switch (state.status) {
-                case SpaceStatus.failure:
-                  return const SliverToBoxAdapter(
-                      child: Center(child: Text('failed to fetch posts')));
-                case SpaceStatus.success:
-                  if (name != "SubSpace") {
-                    context.read<TitleBloc>().add(InitEvent(
-                        context.read<SpaceBloc>().state.spaceId, name));
-                  }
-                  if (state.posts.isEmpty) {
-                    return const SliverToBoxAdapter(
-                        child: Center(child: Text('no posts')));
-                  }
-                  return SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: padding),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                            if (index >= state.posts.length) {
-                              return const SliverToBoxAdapter(
-                                  child: BottomLoader());
-                            }
-                            return PostCardWrapper(
-                                spaceName: name, post: state.posts[index].post);
-                          },
-                          childCount: state.posts.length,
-                        ),
-                      ));
-                case SpaceStatus.initial:
-                  return const SliverToBoxAdapter(
-                      child: Center(child: CircularProgressIndicator()));
-              }
-            },
-          ),
-          BlocListener<SortBloc, SortState>(
-            listenWhen: (previous, current) {
-              return previous.status != current.status;
-            },
-            listener: (context, state) {
-              context
-                  .read<SpaceBloc>()
-                  .add(SpaceSortChanged(sortState: state.status));
-            },
-            child: const SliverToBoxAdapter(child: SizedBox()),
-          ),
-          BlocListener<SortBloc, SortState>(
-            listenWhen: (previous, current) {
-              return previous.sortDays != current.sortDays;
-            },
-            listener: (context, state) {
-              context
-                  .read<SpaceBloc>()
-                  .add(DaysSortChanged(sortDays: state.sortDays));
-            },
-            child: const SliverToBoxAdapter(child: SizedBox()),
-          )
-        ]),
+                      bottom: TabBar(
+                        labelStyle:
+                            const TextStyle(fontWeight: FontWeight.bold),
+                        labelColor: Theme.of(context).colorScheme.secondary,
+                        indicatorColor: Theme.of(context).colorScheme.secondary,
+                        labelPadding: EdgeInsets.zero,
+                        indicatorPadding: EdgeInsets.zero,
+                        // These are the widgets to put in each tab in the tab bar.
+                        tabs: const [
+                          Tab(
+                            height: 40,
+                            text: "Posts",
+                          ),
+                          Tab(
+                            height: 40,
+                            text: "About",
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ];
+          },
+          body: TabBarView(children: [
+            SafeArea(
+              top: false,
+              bottom: false,
+              child: Builder(
+                builder: (BuildContext context) {
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<SpaceBloc>().add(
+                          SpaceFetched(parentId: parentId, spaceName: name));
+                    },
+                    child: CustomScrollView(
+                        cacheExtent: 8500,
+                        key: PageStorageKey<String>(name),
+                        slivers: <Widget>[
+                          SliverOverlapInjector(
+                            handle:
+                                NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                    context),
+                          ),
+                          const SliverPadding(
+                              padding: EdgeInsets.only(bottom: 5)),
+                          BlocBuilder<SpaceBloc, SpaceState>(
+                            builder: (context, state) {
+                              switch (state.status) {
+                                case SpaceStatus.failure:
+                                  return const SliverToBoxAdapter(
+                                      child: Center(
+                                          child:
+                                              Text('failed to fetch posts')));
+                                case SpaceStatus.success:
+                                  if (name != "SubSpace") {
+                                    context.read<TitleBloc>().add(InitEvent(
+                                        context.read<SpaceBloc>().state.spaceId,
+                                        name));
+                                  }
+                                  if (state.posts.isEmpty) {
+                                    return const SliverToBoxAdapter(
+                                        child: Center(child: Text('no posts')));
+                                  }
+                                  return SliverPadding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: padding),
+                                      sliver: SliverList(
+                                        delegate: SliverChildBuilderDelegate(
+                                          (BuildContext context, int index) {
+                                            if (index >= state.posts.length) {
+                                              return const SliverToBoxAdapter(
+                                                  child: BottomLoader());
+                                            }
+                                            return PostCardWrapper(
+                                                spaceName: name,
+                                                post: state.posts[index].post);
+                                          },
+                                          childCount: state.posts.length,
+                                        ),
+                                      ));
+                                case SpaceStatus.initial:
+                                  return const SliverToBoxAdapter(
+                                      child: Center(
+                                          child: CircularProgressIndicator()));
+                              }
+                            },
+                          ),
+                          BlocListener<SortBloc, SortState>(
+                            listenWhen: (previous, current) {
+                              return previous.status != current.status;
+                            },
+                            listener: (context, state) {
+                              context.read<SpaceBloc>().add(
+                                  SpaceSortChanged(sortState: state.status));
+                            },
+                            child: const SliverToBoxAdapter(child: SizedBox()),
+                          ),
+                          BlocListener<SortBloc, SortState>(
+                            listenWhen: (previous, current) {
+                              return previous.sortDays != current.sortDays;
+                            },
+                            listener: (context, state) {
+                              context.read<SpaceBloc>().add(
+                                  DaysSortChanged(sortDays: state.sortDays));
+                            },
+                            child: const SliverToBoxAdapter(child: SizedBox()),
+                          )
+                        ]),
+                  );
+                },
+              ),
+            ),
+            SafeArea(
+              top: false,
+              bottom: false,
+              child: Builder(
+                builder: (BuildContext context) {
+                  return CustomScrollView(
+                    cacheExtent: 8500,
+                    key: const PageStorageKey<String>("Following"),
+                    slivers: <Widget>[
+                      SliverOverlapInjector(
+                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                            context),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ]),
+        ),
       ),
     );
+
+    // Scaffold(
+    //   endDrawer: const SideBar(),
+    //   floatingActionButton: BlocBuilder<SpaceBloc, SpaceState>(
+    //     builder: (context, state) {
+    //       return FloatingActionButton(
+    //         shape: const CircleBorder(),
+    //         child: const Icon(Icons.add),
+    //         onPressed: () async {
+    //           context.push("/create/space/${state.spaceId}/post").then(
+    //               (value) => context
+    //                   .read<SpaceBloc>()
+    //                   .add(SpaceFetched(parentId: parentId, spaceName: name)));
+    //         },
+    //       );
+    //     },
+    //   ),
+    //   bottomNavigationBar: const NavBar(),
+    //   body: RefreshIndicator(
+    //     onRefresh: () async {
+    //       context
+    //           .read<SpaceBloc>()
+    //           .add(SpaceFetched(parentId: parentId, spaceName: name));
+    //     },
+    //     child: CustomScrollView(cacheExtent: 8500, slivers: <Widget>[
+    //       SliverAppBar(
+    //         pinned: true,
+    //         snap: false,
+    //         floating: false,
+    //         centerTitle: true,
+    //         expandedHeight: 80,
+    //         toolbarHeight: 0,
+    //         backgroundColor: Theme.of(context).colorScheme.background,
+    //         flexibleSpace: BlocBuilder<SpaceBloc, SpaceState>(
+    //             builder: (context, state) => FlexibleSpaceBar(
+    //                   background: getImage(state.backgroundPicture, fit),
+    //                   title: TitleWidget(
+    //                     title: name,
+    //                   ),
+    //                 )),
+    //       ),
+    //       const SliverPadding(padding: EdgeInsets.only(bottom: 5)),
+    //       BlocBuilder<SpaceBloc, SpaceState>(
+    //         builder: (context, state) {
+    //           switch (state.status) {
+    //             case SpaceStatus.failure:
+    //               return const SliverToBoxAdapter(
+    //                   child: Center(child: Text('failed to fetch posts')));
+    //             case SpaceStatus.success:
+    //               if (name != "SubSpace") {
+    //                 context.read<TitleBloc>().add(InitEvent(
+    //                     context.read<SpaceBloc>().state.spaceId, name));
+    //               }
+    //               if (state.posts.isEmpty) {
+    //                 return const SliverToBoxAdapter(
+    //                     child: Center(child: Text('no posts')));
+    //               }
+    //               return SliverPadding(
+    //                   padding: EdgeInsets.symmetric(horizontal: padding),
+    //                   sliver: SliverList(
+    //                     delegate: SliverChildBuilderDelegate(
+    //                       (BuildContext context, int index) {
+    //                         if (index >= state.posts.length) {
+    //                           return const SliverToBoxAdapter(
+    //                               child: BottomLoader());
+    //                         }
+    //                         return PostCardWrapper(
+    //                             spaceName: name, post: state.posts[index].post);
+    //                       },
+    //                       childCount: state.posts.length,
+    //                     ),
+    //                   ));
+    //             case SpaceStatus.initial:
+    //               return const SliverToBoxAdapter(
+    //                   child: Center(child: CircularProgressIndicator()));
+    //           }
+    //         },
+    //       ),
+    //       BlocListener<SortBloc, SortState>(
+    //         listenWhen: (previous, current) {
+    //           return previous.status != current.status;
+    //         },
+    //         listener: (context, state) {
+    //           context
+    //               .read<SpaceBloc>()
+    //               .add(SpaceSortChanged(sortState: state.status));
+    //         },
+    //         child: const SliverToBoxAdapter(child: SizedBox()),
+    //       ),
+    //       BlocListener<SortBloc, SortState>(
+    //         listenWhen: (previous, current) {
+    //           return previous.sortDays != current.sortDays;
+    //         },
+    //         listener: (context, state) {
+    //           context
+    //               .read<SpaceBloc>()
+    //               .add(DaysSortChanged(sortDays: state.sortDays));
+    //         },
+    //         child: const SliverToBoxAdapter(child: SizedBox()),
+    //       )
+    //     ]),
+    //   ),
+    // );
   }
 
   Widget getImage(PictureMeta? picture, BoxFit fit) {

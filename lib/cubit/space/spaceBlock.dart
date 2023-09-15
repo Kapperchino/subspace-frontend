@@ -57,7 +57,8 @@ class SpaceBloc extends HydratedBloc<SpaceEvent, SpaceState> {
           days: event.sortDays,
           status: SpaceStatus.success,
           posts: posts.$2,
-          spaceId: posts.$1,
+          spaceId: posts.$1.id,
+          spaceMeta: posts.$1,
           hasReachedMax: false,
         ),
       );
@@ -78,7 +79,8 @@ class SpaceBloc extends HydratedBloc<SpaceEvent, SpaceState> {
           sortState: event.sortState,
           status: SpaceStatus.success,
           posts: posts.$2,
-          spaceId: posts.$1,
+          spaceId: posts.$1.id,
+          spaceMeta: posts.$1,
           hasReachedMax: false,
         ),
       );
@@ -98,7 +100,8 @@ class SpaceBloc extends HydratedBloc<SpaceEvent, SpaceState> {
         state.copyWith(
           status: SpaceStatus.success,
           posts: posts.$2,
-          spaceId: posts.$1,
+          spaceId: posts.$1.id,
+          spaceMeta: posts.$1,
           parentId: event.parentId,
           spaceName: event.spaceName,
           hasReachedMax: false,
@@ -109,7 +112,7 @@ class SpaceBloc extends HydratedBloc<SpaceEvent, SpaceState> {
     }
   }
 
-  Future<(int, List<PostCardData>, PictureMeta?)> getPosts(
+  Future<(Space, List<PostCardData>, PictureMeta?)> getPosts(
       int parentId, String? spaceName,
       {SortStatus sort = SortStatus.latest,
       SortDays days = SortDays.week}) async {
@@ -149,7 +152,7 @@ class SpaceBloc extends HydratedBloc<SpaceEvent, SpaceState> {
       // then parse the JSON.
       if (res.body.isEmpty || res.body == 'null') {
         List<PostCardData> list = List.empty();
-        return (spaceId, list, image);
+        return (space, list, image);
       }
       final List<dynamic> list = jsonDecode(utf8.decode(res.bodyBytes));
       var output = List<PostCardData>.empty(growable: true);
@@ -159,7 +162,7 @@ class SpaceBloc extends HydratedBloc<SpaceEvent, SpaceState> {
             spaceName: space.name,
             parentSpaceId: space.parentId));
       }
-      return (spaceId, output, image);
+      return (space, output, image);
     } else {
       // If the server did not return a 201 CREATED response,
       // then throw an exception.

@@ -110,11 +110,9 @@ class PostSection extends StatelessWidget {
                                     onTap: (text) {
                                       switch (text.characters.first) {
                                         case "#":
-                                          {
-                                          }
+                                          {}
                                         case "@":
-                                          {
-                                          }
+                                          {}
                                       }
                                     })))),
                   Row(
@@ -138,8 +136,7 @@ class PostSection extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      const Padding(
-                          padding: EdgeInsets.only(left: 5, bottom: 10)),
+                      Spacer(),
                       BlocProvider(
                         create: (_) => VoteBloc(
                           httpClient: http.Client(),
@@ -152,10 +149,11 @@ class PostSection extends StatelessWidget {
                             VoteType.post)),
                         child: const VoteWidgetFlat(),
                       ),
-                      Flexible(
-                          child: CommentingWidget(
+                      const Padding(
+                          padding: EdgeInsets.only(right: 5, bottom: 10)),
+                      CommentingWidget(
                         post: postState.post,
-                      )),
+                      ),
                     ],
                   ),
                 ],

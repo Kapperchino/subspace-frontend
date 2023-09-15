@@ -71,7 +71,7 @@ class CommentWidget extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.max,
             children: [
-              const Padding(padding: EdgeInsets.only(left: 5, bottom: 10)),
+              const Spacer(),
               BlocProvider(
                 create: (_) => VoteBloc(
                   httpClient: http.Client(),
@@ -84,7 +84,7 @@ class CommentWidget extends StatelessWidget {
                     VoteType.comment)),
                 child: const VoteWidgetFlat(),
               ),
-              const Spacer(),
+              const Padding(padding: EdgeInsets.only(right: 5, bottom: 10)),
               CommentingWidget(
                 comment: comment,
               )
