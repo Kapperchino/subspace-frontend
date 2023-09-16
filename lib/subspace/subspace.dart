@@ -105,17 +105,15 @@ class _SubSpaceState extends State<Subspace> {
                           ),
                           SafeArea(
                               top: false,
-                              child: Flexible(
-                                  child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
                                     SpaceAbout(
                                       meta: state.spaceMeta,
                                     ),
-                                    Padding(
+                                    const Padding(
                                         padding: EdgeInsets.only(bottom: 20))
-                                  ]))),
+                                  ])),
                         ],
                       ),
                       bottom: TabBar(
@@ -254,109 +252,6 @@ class _SubSpaceState extends State<Subspace> {
         ),
       ),
     );
-
-    // Scaffold(
-    //   endDrawer: const SideBar(),
-    //   floatingActionButton: BlocBuilder<SpaceBloc, SpaceState>(
-    //     builder: (context, state) {
-    //       return FloatingActionButton(
-    //         shape: const CircleBorder(),
-    //         child: const Icon(Icons.add),
-    //         onPressed: () async {
-    //           context.push("/create/space/${state.spaceId}/post").then(
-    //               (value) => context
-    //                   .read<SpaceBloc>()
-    //                   .add(SpaceFetched(parentId: parentId, spaceName: name)));
-    //         },
-    //       );
-    //     },
-    //   ),
-    //   bottomNavigationBar: const NavBar(),
-    //   body: RefreshIndicator(
-    //     onRefresh: () async {
-    //       context
-    //           .read<SpaceBloc>()
-    //           .add(SpaceFetched(parentId: parentId, spaceName: name));
-    //     },
-    //     child: CustomScrollView(cacheExtent: 8500, slivers: <Widget>[
-    //       SliverAppBar(
-    //         pinned: true,
-    //         snap: false,
-    //         floating: false,
-    //         centerTitle: true,
-    //         expandedHeight: 80,
-    //         toolbarHeight: 0,
-    //         backgroundColor: Theme.of(context).colorScheme.background,
-    //         flexibleSpace: BlocBuilder<SpaceBloc, SpaceState>(
-    //             builder: (context, state) => FlexibleSpaceBar(
-    //                   background: getImage(state.backgroundPicture, fit),
-    //                   title: TitleWidget(
-    //                     title: name,
-    //                   ),
-    //                 )),
-    //       ),
-    //       const SliverPadding(padding: EdgeInsets.only(bottom: 5)),
-    //       BlocBuilder<SpaceBloc, SpaceState>(
-    //         builder: (context, state) {
-    //           switch (state.status) {
-    //             case SpaceStatus.failure:
-    //               return const SliverToBoxAdapter(
-    //                   child: Center(child: Text('failed to fetch posts')));
-    //             case SpaceStatus.success:
-    //               if (name != "SubSpace") {
-    //                 context.read<TitleBloc>().add(InitEvent(
-    //                     context.read<SpaceBloc>().state.spaceId, name));
-    //               }
-    //               if (state.posts.isEmpty) {
-    //                 return const SliverToBoxAdapter(
-    //                     child: Center(child: Text('no posts')));
-    //               }
-    //               return SliverPadding(
-    //                   padding: EdgeInsets.symmetric(horizontal: padding),
-    //                   sliver: SliverList(
-    //                     delegate: SliverChildBuilderDelegate(
-    //                       (BuildContext context, int index) {
-    //                         if (index >= state.posts.length) {
-    //                           return const SliverToBoxAdapter(
-    //                               child: BottomLoader());
-    //                         }
-    //                         return PostCardWrapper(
-    //                             spaceName: name, post: state.posts[index].post);
-    //                       },
-    //                       childCount: state.posts.length,
-    //                     ),
-    //                   ));
-    //             case SpaceStatus.initial:
-    //               return const SliverToBoxAdapter(
-    //                   child: Center(child: CircularProgressIndicator()));
-    //           }
-    //         },
-    //       ),
-    //       BlocListener<SortBloc, SortState>(
-    //         listenWhen: (previous, current) {
-    //           return previous.status != current.status;
-    //         },
-    //         listener: (context, state) {
-    //           context
-    //               .read<SpaceBloc>()
-    //               .add(SpaceSortChanged(sortState: state.status));
-    //         },
-    //         child: const SliverToBoxAdapter(child: SizedBox()),
-    //       ),
-    //       BlocListener<SortBloc, SortState>(
-    //         listenWhen: (previous, current) {
-    //           return previous.sortDays != current.sortDays;
-    //         },
-    //         listener: (context, state) {
-    //           context
-    //               .read<SpaceBloc>()
-    //               .add(DaysSortChanged(sortDays: state.sortDays));
-    //         },
-    //         child: const SliverToBoxAdapter(child: SizedBox()),
-    //       )
-    //     ]),
-    //   ),
-    // );
   }
 
   Widget getImage(PictureMeta? picture, BoxFit fit) {
