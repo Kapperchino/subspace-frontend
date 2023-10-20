@@ -58,10 +58,13 @@ class HomePage extends StatelessWidget {
                   toolbarHeight: 0,
                   expandedHeight: 80,
                   flexibleSpace: FlexibleSpaceBar(
-                    background: Image.asset(
-                      "assets/default_space_background.png",
-                      fit: fit,
-                    ),
+                    background: ColorFiltered(
+                        colorFilter: const ColorFilter.mode(
+                            Color.fromARGB(134, 60, 60, 60), BlendMode.dstATop),
+                        child: Image.asset(
+                          "assets/default_space_background.png",
+                          fit: fit,
+                        )),
                     title: const Text("Subspace"),
                   ),
                   bottom: TabBar(

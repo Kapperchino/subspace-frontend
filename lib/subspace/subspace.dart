@@ -98,10 +98,14 @@ class _SubSpaceState extends State<Subspace> {
                         alignment: Alignment.center,
                         children: [
                           FlexibleSpaceBar(
-                            background: Image.asset(
-                              "assets/default_space_background.png",
-                              fit: fit,
-                            ),
+                            background: ColorFiltered(
+                                colorFilter: const ColorFilter.mode(
+                                    Color.fromARGB(137, 45, 45, 45),
+                                    BlendMode.darken),
+                                child: Image.asset(
+                                  "assets/default_space_background.png",
+                                  fit: fit,
+                                )),
                           ),
                           SafeArea(
                               top: false,
