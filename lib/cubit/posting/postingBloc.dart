@@ -9,6 +9,9 @@ import 'package:frontend/models/pictureMetaResult.dart';
 import 'package:frontend/models/pictureRequestMeta.dart';
 import 'package:frontend/cubit/posting/postingEvent.dart';
 import 'package:frontend/cubit/posting/postingState.dart';
+import 'package:frontend/models/videoMetaResult.dart';
+import 'package:frontend/models/videoProcessingReq.dart';
+import 'package:frontend/models/videoProcessingRes.dart';
 import 'package:frontend/util/userUtil.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -247,6 +250,44 @@ class PostingBloc extends Bloc<PostingEvent, PostingState> {
       if (fileRes.statusCode != 200) {
         return fileRes.statusCode;
       }
+    } else if (getContentType() == ContentType.video) {
+      final json =
+          jsonEncode(const FileUploadRequest(fileType: FileType.video));
+      final res = await http.put(
+        Uri.parse('${Config.baseUrl}/files'),
+        body: json,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (res.statusCode != 200) {
+        return res.statusCode;
+      }
+      final resMeta = VideoMetaResult.fromJson(jsonDecode(res.body));
+      fileIds.add(resMeta.id);
+      String? mimeStr;
+      if (state.file!.mimeType != null) {
+        mimeStr = state.file!.mimeType;
+      } else {
+        mimeStr = lookupMimeType(state.file!.path);
+      }
+      Uri uri = Uri.parse(resMeta.presigned);
+      final fileRes = await http.put(uri,
+          body: await state.file?.readAsBytes(),
+          headers: {"Content-Type": mimeStr!});
+      if (fileRes.statusCode != 200) {
+        return fileRes.statusCode;
+      }
+      final videoRes = await http.post(
+        Uri.parse('${Config.baseUrl}/videos'),
+        body: jsonEncode(VideoProcessingReq(id: resMeta.id)),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      final vidRes = VideoProcessingRes.fromJson(jsonDecode(videoRes.body));
     }
 
     final json = jsonEncode(PostRequest(

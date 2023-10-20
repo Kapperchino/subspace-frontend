@@ -25,6 +25,9 @@ SpaceState _$SpaceStateFromJson(Map<String, dynamic> json) => SpaceState(
           ? null
           : PictureMeta.fromJson(
               json['backgroundPicture'] as Map<String, dynamic>),
+      spaceMeta: json['spaceMeta'] == null
+          ? null
+          : Space.fromJson(json['spaceMeta'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$SpaceStateToJson(SpaceState instance) {
@@ -46,6 +49,7 @@ Map<String, dynamic> _$SpaceStateToJson(SpaceState instance) {
   }
 
   writeNotNull('backgroundPicture', instance.backgroundPicture);
+  writeNotNull('spaceMeta', instance.spaceMeta);
   return val;
 }
 

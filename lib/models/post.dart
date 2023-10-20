@@ -1,4 +1,5 @@
 import 'package:frontend/models/pictureMeta.dart';
+import 'package:frontend/models/videoMeta.dart';
 import 'package:frontend/models/vote.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'post.g.dart';
@@ -33,6 +34,8 @@ class Post {
   final String body;
   @JsonKey(name: 'post_pictures')
   final List<PictureMeta>? postPictures;
+  @JsonKey(name: 'post_videos')
+  final List<VideoMeta>? postVideos;
   @JsonKey(name: 'up_votes')
   final int upVotes;
   @JsonKey(name: 'down_votes')
@@ -69,7 +72,8 @@ class Post {
       required this.vote,
       required this.spaceName,
       required this.posterPicture,
-      required this.commentsCount});
+      required this.commentsCount,
+      required this.postVideos});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return _$PostFromJson(json);

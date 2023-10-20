@@ -6,11 +6,12 @@
     "configurations": [
         {
             "name": "frontend-iphone",
+            "request": "launch",
             "type": "dart",
-            "request": "attach",
+            "flutterMode": "debug",
             "args": [
                 "--dart-define",
-                "BASE_URL=https://subspace-backend.fly.dev"
+                "BASE_URL=http://localhost:3000"
             ],
         },
         {

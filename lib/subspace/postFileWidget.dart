@@ -57,8 +57,7 @@ class PostFileWidget extends StatelessWidget {
                     onPressed: () async {
                       if (context.mounted) {
                         final picker = ImagePicker();
-                        final pic =
-                            await picker.pickImage(source: ImageSource.gallery);
+                        final pic = await picker.pickMedia();
                         context.read<PostingBloc>().add(FileChanged(pic));
                       }
                     },

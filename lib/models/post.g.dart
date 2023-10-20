@@ -35,6 +35,9 @@ Post _$PostFromJson(Map<String, dynamic> json) => Post(
           : PictureMeta.fromJson(
               json['poster_picture'] as Map<String, dynamic>),
       commentsCount: json['comments_count'] as int,
+      postVideos: (json['post_videos'] as List<dynamic>?)
+          ?.map((e) => VideoMeta.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$PostToJson(Post instance) {
@@ -56,6 +59,7 @@ Map<String, dynamic> _$PostToJson(Post instance) {
   val['topic'] = instance.topic;
   val['body'] = instance.body;
   writeNotNull('post_pictures', instance.postPictures);
+  writeNotNull('post_videos', instance.postVideos);
   val['up_votes'] = instance.upVotes;
   val['down_votes'] = instance.downVotes;
   writeNotNull('link', instance.link);

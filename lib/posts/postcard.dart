@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chewie/chewie.dart';
 import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
 import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:flutter/foundation.dart';
@@ -10,12 +11,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/common/timeWidget.dart';
 import 'package:frontend/models/post.dart';
+import 'package:frontend/models/videoMeta.dart';
 import 'package:frontend/posts/commentCount.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:go_router/go_router.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 
 import '../models/pictureMeta.dart';
 import '../models/voteRequest.dart';
@@ -25,14 +28,32 @@ import '../cubit/vote/voteBloc.dart';
 
 import '../cubit/vote/voteEvent.dart';
 
-class PostCard extends StatelessWidget {
-  const PostCard({super.key, required this.post, required this.spaceName});
+class PostCard extends StatefulWidget {
+  final Post post;
+  final String spaceName;
+  const PostCard({Key? key, required this.post, required this.spaceName})
+      : super(key: key);
+
+  @override
+  State<PostCard> createState() =>
+      _PostCardState(post: this.post, spaceName: this.spaceName);
+}
+
+class _PostCardState extends State<PostCard> {
+  _PostCardState({required this.post, required this.spaceName});
 
   final Post post;
   final String spaceName;
 
   static const double CARD_MAX_HEIGHT = 600;
   static const double CARD_MAX_WIDTH = 600;
+
+  VideoPlayerController? _controller;
+  ChewieController? _chewieController;
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +140,7 @@ class PostCard extends StatelessWidget {
                       }
                     },
                   ),
+                if (post.type == ContentType.video) getVideo(post.postVideos),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -148,6 +170,36 @@ class PostCard extends StatelessWidget {
                 )
               ]),
         ));
+  }
+
+  Widget getVideo(List<VideoMeta>? videos) {
+    if (videos == null) {
+      return const SizedBox();
+    }
+    if (videos[0].status != 'done') {
+      return const SizedBox();
+    }
+    _controller ??= VideoPlayerController.networkUrl(Uri.parse(videos[0].url))
+      ..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {});
+      });
+
+    _chewieController ??= ChewieController(
+      videoPlayerController: _controller!,
+      aspectRatio: videos[0].width / videos[0].height,
+      autoPlay: false,
+      looping: false,
+    );
+
+    return ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: SizedBox(
+            height: CARD_MAX_HEIGHT,
+            width: CARD_MAX_WIDTH,
+            child: Chewie(
+              controller: _chewieController!,
+            )));
   }
 
   Future<Widget> getImage(List<PictureMeta>? pictures, ContentType type,

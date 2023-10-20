@@ -30,4 +30,8 @@ class Space {
   factory Space.fromJson(Map<String, dynamic> json) {
     return _$SpaceFromJson(json);
   }
+
+  Map<String, dynamic> toJson() {
+    return _$SpaceToJson(this);
+  }
 }
