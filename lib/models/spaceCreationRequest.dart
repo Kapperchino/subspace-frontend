@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'spaceCreationRequest.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class SpaceCreationRequest {
   @JsonKey(name: 'parent')
   final int parentId;

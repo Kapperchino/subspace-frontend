@@ -43,7 +43,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       state.post = post;
       return emit(state);
     } catch (_) {
-      emit(PostState(status: PostStatus.failure));
+      return emit(PostState(status: PostStatus.failure));
     }
   }
 

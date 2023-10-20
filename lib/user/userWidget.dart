@@ -264,8 +264,7 @@ class _UserWidgetState extends State<UserWidget> {
                                 child: BottomLoader());
                           }
                           return PostCardWrapper(
-                              spaceName: state.posts[index].spaceName,
-                              post: state.posts[index]);
+                              data: state.posts[index]);
                         }, childCount: state.posts.length),
                       ));
                 case UserPageStatus.initial:

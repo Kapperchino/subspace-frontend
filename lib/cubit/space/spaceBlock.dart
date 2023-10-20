@@ -73,7 +73,7 @@ class SpaceBloc extends HydratedBloc<SpaceEvent, SpaceState> {
   ) async {
     try {
       final posts = await getPosts(state.parentId, state.spaceName,
-          sort: event.sortState);
+          sort: event.sortState, days: state.sortDays);
       return emit(
         state.copyWith(
           sortState: event.sortState,
@@ -108,7 +108,7 @@ class SpaceBloc extends HydratedBloc<SpaceEvent, SpaceState> {
         ),
       );
     } catch (_) {
-      emit(state.copyWith(status: SpaceStatus.failure));
+      return emit(state.copyWith(status: SpaceStatus.failure));
     }
   }
 
@@ -158,9 +158,8 @@ class SpaceBloc extends HydratedBloc<SpaceEvent, SpaceState> {
       var output = List<PostCardData>.empty(growable: true);
       for (final json in list) {
         output.add(PostCardData(
-            post: Post.fromJson(json),
-            spaceName: space.name,
-            parentSpaceId: space.parentId));
+          post: Post.fromJson(json),
+        ));
       }
       return (space, output, image);
     } else {

@@ -134,8 +134,7 @@ class HomePage extends StatelessWidget {
                                                   child: BottomLoader());
                                             }
                                             return PostCardWrapper(
-                                                spaceName: "home",
-                                                post: state.posts[index].post);
+                                                data: state.posts[index]);
                                           },
                                           childCount: state.posts.length,
                                         ),
@@ -217,8 +216,7 @@ class HomePage extends StatelessWidget {
                                                 child: BottomLoader());
                                           }
                                           return PostCardWrapper(
-                                            post: state.posts[index].post,
-                                            spaceName: "",
+                                            data: state.posts[index],
                                           );
                                         }, childCount: state.posts.length),
                                       ));

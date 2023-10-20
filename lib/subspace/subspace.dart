@@ -196,8 +196,7 @@ class _SubSpaceState extends State<Subspace> {
                                                   child: BottomLoader());
                                             }
                                             return PostCardWrapper(
-                                                spaceName: name,
-                                                post: state.posts[index].post);
+                                                data: state.posts[index]);
                                           },
                                           childCount: state.posts.length,
                                         ),

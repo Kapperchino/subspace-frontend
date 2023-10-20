@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'videoMeta.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class VideoMeta {
   @JsonKey(name: 'id')
   final int id;

@@ -6,6 +6,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/cubit/search/searchEvent.dart';
 import 'package:frontend/cubit/search/searchState.dart';
 import 'package:frontend/cubit/space/spaceState.dart';
+import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/models/userMeta.dart';
 import 'package:frontend/util/userUtil.dart';
 import 'package:http/http.dart' as http;
@@ -56,7 +57,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           term: event.term,
           status: SearchStatus.success));
     } catch (_) {
-      emit(const SearchState(status: SearchStatus.failure));
+      return emit(const SearchState(status: SearchStatus.failure));
     }
   }
 
@@ -72,7 +73,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           status: SearchStatus.success,
           sortStatus: event.status));
     } catch (_) {
-      emit(const SearchState(status: SearchStatus.failure));
+      return emit(const SearchState(status: SearchStatus.failure));
     }
   }
 
@@ -86,7 +87,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       return emit(state.copyWith(
           posts: posts, status: SearchStatus.success, sortDays: event.days));
     } catch (_) {
-      emit(const SearchState(status: SearchStatus.failure));
+      return emit(const SearchState(status: SearchStatus.failure));
     }
   }
 
@@ -115,7 +116,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     }
   }
 
-  Future<List<Post>> searchPosts(String term, bool isTag,
+  Future<List<PostCardData>> searchPosts(String term, bool isTag,
       {SortStatus sortStatus = SortStatus.popular,
       SortDays days = SortDays.week}) async {
     var intDays = 7;
@@ -147,9 +148,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         return List.empty();
       }
       final List<dynamic> list = jsonDecode(utf8.decode(res.bodyBytes));
-      var output = List<Post>.empty(growable: true);
+      var output = List<PostCardData>.empty(growable: true);
       for (final json in list) {
-        output.add(Post.fromJson(json));
+        var post = Post.fromJson(json);
+        output.add(PostCardData(post: post));
       }
       return output;
     } else {

@@ -2,7 +2,7 @@ import 'package:frontend/models/post.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'commentRequest.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class CommentRequest {
   @JsonKey(name: 'poster_id')
   final int posterId;

@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'updateDeviceReq.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class UpdateDeviceReq {
   @JsonKey(name: 'registration')
   final String registration;

@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'videoProcessingReq.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class VideoProcessingReq {
   @JsonKey(name: 'id')
   final int id;

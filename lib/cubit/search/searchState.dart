@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:frontend/cubit/space/spaceState.dart';
+import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/models/userMeta.dart';
 
 import '../../models/post.dart';
@@ -24,12 +25,12 @@ final class SearchState extends Equatable {
   final String term;
   final bool isTag;
   final List<Space>? spaces;
-  final List<Post>? posts;
+  final List<PostCardData>? posts;
   final List<UserMeta>? users;
 
   SearchState copyWith(
       {SearchStatus? status,
-      List<Post>? posts,
+      List<PostCardData>? posts,
       List<Space>? spaces,
       SortStatus? sortStatus,
       List<UserMeta>? users,

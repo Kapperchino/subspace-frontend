@@ -32,6 +32,6 @@ Map<String, dynamic> _$AppUserToJson(AppUser instance) {
     }
   }
 
-  writeNotNull('picture_meta', instance.picture);
+  writeNotNull('picture_meta', instance.picture?.toJson());
   return val;
 }

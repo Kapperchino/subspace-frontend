@@ -42,7 +42,7 @@ class ImageViewBloc extends Bloc<ImageViewEvent, ImageViewState> {
         state.copyWith(status: ImageViewStatus.success, pictureMeta: image),
       );
     } catch (_) {
-      emit(state.copyWith(status: ImageViewStatus.failure));
+      return emit(state.copyWith(status: ImageViewStatus.failure));
     }
   }
 

@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'signUp.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class SignUpRequest {
   final String password;
   @JsonKey(name: "display_name")

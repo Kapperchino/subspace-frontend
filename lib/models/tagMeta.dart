@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'tagMeta.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class TagMeta {
   final String name;
   final int count;

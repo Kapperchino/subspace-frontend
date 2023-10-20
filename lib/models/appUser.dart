@@ -2,7 +2,7 @@ import 'package:frontend/models/pictureMeta.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'appUser.g.dart';
 
-@JsonSerializable(includeIfNull: false)
+@JsonSerializable(explicitToJson: true, includeIfNull: false)
 class AppUser {
   @JsonKey(name: 'user_id')
   final int id;

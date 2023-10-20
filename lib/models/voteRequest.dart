@@ -8,7 +8,7 @@ enum VoteType {
   comment
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class VoteRequest {
   @JsonKey(name: "user_id")
   final int userId;

@@ -9,6 +9,7 @@ import 'package:frontend/cubit/userPage/userPageState.dart';
 import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/cubit/space/spaceState.dart';
+import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/util/userUtil.dart';
 
 import 'package:http/http.dart' as http;
@@ -185,7 +186,7 @@ class UserPageBloc extends Bloc<UserPageEvent, UserPageState> {
     }
   }
 
-  Future<(List<Post>, UserMeta)> getPosts(int userId,
+  Future<(List<PostCardData>, UserMeta)> getPosts(int userId,
       {SortStatus sort = SortStatus.latest,
       SortDays days = SortDays.week}) async {
     final token = await Store.secure.read(key: 'jwt');
@@ -220,13 +221,16 @@ class UserPageBloc extends Bloc<UserPageEvent, UserPageState> {
       // If the server did return a 201 CREATED response,
       // then parse the JSON.
       if (res.body.isEmpty || res.body == 'null') {
-        List<Post> list = List.empty();
+        List<PostCardData> list = List.empty();
         return (list, user);
       }
       final List<dynamic> list = jsonDecode(utf8.decode(res.bodyBytes));
-      var output = List<Post>.empty(growable: true);
+      var output = List<PostCardData>.empty(growable: true);
       for (final json in list) {
-        output.add(Post.fromJson(json));
+        final post = Post.fromJson(json);
+        output.add(PostCardData(
+          post: post,
+        ));
       }
       return (output, user);
     } else {

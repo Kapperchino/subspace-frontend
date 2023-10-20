@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/vote/voteBloc.dart';
+import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/posts/postcard.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,11 +11,9 @@ import '../util/votesUtil.dart';
 import '../cubit/vote/voteEvent.dart';
 
 class PostCardWrapper extends StatelessWidget {
-  const PostCardWrapper(
-      {super.key, required this.post, required this.spaceName});
+  const PostCardWrapper({super.key, required this.data});
 
-  final Post post;
-  final String spaceName;
+  final PostCardData data;
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +21,12 @@ class PostCardWrapper extends StatelessWidget {
       create: (_) => VoteBloc(
         httpClient: http.Client(),
         type: VoteType.post,
-      )..add(InitEvent(post.id, post.upVotes, post.downVotes,
-          VotesUtil.getStatus(post.vote), VoteType.post)),
+      )..add(InitEvent(data.post.id, data.post.upVotes, data.post.downVotes,
+          VotesUtil.getStatus(data.post.vote), VoteType.post)),
       child: PostCard(
-        post: post,
-        spaceName: spaceName,
+        post: data.post,
+        chewieController: data.chewieController,
+        controller: data.controller,
       ),
     );
   }

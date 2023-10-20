@@ -36,8 +36,7 @@ class SearchPosts extends StatelessWidget {
                       return const BottomLoader();
                     }
                     return PostCardWrapper(
-                      spaceName: "",
-                      post: state.posts![index],
+                      data: state.posts![index],
                     );
                   }, childCount: state.posts!.length),
                 ));

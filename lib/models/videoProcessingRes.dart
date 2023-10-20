@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'videoProcessingRes.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class VideoProcessingRes {
   @JsonKey(name: 'duration')
   final double duration;

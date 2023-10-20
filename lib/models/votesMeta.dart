@@ -2,7 +2,7 @@ import 'package:frontend/models/voteRequest.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'votesMeta.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class VotesMeta {
   @JsonKey(name: "user_id")
   final int userId;
@@ -21,15 +21,16 @@ class VotesMeta {
   @JsonKey(name: "down_votes")
   final int downVotes;
 
-  const VotesMeta(
-      {required this.userId,
-      required this.postOrCommentId,
-      required this.isUpvote,
-      required this.voteType,
-      required this.voteid,
-      required this.upVotes,
-      required this.downVotes,
-      required this.isDeleted,});
+  const VotesMeta({
+    required this.userId,
+    required this.postOrCommentId,
+    required this.isUpvote,
+    required this.voteType,
+    required this.voteid,
+    required this.upVotes,
+    required this.downVotes,
+    required this.isDeleted,
+  });
 
   factory VotesMeta.fromJson(Map<String, dynamic> json) {
     return _$VotesMetaFromJson(json);

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/post.dart';
+import 'package:frontend/models/postCardData.dart';
 
 import '../../models/userMeta.dart';
 import '../space/spaceState.dart';
@@ -16,7 +17,7 @@ final class UserPageState extends Equatable {
       {this.status = UserPageStatus.initial,
       this.sortState = SortStatus.latest,
       this.bioStatus = BioEditStatus.start,
-      this.posts = const <Post>[],
+      this.posts = const <PostCardData>[],
       this.sortDays = SortDays.week,
       this.hasReachedMax = false,
       this.picEditStatus = PicEditStatus.start,
@@ -25,7 +26,7 @@ final class UserPageState extends Equatable {
 
   final UserPageStatus status;
   final BioEditStatus bioStatus;
-  final List<Post> posts;
+  final List<PostCardData> posts;
   final bool hasReachedMax;
   final SortStatus sortState;
   final SortDays sortDays;
@@ -36,7 +37,7 @@ final class UserPageState extends Equatable {
   UserPageState copyWith(
       {SortDays? days,
       UserPageStatus? status,
-      List<Post>? posts,
+      List<PostCardData>? posts,
       bool? hasReachedMax,
       SortStatus? sortState,
       PicEditStatus? picEditStatus,

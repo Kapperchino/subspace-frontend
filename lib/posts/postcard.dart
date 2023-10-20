@@ -19,6 +19,7 @@ import 'package:go_router/go_router.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../models/pictureMeta.dart';
 import '../models/voteRequest.dart';
@@ -28,32 +29,16 @@ import '../cubit/vote/voteBloc.dart';
 
 import '../cubit/vote/voteEvent.dart';
 
-class PostCard extends StatefulWidget {
-  final Post post;
-  final String spaceName;
-  const PostCard({Key? key, required this.post, required this.spaceName})
-      : super(key: key);
-
-  @override
-  State<PostCard> createState() =>
-      _PostCardState(post: this.post, spaceName: this.spaceName);
-}
-
-class _PostCardState extends State<PostCard> {
-  _PostCardState({required this.post, required this.spaceName});
+class PostCard extends StatelessWidget {
+  PostCard({required this.post, this.chewieController, this.controller});
 
   final Post post;
-  final String spaceName;
 
   static const double CARD_MAX_HEIGHT = 600;
   static const double CARD_MAX_WIDTH = 600;
 
-  VideoPlayerController? _controller;
-  ChewieController? _chewieController;
-  @override
-  void initState() {
-    super.initState();
-  }
+  VideoPlayerController? controller;
+  ChewieController? chewieController;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +57,7 @@ class _PostCardState extends State<PostCard> {
               children: [
                 Flexible(
                     child: PostMeta(
-                  spaceName: spaceName,
+                  spaceName: post.spaceName,
                   maxUserNameLength: 16,
                   post: post,
                 )),
@@ -179,27 +164,33 @@ class _PostCardState extends State<PostCard> {
     if (videos[0].status != 'done') {
       return const SizedBox();
     }
-    _controller ??= VideoPlayerController.networkUrl(Uri.parse(videos[0].url))
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
+    controller ??= VideoPlayerController.networkUrl(Uri.parse(videos[0].url))
+      ..initialize();
 
-    _chewieController ??= ChewieController(
-      videoPlayerController: _controller!,
-      aspectRatio: videos[0].width / videos[0].height,
-      autoPlay: false,
-      looping: false,
-    );
+    chewieController ??= ChewieController(
+        videoPlayerController: controller!,
+        aspectRatio: videos[0].width / videos[0].height,
+        autoPlay: false,
+        looping: false,
+        showControlsOnInitialize: false,
+        allowPlaybackSpeedChanging: false);
 
-    return ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: SizedBox(
-            height: CARD_MAX_HEIGHT,
-            width: CARD_MAX_WIDTH,
-            child: Chewie(
-              controller: _chewieController!,
-            )));
+    return VisibilityDetector(
+        key: Key(post.id.toString()),
+        onVisibilityChanged: (VisibilityInfo info) {
+          if (info.visibleFraction > 0.6) {
+          } else {
+            chewieController?.pause();
+          }
+        },
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: SizedBox(
+                height: min(videos[0].height.toDouble(), CARD_MAX_HEIGHT),
+                width: min(videos[0].width.toDouble(), CARD_MAX_WIDTH),
+                child: Chewie(
+                  controller: chewieController!,
+                ))));
   }
 
   Future<Widget> getImage(List<PictureMeta>? pictures, ContentType type,

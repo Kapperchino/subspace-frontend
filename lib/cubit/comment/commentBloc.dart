@@ -55,7 +55,7 @@ class CommentBloc extends HydratedBloc<CommentEvent, CommentsState> {
         ),
       );
     } catch (_) {
-      emit(state.copyWith(status: CommentsStatus.failure));
+      return emit(state.copyWith(status: CommentsStatus.failure));
     }
   }
 
@@ -75,7 +75,7 @@ class CommentBloc extends HydratedBloc<CommentEvent, CommentsState> {
         ),
       );
     } catch (_) {
-      emit(state.copyWith(status: CommentsStatus.failure));
+      return emit(state.copyWith(status: CommentsStatus.failure));
     }
   }
 
