@@ -92,7 +92,7 @@ class PostSection extends StatelessWidget {
                       ),
                     ),
                   if (postState.post?.type == ContentType.video)
-                    getVideo(postState.post?.postVideos, postState),
+                    getVideo(postState.post?.postVideos, postState, context),
                   if (postState.post!.body.isNotEmpty)
                     Flexible(
                         child: Align(
@@ -185,14 +185,20 @@ class PostSection extends StatelessWidget {
     });
   }
 
-  Widget getVideo(List<VideoMeta>? videos, PostState state) {
+  Widget getVideo(
+      List<VideoMeta>? videos, PostState state, BuildContext context) {
     if (videos == null) {
       return const SizedBox();
     }
     if (videos[0].status != 'done') {
       return const SizedBox();
     }
-
+    final deviceWidth = MediaQuery.of(context).size.width - 40;
+    final maxWidth = min(deviceWidth, CARD_MAX_WIDTH);
+    final imageRatio = videos[0].width / videos[0].height;
+    final adjustedHeight = maxWidth / imageRatio;
+    final double height = min(CARD_MAX_HEIGHT, adjustedHeight);
+    final ratio = min(videos[0].width / maxWidth, videos[0].height / height);
     return VisibilityDetector(
         key: Key(state.post!.id.toString()),
         onVisibilityChanged: (VisibilityInfo info) {
@@ -206,10 +212,8 @@ class PostSection extends StatelessWidget {
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: SizedBox(
-                    height:
-                        min(videos[0].height.toDouble(), CARD_MAX_HEIGHT - 250),
-                    width:
-                        min(videos[0].width.toDouble(), CARD_MAX_WIDTH - 250),
+                    height: height,
+                    width: maxWidth * ratio,
                     child: Chewie(
                       controller: state.chewieController!,
                     )))));

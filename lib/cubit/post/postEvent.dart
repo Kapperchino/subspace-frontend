@@ -7,5 +7,6 @@ sealed class PostEvent extends Equatable {
 
 final class PostFetched extends PostEvent {
   final int postId;
-  PostFetched({required this.postId});
+  final double deviceWidth;
+  PostFetched({required this.postId, required this.deviceWidth});
 }

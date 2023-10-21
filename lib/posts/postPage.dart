@@ -30,7 +30,9 @@ class PostPage extends StatelessWidget {
                   isPostComment: true)),
           BlocProvider(
               create: (_) => PostBloc(httpClient: http.Client())
-                ..add(PostFetched(postId: id))),
+                ..add(PostFetched(
+                    postId: id,
+                    deviceWidth: MediaQuery.of(context).size.width - 40))),
         ],
         child: PostWidget(
           id: id,

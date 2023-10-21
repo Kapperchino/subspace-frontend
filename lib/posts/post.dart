@@ -32,7 +32,8 @@ class PostWidget extends StatelessWidget {
     return Scaffold(
         bottomNavigationBar: const NavBar(),
         body: RefreshIndicator(onRefresh: () async {
-          context.read<PostBloc>().add(PostFetched(postId: id));
+          context.read<PostBloc>().add(PostFetched(
+              postId: id, deviceWidth: MediaQuery.of(context).size.width - 40));
         }, child: BlocBuilder<PostBloc, PostState>(
           builder: (context, state) {
             return CustomScrollView(
@@ -86,6 +87,4 @@ class PostWidget extends StatelessWidget {
       fit: fit,
     );
   }
-
-  
 }

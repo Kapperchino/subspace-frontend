@@ -125,7 +125,8 @@ class PostCard extends StatelessWidget {
                         }
                       },
                     ),
-                  if (post.type == ContentType.video) getVideo(post.postVideos),
+                  if (post.type == ContentType.video)
+                    getVideo(post.postVideos, context),
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -156,7 +157,7 @@ class PostCard extends StatelessWidget {
                 ])));
   }
 
-  Widget getVideo(List<VideoMeta>? videos) {
+  Widget getVideo(List<VideoMeta>? videos, BuildContext context) {
     if (videos == null) {
       return const SizedBox();
     }
@@ -166,6 +167,12 @@ class PostCard extends StatelessWidget {
     controller ??= VideoPlayerController.networkUrl(Uri.parse(videos[0].url))
       ..initialize();
 
+    final deviceWidth = MediaQuery.of(context).size.width - 40;
+    final maxWidth = min(deviceWidth, CARD_MAX_WIDTH);
+    final imageRatio = videos[0].width / videos[0].height;
+    final adjustedHeight = maxWidth / imageRatio;
+    final double height = min(CARD_MAX_HEIGHT, adjustedHeight);
+    final ratio = min(videos[0].width / maxWidth, videos[0].height / height);
     chewieController ??= ChewieController(
         videoPlayerController: controller!,
         aspectRatio: videos[0].width / videos[0].height,
@@ -173,8 +180,8 @@ class PostCard extends StatelessWidget {
         looping: false,
         placeholder: Image.network(
           videos[0].thumbnail,
-          width: videos[0].width.toDouble(),
-          height: videos[0].height.toDouble(),
+          height: height,
+          width: maxWidth * ratio,
         ),
         showControlsOnInitialize: false,
         allowPlaybackSpeedChanging: false);
@@ -193,10 +200,8 @@ class PostCard extends StatelessWidget {
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: SizedBox(
-                    height:
-                        min(videos[0].height.toDouble(), CARD_MAX_HEIGHT - 250),
-                    width:
-                        min(videos[0].width.toDouble(), CARD_MAX_WIDTH - 250),
+                    height: height,
+                    width: maxWidth * ratio,
                     child: Chewie(
                       controller: chewieController!,
                     )))));

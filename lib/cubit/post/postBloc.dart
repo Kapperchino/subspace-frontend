@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:chewie/chewie.dart';
 import 'package:flutter/widgets.dart';
@@ -44,6 +45,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       final post = await getPost(event.postId);
       final state = PostState(status: PostStatus.success);
       if (post.type == ContentType.video) {
+        final maxWidth = min(event.deviceWidth, 600);
+        final imageRatio =
+            post.postVideos![0].width / post.postVideos![0].height;
+        final adjustedHeight = maxWidth / imageRatio;
+        final double height = min(600, adjustedHeight);
+        final ratio = min(post.postVideos![0].width / maxWidth,
+            post.postVideos![0].height / height);
         state.controller ??=
             VideoPlayerController.networkUrl(Uri.parse(post.postVideos![0].url))
               ..initialize();
@@ -54,8 +62,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             looping: false,
             placeholder: Image.network(
               post.postVideos![0].thumbnail,
-              width: post.postVideos![0].width.toDouble(),
-              height: post.postVideos![0].height.toDouble(),
+              height: height,
+              width: maxWidth * ratio,
             ),
             showControlsOnInitialize: false,
             allowPlaybackSpeedChanging: false);
