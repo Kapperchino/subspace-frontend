@@ -5,7 +5,6 @@ import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/posts/postcard.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/post.dart';
 import '../models/voteRequest.dart';
 import '../util/votesUtil.dart';
 import '../cubit/vote/voteEvent.dart';

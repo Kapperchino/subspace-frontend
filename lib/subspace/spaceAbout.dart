@@ -6,7 +6,7 @@ import 'package:frontend/cubit/title/titleState.dart';
 import 'package:frontend/models/space.dart';
 
 class SpaceAbout extends StatelessWidget {
-  SpaceAbout({this.meta});
+  SpaceAbout({super.key, this.meta});
   Space? meta;
   @override
   Widget build(BuildContext context) {

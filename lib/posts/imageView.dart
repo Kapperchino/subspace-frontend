@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_downloader_web/image_downloader_web.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:transparent_image/transparent_image.dart';
 import '../cubit/imageView/imageViewBloc.dart';
@@ -80,21 +79,14 @@ class ImageView extends StatelessWidget {
   }
 
   _saveNetworkImage(String? url) async {
-    if (kIsWeb) {
-      await WebImageDownloader.downloadImageFromWeb(url!);
-    } else {
-      var response = await http.get(Uri.parse(url!));
-      final result = await ImageGallerySaver.saveImage(
-          Uint8List.fromList(response.bodyBytes),
-          quality: 80,
-          name: UniqueKey().toString());
-    }
+    var response = await http.get(Uri.parse(url!));
+    final result = await ImageGallerySaver.saveImage(
+        Uint8List.fromList(response.bodyBytes),
+        quality: 80,
+        name: UniqueKey().toString());
   }
 
   Future<void> disableContext() async {
-    if (kIsWeb) {
-      await BrowserContextMenu.disableContextMenu();
-    }
   }
 
   Widget getPicture(String? url) {
@@ -102,9 +94,6 @@ class ImageView extends StatelessWidget {
       return Image.memory(kTransparentImage);
     }
     var urlPrefix = "";
-    if (kIsWeb) {
-      urlPrefix = "https://subspace-cors.fly.dev/";
-    }
     return CachedNetworkImage(
       imageUrl: "$urlPrefix$url",
       fit: BoxFit.contain,

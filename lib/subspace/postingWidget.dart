@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/posting/postingBloc.dart';
@@ -34,16 +32,7 @@ class _PostingState extends State<PostingWidget> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final padding = max((width - 600) / 2, 8.0);
-    var fit = BoxFit.none;
-    if (kIsWeb) {
-      fit = BoxFit.fitWidth;
-    } else {
-      if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
-        fit = BoxFit.fitWidth;
-      } else {
-        fit = BoxFit.fitHeight;
-      }
-    }
+    var fit = BoxFit.fitHeight;
     return Scaffold(
         body: CustomScrollView(shrinkWrap: true, slivers: <Widget>[
       SliverAppBar(

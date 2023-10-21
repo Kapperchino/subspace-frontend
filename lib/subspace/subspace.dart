@@ -12,7 +12,6 @@ import 'package:frontend/cubit/title/titleBloc.dart';
 import 'package:frontend/cubit/title/titleEvent.dart';
 import 'package:frontend/common/navBar.dart';
 import 'package:frontend/subspace/spaceAbout.dart';
-import 'package:frontend/subspace/titleWidget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -89,7 +88,7 @@ class _SubSpaceState extends State<Subspace> {
                       toolbarHeight: 137,
                       leading: const SizedBox(),
                       actions: <Widget>[
-                        new Container(),
+                        Container(),
                       ],
                       expandedHeight: 300,
                       forceElevated: innerBoxIsScrolled,

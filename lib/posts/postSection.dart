@@ -2,13 +2,13 @@ import 'dart:math';
 
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chewie/chewie.dart';
 import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/models/post.dart';
+import 'package:frontend/models/videoMeta.dart';
 import 'package:frontend/posts/commentingWidget.dart';
 import 'package:frontend/cubit/comment/commentBloc.dart';
 import 'package:frontend/cubit/comment/commentEvent.dart';
@@ -22,6 +22,7 @@ import 'package:frontend/util/selectableDetectables.dart';
 import 'package:go_router/go_router.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../common/timeWidget.dart';
 import '../models/pictureMeta.dart';
@@ -46,10 +47,6 @@ class PostSection extends StatelessWidget {
     final padding = max((width - 600) / 2, 8.0);
     return BlocBuilder<PostBloc, PostState>(builder: (context, postState) {
       if (postState.status == PostStatus.success) {
-        var urlPrefix = "";
-        if (kIsWeb) {
-          urlPrefix = "https://subspace-cors.fly.dev/";
-        }
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -94,6 +91,8 @@ class PostSection extends StatelessWidget {
                         },
                       ),
                     ),
+                  if (postState.post?.type == ContentType.video)
+                    getVideo(postState.post?.postVideos, postState),
                   if (postState.post!.body.isNotEmpty)
                     Flexible(
                         child: Align(
@@ -136,7 +135,7 @@ class PostSection extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Spacer(),
+                      const Spacer(),
                       BlocProvider(
                         create: (_) => VoteBloc(
                           httpClient: http.Client(),
@@ -186,12 +185,39 @@ class PostSection extends StatelessWidget {
     });
   }
 
+  Widget getVideo(List<VideoMeta>? videos, PostState state) {
+    if (videos == null) {
+      return const SizedBox();
+    }
+    if (videos[0].status != 'done') {
+      return const SizedBox();
+    }
+
+    return VisibilityDetector(
+        key: Key(state.post!.id.toString()),
+        onVisibilityChanged: (VisibilityInfo info) {
+          if (info.visibleFraction > 0.6) {
+          } else {
+            state.chewieController?.pause();
+          }
+        },
+        child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: SizedBox(
+                    height:
+                        min(videos[0].height.toDouble(), CARD_MAX_HEIGHT - 250),
+                    width:
+                        min(videos[0].width.toDouble(), CARD_MAX_WIDTH - 250),
+                    child: Chewie(
+                      controller: state.chewieController!,
+                    )))));
+  }
+
   Future<Widget> getImage(List<PictureMeta>? pictures, ContentType type,
       String? link, BuildContext context) async {
     var urlPrefix = "";
-    if (kIsWeb) {
-      urlPrefix = "https://subspace-cors.fly.dev/";
-    }
     if (type == ContentType.picture && pictures == null) {
       return const SizedBox();
     }
@@ -210,14 +236,7 @@ class PostSection extends StatelessWidget {
           min(pictures[0].width / maxWidth, pictures[0].height / height);
       return InkWell(
           onTap: () {
-            if (kIsWeb) {
-              BrowserContextMenu.disableContextMenu().then((value) =>
-                  context.push("/images/${pictures[0].id}").then((value) async {
-                    await BrowserContextMenu.enableContextMenu();
-                  }));
-            } else {
-              context.push("/images/${pictures[0].id}");
-            }
+            context.push("/images/${pictures[0].id}");
           },
           child: ClipRRect(
               borderRadius: BorderRadius.circular(20),

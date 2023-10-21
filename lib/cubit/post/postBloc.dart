@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:chewie/chewie.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/models/post.dart';
@@ -9,6 +11,7 @@ import 'package:frontend/cubit/post/postState.dart';
 import 'package:frontend/util/userUtil.dart';
 import 'package:http/http.dart' as http;
 import 'package:stream_transform/stream_transform.dart';
+import 'package:video_player/video_player.dart';
 
 import '../../config.dart';
 import '../../models/appUser.dart';
@@ -40,6 +43,23 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       final post = await getPost(event.postId);
       final state = PostState(status: PostStatus.success);
+      if (post.type == ContentType.video) {
+        state.controller ??=
+            VideoPlayerController.networkUrl(Uri.parse(post.postVideos![0].url))
+              ..initialize();
+        state.chewieController ??= ChewieController(
+            videoPlayerController: state.controller!,
+            aspectRatio: post.postVideos![0].width / post.postVideos![0].height,
+            autoPlay: false,
+            looping: false,
+            placeholder: Image.network(
+              post.postVideos![0].thumbnail,
+              width: post.postVideos![0].width.toDouble(),
+              height: post.postVideos![0].height.toDouble(),
+            ),
+            showControlsOnInitialize: false,
+            allowPlaybackSpeedChanging: false);
+      }
       state.post = post;
       return emit(state);
     } catch (_) {

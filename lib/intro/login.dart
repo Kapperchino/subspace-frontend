@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/appUser.dart';
 import 'package:frontend/models/appUserRes.dart';
@@ -20,8 +19,8 @@ import '../util/deviceUtil.dart';
 
 class Login extends StatefulWidget {
   const Login({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<Login> createState() => _LoginState();
@@ -173,12 +172,10 @@ class _LoginState extends State<Login> {
 
   Future<int> login() async {
     Device? device;
-    if (!kIsWeb) {
-      if (Platform.isIOS || Platform.isAndroid) {
-        final deviceId = await getId();
-        final registration = await FirebaseMessaging.instance.getToken();
-        device = Device(deviceId: deviceId!, registration: registration!);
-      }
+    if (Platform.isIOS || Platform.isAndroid) {
+      final deviceId = await getId();
+      final registration = await FirebaseMessaging.instance.getToken();
+      device = Device(deviceId: deviceId!, registration: registration!);
     }
     var login = LogIn(
         email: _controllerEmail.text.toLowerCase(),

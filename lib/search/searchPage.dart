@@ -5,7 +5,6 @@ import 'package:frontend/search/searchWidget.dart';
 import 'package:http/http.dart' as http;
 
 import '../cubit/search/searchEvent.dart';
-import '../cubit/sorting/sortBloc.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key, required this.isTag, required this.term});

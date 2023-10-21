@@ -12,7 +12,6 @@ import 'package:frontend/routes/userRoutes.dart';
 import 'package:frontend/util/userUtil.dart';
 
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 

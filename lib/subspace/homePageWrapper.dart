@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/posting/postingBloc.dart';
-import 'package:frontend/cubit/sorting/sortBloc.dart';
 import 'package:frontend/cubit/subscriptions/subscriptionsBloc.dart';
 import 'package:frontend/cubit/subscriptions/subscriptionsEvent.dart';
 import 'package:frontend/subspace/homePage.dart';

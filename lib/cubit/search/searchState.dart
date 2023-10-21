@@ -3,7 +3,6 @@ import 'package:frontend/cubit/space/spaceState.dart';
 import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/models/userMeta.dart';
 
-import '../../models/post.dart';
 import '../../models/space.dart';
 
 enum SearchStatus { initial, success, failure }

@@ -5,9 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
 import 'package:detectable_text_field/widgets/detectable_text.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/common/timeWidget.dart';
 import 'package:frontend/models/post.dart';
@@ -30,7 +28,7 @@ import '../cubit/vote/voteBloc.dart';
 import '../cubit/vote/voteEvent.dart';
 
 class PostCard extends StatelessWidget {
-  PostCard({required this.post, this.chewieController, this.controller});
+  PostCard({super.key, required this.post, this.chewieController, this.controller});
 
   final Post post;
 
@@ -172,6 +170,11 @@ class PostCard extends StatelessWidget {
         aspectRatio: videos[0].width / videos[0].height,
         autoPlay: false,
         looping: false,
+        placeholder: Image.network(
+          videos[0].thumbnail,
+          width: videos[0].width.toDouble(),
+          height: videos[0].height.toDouble(),
+        ),
         showControlsOnInitialize: false,
         allowPlaybackSpeedChanging: false);
 
@@ -183,22 +186,23 @@ class PostCard extends StatelessWidget {
             chewieController?.pause();
           }
         },
-        child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: SizedBox(
-                height: min(videos[0].height.toDouble(), CARD_MAX_HEIGHT),
-                width: min(videos[0].width.toDouble(), CARD_MAX_WIDTH),
-                child: Chewie(
-                  controller: chewieController!,
-                ))));
+        child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: SizedBox(
+                    height:
+                        min(videos[0].height.toDouble(), CARD_MAX_HEIGHT - 250),
+                    width:
+                        min(videos[0].width.toDouble(), CARD_MAX_WIDTH - 250),
+                    child: Chewie(
+                      controller: chewieController!,
+                    )))));
   }
 
   Future<Widget> getImage(List<PictureMeta>? pictures, ContentType type,
       String? link, BuildContext context) async {
     var urlPrefix = "";
-    if (kIsWeb) {
-      urlPrefix = "https://subspace-cors.fly.dev/";
-    }
     if (type == ContentType.picture && pictures == null) {
       return const SizedBox();
     }
@@ -221,16 +225,7 @@ class PostCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               child: InkWell(
                   onTap: () {
-                    if (kIsWeb) {
-                      BrowserContextMenu.disableContextMenu().then((value) =>
-                          context
-                              .push("/images/${pictures[0].id}")
-                              .then((value) async {
-                            await BrowserContextMenu.enableContextMenu();
-                          }));
-                    } else {
-                      context.push("/images/${pictures[0].id}");
-                    }
+                    context.push("/images/${pictures[0].id}");
                   },
                   child: CachedNetworkImage(
                     imageUrl: "$urlPrefix${pictures[0].url}",

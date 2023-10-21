@@ -1,8 +1,6 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
 import 'package:frontend/common/navBar.dart';
@@ -49,16 +47,7 @@ class _UserWidgetState extends State<UserWidget> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final padding = max((width - 600) / 2, 8.0);
-    var fit = BoxFit.none;
-    if (kIsWeb) {
-      fit = BoxFit.fitWidth;
-    } else {
-      if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
-        fit = BoxFit.fitWidth;
-      } else {
-        fit = BoxFit.fitHeight;
-      }
-    }
+    var fit = BoxFit.fitHeight;
     return Scaffold(
       endDrawer: const SideBar(),
       bottomNavigationBar: const NavBar(),
@@ -263,8 +252,7 @@ class _UserWidgetState extends State<UserWidget> {
                             return const SliverToBoxAdapter(
                                 child: BottomLoader());
                           }
-                          return PostCardWrapper(
-                              data: state.posts[index]);
+                          return PostCardWrapper(data: state.posts[index]);
                         }, childCount: state.posts.length),
                       ));
                 case UserPageStatus.initial:

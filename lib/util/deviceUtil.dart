@@ -2,20 +2,17 @@ import 'dart:io';
 
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/foundation.dart';
 
 Future<String?> getId() async {
   var deviceInfo = DeviceInfoPlugin();
-  if (!kIsWeb) {
-    if (Platform.isIOS) {
-      // import 'dart:io'
-      var iosDeviceInfo = await deviceInfo.iosInfo;
-      return iosDeviceInfo.identifierForVendor; // unique ID on iOS
-    } else if (Platform.isAndroid) {
-      const androidIdPlugin = AndroidId();
-      final String? androidId = await androidIdPlugin.getId();
-      return androidId;
-    }
+  if (Platform.isIOS) {
+    // import 'dart:io'
+    var iosDeviceInfo = await deviceInfo.iosInfo;
+    return iosDeviceInfo.identifierForVendor; // unique ID on iOS
+  } else if (Platform.isAndroid) {
+    const androidIdPlugin = AndroidId();
+    final String? androidId = await androidIdPlugin.getId();
+    return androidId;
   }
   return null;
 }
