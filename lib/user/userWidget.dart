@@ -257,7 +257,8 @@ class _UserWidgetState extends State<UserWidget> {
                       ));
                 case UserPageStatus.initial:
                   return const SliverToBoxAdapter(
-                      child: Center(child: CircularProgressIndicator()));
+                      child:
+                          Center(child: CircularProgressIndicator.adaptive()));
               }
             },
           ),

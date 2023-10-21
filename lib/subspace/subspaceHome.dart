@@ -122,7 +122,8 @@ class SubSpaceHome extends StatelessWidget {
                             if (state.status == SpaceHomeStatus.initial)
                               const SliverToBoxAdapter(
                                   child: Center(
-                                      child: CircularProgressIndicator())),
+                                      child: CircularProgressIndicator
+                                          .adaptive())),
                           ],
                         );
                       },
@@ -163,7 +164,8 @@ class SubSpaceHome extends StatelessWidget {
                             if (state.status == SpaceHomeStatus.initial)
                               const SliverToBoxAdapter(
                                   child: Center(
-                                      child: CircularProgressIndicator())),
+                                      child: CircularProgressIndicator
+                                          .adaptive())),
                           ],
                         );
                       },

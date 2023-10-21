@@ -142,7 +142,8 @@ class HomePage extends StatelessWidget {
                                 case SpaceStatus.initial:
                                   return const SliverToBoxAdapter(
                                       child: Center(
-                                          child: CircularProgressIndicator()));
+                                          child: CircularProgressIndicator
+                                              .adaptive()));
                               }
                             },
                           ),
@@ -223,7 +224,8 @@ class HomePage extends StatelessWidget {
                                 case SubscriptionsStatus.initial:
                                   return const SliverToBoxAdapter(
                                       child: Center(
-                                          child: CircularProgressIndicator()));
+                                          child: CircularProgressIndicator
+                                              .adaptive()));
                               }
                             },
                           ),

@@ -86,7 +86,7 @@ class PostSection extends StatelessWidget {
                           if (snapshot.hasData) {
                             return snapshot.data!;
                           } else {
-                            return const CircularProgressIndicator();
+                            return const CircularProgressIndicator.adaptive();
                           }
                         },
                       ),

@@ -145,7 +145,7 @@ class SearchHome extends StatelessWidget {
                             case TrendingStatus.initial:
                               return const SliverToBoxAdapter(
                                   child: Center(
-                                      child: CircularProgressIndicator()));
+                                      child: CircularProgressIndicator.adaptive()));
                           }
                         },
                       )

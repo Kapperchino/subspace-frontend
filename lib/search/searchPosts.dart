@@ -42,7 +42,7 @@ class SearchPosts extends StatelessWidget {
                 ));
           case SearchStatus.initial:
             return const SliverToBoxAdapter(
-                child: Center(child: CircularProgressIndicator()));
+                child: Center(child: CircularProgressIndicator.adaptive()));
         }
       },
     );

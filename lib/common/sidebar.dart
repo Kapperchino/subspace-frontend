@@ -40,7 +40,7 @@ class SideBar extends StatelessWidget {
                             maxRadius: 70,
                           ));
                     } else {
-                      return const CircularProgressIndicator();
+                      return const CircularProgressIndicator.adaptive();
                     }
                   },
                 ),
@@ -52,7 +52,7 @@ class SideBar extends StatelessWidget {
                             padding: const EdgeInsets.only(top: 10),
                             child: Text(snapshot.data!.displayName));
                       }
-                      return const CircularProgressIndicator();
+                      return const CircularProgressIndicator.adaptive();
                     })
               ]),
             ),

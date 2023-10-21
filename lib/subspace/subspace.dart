@@ -203,7 +203,8 @@ class _SubSpaceState extends State<Subspace> {
                                 case SpaceStatus.initial:
                                   return const SliverToBoxAdapter(
                                       child: Center(
-                                          child: CircularProgressIndicator()));
+                                          child: CircularProgressIndicator
+                                              .adaptive()));
                               }
                             },
                           ),

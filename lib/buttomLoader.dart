@@ -9,7 +9,7 @@ class BottomLoader extends StatelessWidget {
       child: SizedBox(
         height: 24,
         width: 24,
-        child: CircularProgressIndicator(strokeWidth: 1.5),
+        child: CircularProgressIndicator.adaptive(),
       ),
     );
   }

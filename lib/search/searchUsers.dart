@@ -7,7 +7,6 @@ import 'package:frontend/cubit/search/searchState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/search/userResult.dart';
 
-
 class SearchUsers extends StatelessWidget {
   const SearchUsers({super.key});
 
@@ -42,7 +41,7 @@ class SearchUsers extends StatelessWidget {
                 ));
           case SearchStatus.initial:
             return const SliverToBoxAdapter(
-                child: Center(child: CircularProgressIndicator()));
+                child: Center(child: CircularProgressIndicator.adaptive()));
         }
       },
     );
