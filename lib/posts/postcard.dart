@@ -50,119 +50,110 @@ class PostCard extends StatelessWidget {
                   "/s/${post.spaceParentId}/${post.spaceName}/p/${post.id}");
             },
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Align(
-                    alignment: Alignment.centerLeft,
-                    child: Flexible(
-                        child: PostMeta(
-                      spaceName: post.spaceName,
-                      maxUserNameLength: 16,
-                      post: post,
-                    ))),
-                Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (post.topic.isNotEmpty)
-                        Container(
-                          padding: const EdgeInsets.only(
-                              left: 20, right: 20, bottom: 10),
-                          child: Text(
-                            post.topic,
-                            maxLines: 2,
-                            style: Theme.of(context).textTheme.titleLarge,
-                            textAlign: TextAlign.left,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      if (post.body.isNotEmpty)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: ConstDetectableText(
-                            text: post.body,
-                            basicStyle: Theme.of(context).textTheme.bodyLarge,
-                            textAlign: TextAlign.left,
-                            detectionRegExp: detectionRegExp()!,
-                            overflow: TextOverflow.fade,
-                            maxLines: 6,
-                            trimMode: TrimMode.Length,
-                            trimLines: 100,
-                            onTap: (text) {
-                              switch (text.characters.first) {
-                                case "#":
-                                  {
-                                    text = text.substring(1);
-                                    context.push(
-                                        "/search/results/$text?isTag=true");
-                                  }
-                                case "@":
-                                  {}
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Flexible(
+                      child: PostMeta(
+                    spaceName: post.spaceName,
+                    maxUserNameLength: 16,
+                    post: post,
+                  )),
+                  if (post.topic.isNotEmpty)
+                    Container(
+                      padding: const EdgeInsets.only(
+                          left: 20, right: 20, bottom: 10),
+                      child: Text(
+                        post.topic,
+                        maxLines: 2,
+                        style: Theme.of(context).textTheme.titleLarge,
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  if (post.body.isNotEmpty)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: ConstDetectableText(
+                        text: post.body,
+                        basicStyle: Theme.of(context).textTheme.bodyLarge,
+                        textAlign: TextAlign.left,
+                        detectionRegExp: detectionRegExp()!,
+                        overflow: TextOverflow.fade,
+                        maxLines: 6,
+                        trimMode: TrimMode.Length,
+                        trimLines: 100,
+                        onTap: (text) {
+                          switch (text.characters.first) {
+                            case "#":
+                              {
+                                text = text.substring(1);
+                                context
+                                    .push("/search/results/$text?isTag=true");
                               }
-                            },
-                          ),
-                        ),
-                      if (post.type == ContentType.picture ||
-                          post.type == ContentType.link)
-                        FutureBuilder<Widget>(
-                          future: getImage(
-                              post.postPictures, post.type, post.link, context),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return snapshot.data!;
-                            } else {
-                              if (post.postPictures != null) {
-                                final deviceWidth =
-                                    MediaQuery.of(context).size.width - 20;
-                                final maxWidth =
-                                    min(deviceWidth, CARD_MAX_WIDTH);
-                                final imageRatio = post.postPictures![0].width /
-                                    post.postPictures![0].height;
-                                final adjustedHeight = maxWidth / imageRatio;
-                                final double height =
-                                    min(CARD_MAX_HEIGHT, adjustedHeight);
-                                return SizedBox(
-                                  width: maxWidth,
-                                  height: height,
-                                );
-                              }
-                              return const SizedBox();
-                            }
-                          },
-                        ),
-                      if (post.type == ContentType.video)
-                        getVideo(post.postVideos),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          const Padding(padding: EdgeInsets.only(left: 10)),
-                          TimeWidget(time: post.created),
-                          const Spacer(),
-                          Builder(
-                            builder: (context) {
-                              context.read<VoteBloc>().add(InitEvent(
-                                  post.id,
-                                  post.upVotes,
-                                  post.downVotes,
-                                  VotesUtil.getStatus(post.vote),
-                                  VoteType.post));
-                              return const VoteWidgetFlat();
-                            },
-                          ),
-                          const Padding(padding: EdgeInsets.only(right: 5)),
-                          CommentCount(
-                            count: post.commentsCount,
-                            post: post,
-                          ),
-                          const Padding(
-                              padding: EdgeInsets.only(right: 5, bottom: 10)),
-                        ],
-                      )
-                    ])
-              ],
-            )));
+                            case "@":
+                              {}
+                          }
+                        },
+                      ),
+                    ),
+                  if (post.type == ContentType.picture ||
+                      post.type == ContentType.link)
+                    FutureBuilder<Widget>(
+                      future: getImage(
+                          post.postPictures, post.type, post.link, context),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return snapshot.data!;
+                        } else {
+                          if (post.postPictures != null) {
+                            final deviceWidth =
+                                MediaQuery.of(context).size.width - 20;
+                            final maxWidth = min(deviceWidth, CARD_MAX_WIDTH);
+                            final imageRatio = post.postPictures![0].width /
+                                post.postPictures![0].height;
+                            final adjustedHeight = maxWidth / imageRatio;
+                            final double height =
+                                min(CARD_MAX_HEIGHT, adjustedHeight);
+                            return SizedBox(
+                              width: maxWidth,
+                              height: height,
+                            );
+                          }
+                          return const SizedBox();
+                        }
+                      },
+                    ),
+                  if (post.type == ContentType.video) getVideo(post.postVideos),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      const Padding(padding: EdgeInsets.only(left: 10)),
+                      TimeWidget(time: post.created),
+                      const Spacer(),
+                      Builder(
+                        builder: (context) {
+                          context.read<VoteBloc>().add(InitEvent(
+                              post.id,
+                              post.upVotes,
+                              post.downVotes,
+                              VotesUtil.getStatus(post.vote),
+                              VoteType.post));
+                          return const VoteWidgetFlat();
+                        },
+                      ),
+                      const Padding(padding: EdgeInsets.only(right: 5)),
+                      CommentCount(
+                        count: post.commentsCount,
+                        post: post,
+                      ),
+                      const Padding(
+                          padding: EdgeInsets.only(right: 5, bottom: 10)),
+                    ],
+                  )
+                ])));
   }
 
   Widget getVideo(List<VideoMeta>? videos) {
