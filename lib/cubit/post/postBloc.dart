@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:chewie/chewie.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:frontend/common/player.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/cubit/post/postEvent.dart';
 import 'package:frontend/cubit/post/postState.dart';
@@ -52,18 +54,23 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         final double height = min(600, adjustedHeight);
         final ratio = min(post.postVideos![0].width / maxWidth,
             post.postVideos![0].height / height);
-        state.controller ??=
-            VideoPlayerController.networkUrl(Uri.parse(post.postVideos![0].url))
-              ..initialize();
+        state.controller ??= VideoPlayerController.networkUrl(
+            Uri.parse(post.postVideos![0].url));
         state.chewieController ??= ChewieController(
             videoPlayerController: state.controller!,
             aspectRatio: post.postVideos![0].width / post.postVideos![0].height,
             autoPlay: false,
+            autoInitialize: false,
             looping: false,
+            customControls: const SubspaceControls(
+              backgroundColor: CupertinoColors.darkBackgroundGray,
+              iconColor: CupertinoColors.white,
+            ),
             placeholder: Image.network(
               post.postVideos![0].thumbnail,
               height: height,
               width: maxWidth * ratio,
+              fit: BoxFit.fitHeight,
             ),
             showControlsOnInitialize: false,
             allowPlaybackSpeedChanging: false);

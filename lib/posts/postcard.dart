@@ -5,8 +5,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
 import 'package:detectable_text_field/widgets/detectable_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/common/player.dart';
 import 'package:frontend/common/timeWidget.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/models/videoMeta.dart';
@@ -164,9 +166,7 @@ class PostCard extends StatelessWidget {
     if (videos[0].status != 'done') {
       return const SizedBox();
     }
-    controller ??= VideoPlayerController.networkUrl(Uri.parse(videos[0].url))
-      ..initialize();
-
+    controller ??= VideoPlayerController.networkUrl(Uri.parse(videos[0].url));
     final deviceWidth = MediaQuery.of(context).size.width - 40;
     final maxWidth = min(deviceWidth, CARD_MAX_WIDTH);
     final imageRatio = videos[0].width / videos[0].height;
@@ -177,11 +177,17 @@ class PostCard extends StatelessWidget {
         videoPlayerController: controller!,
         aspectRatio: videos[0].width / videos[0].height,
         autoPlay: false,
+        autoInitialize: false,
         looping: false,
+        customControls: const SubspaceControls(
+          backgroundColor: CupertinoColors.darkBackgroundGray,
+          iconColor: CupertinoColors.white,
+        ),
         placeholder: Image.network(
           videos[0].thumbnail,
           height: height,
           width: maxWidth * ratio,
+          fit: BoxFit.fitHeight,
         ),
         showControlsOnInitialize: false,
         allowPlaybackSpeedChanging: false);
