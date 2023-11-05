@@ -151,7 +151,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       var output = List<PostCardData>.empty(growable: true);
       for (final json in list) {
         var post = Post.fromJson(json);
-        output.add(PostCardData(post: post));
+        output.add(PostCardData(post: post,spaceName: "search"));
       }
       return output;
     } else {

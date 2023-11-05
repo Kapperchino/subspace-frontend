@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/cubit/imageView/imageViewEvent.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -15,52 +17,106 @@ class ImageView extends StatelessWidget {
   });
 
   final _transformationController = TransformationController();
+
   TapDownDetails? _doubleTapDetails;
 
   @override
   Widget build(BuildContext context) {
+    _transformationController.addListener(() => context
+        .read<ImageViewBloc>()
+        .add(ImageViewChanged(transform: _transformationController.value)));
     return Scaffold(
         appBar: AppBar(),
         body: BlocBuilder<ImageViewBloc, ImageViewState>(
-            builder: (context, state) {
-          return FutureBuilder(
-            future: disableContext(),
-            builder: (context, snapshot) {
-              return GestureDetector(
-                  onDoubleTapDown: (d) => _doubleTapDetails = d,
-                  onDoubleTap: _handleDoubleTap,
-                  child: _ContextMenuRegion(
-                      child: Center(
-                        child: InteractiveViewer(
-                          transformationController: _transformationController,
-                          boundaryMargin: const EdgeInsets.all(20.0),
-                          panAxis: PanAxis.aligned,
-                          minScale: 0.1,
-                          maxScale: 20,
-                          child: getPicture(state.pictureMeta?.url),
-                        ),
+          builder: (context, state) {
+            if (state.transform == Matrix4.identity()) {
+              return getDraggable(state, context);
+            }
+            return GestureDetector(
+                onDoubleTapDown: (d) => _doubleTapDetails = d,
+                onDoubleTap: _handleDoubleTap,
+                child: _ContextMenuRegion(
+                    child: Center(
+                      child: InteractiveViewer(
+                        transformationController: _transformationController,
+                        panAxis: PanAxis.aligned,
+                        minScale: 0.1,
+                        maxScale: 20,
+                        constrained: true,
+                        child: getPicture(state.pictureMeta?.url),
+                        onInteractionUpdate: (details) {
+                          context.read<ImageViewBloc>().add(ImageViewChanged(
+                              transform: _transformationController.value));
+                        },
                       ),
-                      contextMenuBuilder: (context, offset) {
-                        // The custom context menu will look like the default context menu
-                        // on the current platform with a single 'Print' button.
-                        return AdaptiveTextSelectionToolbar.buttonItems(
-                          anchors: TextSelectionToolbarAnchors(
-                            primaryAnchor: offset,
+                    ),
+                    contextMenuBuilder: (context, offset) {
+                      // The custom context menu will look like the default context menu
+                      // on the current platform with a single 'Print' button.
+                      return AdaptiveTextSelectionToolbar.buttonItems(
+                        anchors: TextSelectionToolbarAnchors(
+                          primaryAnchor: offset,
+                        ),
+                        buttonItems: <ContextMenuButtonItem>[
+                          ContextMenuButtonItem(
+                            onPressed: () {
+                              ContextMenuController.removeAny();
+                              _saveNetworkImage(state.pictureMeta?.url);
+                            },
+                            label: 'Save',
                           ),
-                          buttonItems: <ContextMenuButtonItem>[
-                            ContextMenuButtonItem(
-                              onPressed: () {
-                                ContextMenuController.removeAny();
-                                _saveNetworkImage(state.pictureMeta?.url);
-                              },
-                              label: 'Save',
-                            ),
-                          ],
-                        );
-                      }));
-            },
-          );
-        }));
+                        ],
+                      );
+                    }));
+          },
+        ));
+  }
+
+  Widget getDraggable(ImageViewState state, BuildContext context) {
+    return Draggable(
+        dragAnchorStrategy: childDragAnchorStrategy,
+        feedbackOffset: Offset.zero,
+        feedback: getDraggedPic(state.pictureMeta?.url, context),
+        childWhenDragging: const SizedBox(),
+        onDragEnd: (details) {
+          context.pop();
+        },
+        child: GestureDetector(
+            onDoubleTapDown: (d) => _doubleTapDetails = d,
+            onDoubleTap: _handleDoubleTap,
+            child: _ContextMenuRegion(
+                child: Center(
+                  child: InteractiveViewer(
+                    transformationController: _transformationController,
+                    panAxis: PanAxis.aligned,
+                    minScale: 0.1,
+                    maxScale: 20,
+                    constrained: true,
+                    child: getPicture(state.pictureMeta?.url),
+                    onInteractionUpdate: (details) {
+                      context.read<ImageViewBloc>().add(ImageViewChanged(
+                          transform: _transformationController.value));
+                    },
+                  ),
+                ),
+                contextMenuBuilder: (context, offset) {
+                  // The custom context menu will look like the default context menu
+                  // on the current platform with a single 'Print' button.
+                  return AdaptiveTextSelectionToolbar.buttonItems(
+                    anchors: TextSelectionToolbarAnchors(
+                      primaryAnchor: offset,
+                    ),
+                    buttonItems: <ContextMenuButtonItem>[
+                      ContextMenuButtonItem(
+                        onPressed: () {
+                          ContextMenuController.removeAny();
+                          _saveNetworkImage(state.pictureMeta?.url);
+                        },
+                        label: 'Save',
+                      ),
+                    ],
+                  );
+                })));
   }
 
   void _handleDoubleTap() {
@@ -86,9 +142,6 @@ class ImageView extends StatelessWidget {
         name: UniqueKey().toString());
   }
 
-  Future<void> disableContext() async {
-  }
-
   Widget getPicture(String? url) {
     if (url == null) {
       return Image.memory(kTransparentImage);
@@ -103,6 +156,25 @@ class ImageView extends StatelessWidget {
         kTransparentImage,
       ),
     );
+  }
+
+  Widget getDraggedPic(String? url, BuildContext context) {
+    if (url == null) {
+      return Image.memory(kTransparentImage);
+    }
+    final deviceWidth = MediaQuery.of(context).size.width;
+    final deviceHeight = MediaQuery.of(context).size.height;
+    var urlPrefix = "";
+    return Center(
+        child: CachedNetworkImage(
+      imageUrl: "$urlPrefix$url",
+      fit: BoxFit.contain,
+      width: deviceWidth,
+      height: deviceHeight,
+      placeholder: (context, url) => Image.memory(
+        kTransparentImage,
+      ),
+    ));
   }
 }
 

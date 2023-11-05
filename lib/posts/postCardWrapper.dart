@@ -24,6 +24,7 @@ class PostCardWrapper extends StatelessWidget {
           VotesUtil.getStatus(data.post.vote), VoteType.post)),
       child: PostCard(
         post: data.post,
+        spaceName: data.spaceName,
         chewieController: data.chewieController,
         controller: data.controller,
       ),

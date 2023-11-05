@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/models/pictureMeta.dart';
@@ -23,14 +24,25 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class ImageViewBloc extends Bloc<ImageViewEvent, ImageViewState> {
-  ImageViewBloc({required this.httpClient}) : super(const ImageViewState()) {
+  ImageViewBloc({required this.httpClient})
+      : super(ImageViewState(transform: Matrix4.identity())) {
     on<ImageFetched>(
       _onImageFetched,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<ImageViewChanged>(_onTransformChange);
   }
 
   final http.Client httpClient;
+
+  Future<void> _onTransformChange(
+    ImageViewChanged event,
+    Emitter<ImageViewState> emit,
+  ) async {
+    return emit(
+      state.copyWith(transform: event.transform),
+    );
+  }
 
   Future<void> _onImageFetched(
     ImageFetched event,

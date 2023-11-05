@@ -8,6 +8,7 @@ part 'postCardData.g.dart';
 @JsonSerializable(includeIfNull: false)
 class PostCardData {
   final Post post;
+  final String spaceName;
   @JsonKey(includeFromJson: false, includeToJson: false)
   VideoPlayerController? controller;
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -16,7 +17,8 @@ class PostCardData {
   PostCardData(
       {required this.post,
       this.controller,
-      this.chewieController});
+      this.chewieController,
+      required this.spaceName});
 
   factory PostCardData.fromJson(Map<String, dynamic> json) {
     return _$PostCardDataFromJson(json);

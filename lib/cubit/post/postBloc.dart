@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:frontend/common/player.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/cubit/post/postEvent.dart';
 import 'package:frontend/cubit/post/postState.dart';
@@ -62,7 +61,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             autoPlay: false,
             autoInitialize: false,
             looping: false,
-            customControls: const SubspaceControls(
+            customControls: const CupertinoControls(
               backgroundColor: CupertinoColors.darkBackgroundGray,
               iconColor: CupertinoColors.white,
             ),

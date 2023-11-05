@@ -8,7 +8,7 @@ import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/common/player.dart';
+import 'package:frontend/common/thumnail.dart';
 import 'package:frontend/common/timeWidget.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/models/videoMeta.dart';
@@ -31,9 +31,14 @@ import '../cubit/vote/voteEvent.dart';
 
 class PostCard extends StatelessWidget {
   PostCard(
-      {super.key, required this.post, this.chewieController, this.controller});
+      {super.key,
+      required this.post,
+      this.chewieController,
+      this.controller,
+      this.spaceName = ""});
 
   final Post post;
+  final String spaceName;
 
   static const double CARD_MAX_HEIGHT = 600;
   static const double CARD_MAX_WIDTH = 600;
@@ -58,7 +63,7 @@ class PostCard extends StatelessWidget {
                 children: [
                   Flexible(
                       child: PostMeta(
-                    spaceName: post.spaceName,
+                    spaceName: spaceName,
                     maxUserNameLength: 16,
                     post: post,
                   )),
@@ -179,38 +184,25 @@ class PostCard extends StatelessWidget {
         autoPlay: false,
         autoInitialize: false,
         looping: false,
-        customControls: const SubspaceControls(
+        customControls: const CupertinoControls(
           backgroundColor: CupertinoColors.darkBackgroundGray,
           iconColor: CupertinoColors.white,
         ),
-        placeholder: Image.network(
-          videos[0].thumbnail,
-          height: height,
-          width: maxWidth * ratio,
-          fit: BoxFit.fitHeight,
-        ),
-        showControlsOnInitialize: false,
         allowPlaybackSpeedChanging: false);
 
-    return VisibilityDetector(
-        key: Key(post.id.toString()),
-        onVisibilityChanged: (VisibilityInfo info) {
-          if (info.visibleFraction > 0.6) {
-          } else {
-            chewieController?.pause();
-          }
-        },
-        child: Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: SizedBox(
-                    height: height,
-                    width: maxWidth * ratio,
-                    child: Chewie(
-                      controller: chewieController!,
-                    )))));
+    return Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: SizedBox(
+                height: height,
+                width: maxWidth * ratio,
+                child: Thumbnail(
+                  controller: chewieController!,
+                  videoPlayerController: controller!,
+                  videoMeta: post.postVideos![0],
+                ))));
   }
 
   Future<Widget> getImage(List<PictureMeta>? pictures, ContentType type,

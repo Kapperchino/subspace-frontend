@@ -229,6 +229,7 @@ class UserPageBloc extends Bloc<UserPageEvent, UserPageState> {
       for (final json in list) {
         final post = Post.fromJson(json);
         output.add(PostCardData(
+          spaceName: "",
           post: post,
         ));
       }

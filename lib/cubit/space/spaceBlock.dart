@@ -94,7 +94,8 @@ class SpaceBloc extends HydratedBloc<SpaceEvent, SpaceState> {
   ) async {
     if (state.hasReachedMax) return;
     try {
-      final posts = await getPosts(event.parentId, event.spaceName);
+      final posts = await getPosts(event.parentId, event.spaceName,
+          sort: state.sortState, days: state.sortDays);
       return emit(
         state.copyWith(
           status: SpaceStatus.success,
@@ -157,6 +158,7 @@ class SpaceBloc extends HydratedBloc<SpaceEvent, SpaceState> {
       var output = List<PostCardData>.empty(growable: true);
       for (final json in list) {
         output.add(PostCardData(
+          spaceName: spaceName!,
           post: Post.fromJson(json),
         ));
       }

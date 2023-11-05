@@ -7,6 +7,7 @@ import 'package:detectable_text_field/detectable_text_field.dart';
 import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/common/thumnail.dart';
 import 'package:frontend/models/post.dart';
 import 'package:frontend/models/videoMeta.dart';
 import 'package:frontend/posts/commentingWidget.dart';
@@ -214,7 +215,9 @@ class PostSection extends StatelessWidget {
                 child: SizedBox(
                     height: height,
                     width: maxWidth * ratio,
-                    child: Chewie(
+                    child: Thumbnail(
+                      videoPlayerController: state.controller!,
+                      videoMeta: videos[0],
                       controller: state.chewieController!,
                     )))));
   }

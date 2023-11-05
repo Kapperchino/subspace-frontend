@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/cubit/vote/voteBloc.dart';
 import 'package:frontend/cubit/vote/voteEvent.dart';
@@ -53,6 +54,7 @@ class VoteWidgetFlat extends StatelessWidget {
                   ),
                   onPressed: () {
                     context.read<VoteBloc>().add(UpvoteEvent());
+                    HapticFeedback.lightImpact();
                   },
                 ),
                 Text(
@@ -78,6 +80,7 @@ class VoteWidgetFlat extends StatelessWidget {
                   ),
                   onPressed: () {
                     context.read<VoteBloc>().add(DownvoteEvent());
+                    HapticFeedback.lightImpact();
                   },
                 ),
               ],

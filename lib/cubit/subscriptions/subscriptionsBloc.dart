@@ -136,6 +136,7 @@ class SubscriptionsBloc extends Bloc<SubscriptionsEvent, SubscriptionsState> {
       var output = List<PostCardData>.empty(growable: true);
       for (final json in list) {
         output.add(PostCardData(
+          spaceName: "",
           post: Post.fromJson(json),
         ));
       }

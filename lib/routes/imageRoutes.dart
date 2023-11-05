@@ -28,13 +28,22 @@ class ImageRoutes {
           }
           return "/login";
         },
-        builder: (BuildContext context, GoRouterState state) {
+        pageBuilder: (BuildContext context, GoRouterState state) {
           final id = int.parse(state.pathParameters['id']!);
-          return BlocProvider(
-            create: (_) => ImageViewBloc(httpClient: http.Client())
-              ..add(ImageFetched(imageId: id)),
-            child: ImageView(),
-          );
+          return CustomTransitionPage<void>(
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                late final Animation<double> curvedAnimation = CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeInOutSine,
+                );
+                return ScaleTransition(scale: curvedAnimation, child: child);
+              },
+              child: BlocProvider(
+                create: (_) => ImageViewBloc(httpClient: http.Client())
+                  ..add(ImageFetched(imageId: id)),
+                child: ImageView(),
+              ));
         });
   }
 }
