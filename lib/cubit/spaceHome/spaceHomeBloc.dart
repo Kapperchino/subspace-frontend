@@ -6,6 +6,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:frontend/cubit/spaceHome/spaceHomeEvent.dart';
 import 'package:frontend/cubit/spaceHome/spaceHomeState.dart';
 import 'package:http/http.dart' as http;
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import '../../config.dart';
@@ -20,7 +21,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
   };
 }
 
-class SpaceHomeBloc extends Bloc<SpaceHomeEvent, SpaceHomeState> {
+class SpaceHomeBloc extends HydratedBloc<SpaceHomeEvent, SpaceHomeState> {
   SpaceHomeBloc({required this.httpClient}) : super(const SpaceHomeState()) {
     on<SpacesFetched>(
       _onSearchFetched,
@@ -73,5 +74,15 @@ class SpaceHomeBloc extends Bloc<SpaceHomeEvent, SpaceHomeState> {
       // then throw an exception.
       throw Exception('Failed to create album.');
     }
+  }
+
+  @override
+  SpaceHomeState? fromJson(Map<String, dynamic> json) {
+    return SpaceHomeState.fromJson(json);
+  }
+
+  @override
+  Map<String, dynamic>? toJson(SpaceHomeState state) {
+    return state.toJson();
   }
 }

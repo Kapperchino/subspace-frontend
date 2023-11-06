@@ -8,6 +8,11 @@ sealed class NavBarEvent extends Equatable {
 
 final class NavBarChanged extends NavBarEvent {
   final NavBarPage page;
+  final DateTime time;
 
-  NavBarChanged({required this.page});
+  NavBarChanged({required this.page, required this.time});
+}
+
+final class DoubleTapped extends NavBarEvent {
+  DoubleTapped();
 }

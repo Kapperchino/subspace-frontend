@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-
 enum NavBarPage {
   home(0),
   spaces(1),
@@ -16,16 +15,21 @@ enum NavBarPage {
 }
 
 final class NavBarState extends Equatable {
-  const NavBarState({
-    this.page = NavBarPage.home,
-  });
+  const NavBarState(
+      {this.page = NavBarPage.home, this.lastTime, this.doubleTap = false});
 
   final NavBarPage page;
+  final DateTime? lastTime;
+  final bool doubleTap;
 
-  NavBarState copyWith({NavBarPage? page}) {
-    return NavBarState(page: page ?? this.page);
+  NavBarState copyWith(
+      {NavBarPage? page, DateTime? lastTime, bool? doubleTap}) {
+    return NavBarState(
+        page: page ?? this.page,
+        lastTime: lastTime ?? this.lastTime,
+        doubleTap: doubleTap ?? this.doubleTap);
   }
 
   @override
-  List<Object> get props => [page];
+  List<Object> get props => [page, lastTime ?? DateTime.now(), doubleTap];
 }

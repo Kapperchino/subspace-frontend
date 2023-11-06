@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/buttomLoader.dart';
+import 'package:frontend/cubit/navBar/navBarBloc.dart';
+import 'package:frontend/cubit/navBar/navBarState.dart';
 import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/cubit/sorting/sortBloc.dart';
 import 'package:frontend/cubit/sorting/sortState.dart';
@@ -40,6 +42,7 @@ class _SubSpaceState extends State<Subspace> {
 
   final String name;
   final int parentId;
+  late ScrollController controller;
 
   @override
   void initState() {
@@ -158,6 +161,7 @@ class _SubSpaceState extends State<Subspace> {
                     child: CustomScrollView(
                         cacheExtent: 8500,
                         key: PageStorageKey<String>(name),
+                        controller: controller,
                         slivers: <Widget>[
                           SliverOverlapInjector(
                             handle:

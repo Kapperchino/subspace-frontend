@@ -22,12 +22,19 @@ class NavBarWidget extends StatelessWidget {
                 height: 50,
                 selectedIndex: state.page.page,
                 onDestinationSelected: (value) {
-                  context
-                      .read<NavBarBloc>()
-                      .add(NavBarChanged(page: NavBarPage.getByValue(value)));
+                  context.read<NavBarBloc>().add(NavBarChanged(
+                      page: NavBarPage.getByValue(value),
+                      time: DateTime.timestamp()));
                   switch (value) {
                     case 0:
                       {
+                        if (DateTime.timestamp()
+                                .difference(
+                                    state.lastTime ?? DateTime.timestamp())
+                                .inMilliseconds <
+                            350) {
+                          context.read<NavBarBloc>().add(DoubleTapped());
+                        }
                         context.replace("/home");
                       }
                     case 1:

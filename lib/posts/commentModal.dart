@@ -25,9 +25,13 @@ class CommentModal extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.all(5),
+                padding: const EdgeInsets.all(5).add(EdgeInsets.only(right: 10)),
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(elevation: 6),
+                  style: ElevatedButton.styleFrom(
+                    elevation: 6,
+                    padding: EdgeInsets.zero,
+                    minimumSize: const Size(60, 35),
+                  ),
                   onPressed: () async {
                     if (comment != null) {
                       context.read<CommentingBloc>().add(CommentPressed(
@@ -40,10 +44,10 @@ class CommentModal extends StatelessWidget {
                     }
                     context.pop();
                   },
-                  child: Text(
-                    'Comment',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary),
+                  child: Icon(
+                    Icons.send,
+                    color: Theme.of(context).colorScheme.secondary,
+                    size: 22,
                   ),
                 ),
               ),

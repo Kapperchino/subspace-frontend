@@ -1,8 +1,12 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import '../../models/space.dart';
+
+part 'spaceHomeState.g.dart';
 
 enum SpaceHomeStatus { initial, success, failure }
 
+@JsonSerializable(includeIfNull: false)
 final class SpaceHomeState extends Equatable {
   const SpaceHomeState({
     this.status = SpaceHomeStatus.initial,
@@ -23,6 +27,14 @@ final class SpaceHomeState extends Equatable {
       popularSpaces: popularSpaces ?? this.popularSpaces,
       latestSpaces: latestSpaces ?? this.latestSpaces,
     );
+  }
+
+  factory SpaceHomeState.fromJson(Map<String, dynamic> json) {
+    return _$SpaceHomeStateFromJson(json);
+  }
+
+  Map<String, dynamic> toJson() {
+    return _$SpaceHomeStateToJson(this);
   }
 
   @override

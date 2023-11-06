@@ -22,7 +22,7 @@ class CommentingWidget extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               elevation: 6,
               padding: EdgeInsets.zero,
-              minimumSize: const Size(90, 35)
+              minimumSize: const Size(70, 35),
             ),
             onPressed: () {
               if (comment != null) {
@@ -43,10 +43,24 @@ class CommentingWidget extends StatelessWidget {
                         child: CommentModal(post: post, comment: comment));
                   });
             },
-            child: Text(
-              'Comment',
-              style:
-                  TextStyle(color: Theme.of(baseContext).colorScheme.secondary),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.reply_sharp,
+                  color: Theme.of(baseContext).colorScheme.secondary,
+                  size: 22,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 2, right: 2),
+                  child: Text(
+                    "reply",
+                    style: TextStyle(
+                        color:
+                            Theme.of(baseContext).textTheme.bodyMedium!.color,
+                        fontWeight: FontWeight.bold),
+                  ),
+                )
+              ],
             ),
           ),
         ));

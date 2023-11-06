@@ -1,9 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/buttomLoader.dart';
 import 'package:frontend/common/sidebar.dart';
+import 'package:frontend/cubit/navBar/navBarBloc.dart';
+import 'package:frontend/cubit/navBar/navBarState.dart';
 import 'package:frontend/cubit/sorting/sortBloc.dart';
 import 'package:frontend/cubit/sorting/sortState.dart';
 import 'package:frontend/cubit/space/spaceBlock.dart';
@@ -20,6 +23,8 @@ class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   final TextEditingController controllerSearch = TextEditingController();
+  final ScrollController controller = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -103,6 +108,7 @@ class HomePage extends StatelessWidget {
                       },
                       child: CustomScrollView(
                         cacheExtent: 8500,
+                        controller: controller,
                         key: const PageStorageKey<String>("Home"),
                         slivers: <Widget>[
                           SliverOverlapInjector(
@@ -166,7 +172,17 @@ class HomePage extends StatelessWidget {
                                   DaysSortChanged(sortDays: state.sortDays));
                             },
                             child: const SliverToBoxAdapter(child: SizedBox()),
-                          )
+                          ),
+                          BlocListener<NavBarBloc, NavBarState>(
+                            listenWhen: (previous, current) {
+                              return previous.doubleTap != current.doubleTap;
+                            },
+                            listener: (context, state) {
+                              HapticFeedback.lightImpact();
+                              controller.jumpTo(0);
+                            },
+                            child: const SliverToBoxAdapter(child: SizedBox()),
+                          ),
                         ],
                       ));
                 },

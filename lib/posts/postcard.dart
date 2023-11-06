@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -7,6 +8,7 @@ import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
 import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/common/thumnail.dart';
 import 'package:frontend/common/timeWidget.dart';
@@ -16,10 +18,12 @@ import 'package:frontend/posts/commentCount.dart';
 import 'package:frontend/posts/postMeta.dart';
 import 'package:frontend/posts/voteWidgetFlat.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/pictureMeta.dart';
 import '../models/voteRequest.dart';
@@ -62,22 +66,26 @@ class PostCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Flexible(
-                      child: PostMeta(
-                    spaceName: spaceName,
-                    maxUserNameLength: 16,
-                    post: post,
-                  )),
+                      child: FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: PostMeta(
+                            spaceName: spaceName,
+                            maxUserNameLength: 16,
+                            post: post,
+                          ))),
                   if (post.topic.isNotEmpty)
                     Container(
                       padding: const EdgeInsets.only(
                           left: 20, right: 20, bottom: 10),
-                      child: Text(
-                        post.topic,
-                        maxLines: 2,
-                        style: Theme.of(context).textTheme.titleLarge,
-                        textAlign: TextAlign.left,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                      child: FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Text(
+                            post.topic,
+                            maxLines: 2,
+                            style: Theme.of(context).textTheme.titleLarge,
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.ellipsis,
+                          )),
                     ),
                   if (post.body.isNotEmpty)
                     Container(
@@ -232,6 +240,10 @@ class PostCard extends StatelessWidget {
                   onTap: () {
                     context.push("/images/${pictures[0].id}");
                   },
+                  onLongPress: () {
+                    HapticFeedback.heavyImpact();
+                    showActionSheet(context);
+                  },
                   child: CachedNetworkImage(
                     imageUrl: "$urlPrefix${pictures[0].url}",
                     placeholder: (context, url) => Image.memory(
@@ -275,5 +287,38 @@ class PostCard extends StatelessWidget {
                   })));
     }
     return const SizedBox();
+  }
+
+  void showActionSheet(BuildContext context) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context1) => CupertinoActionSheet(
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            /// This parameter indicates the action would perform
+            /// a destructive action such as delete or exit and turns
+            /// the action's text color to red.
+            isDefaultAction: true,
+            onPressed: () async {
+              context1.pop();
+              await saveNetworkImage(post.postPictures![0].url).then((value) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    backgroundColor: Colors.green,
+                    content: Text('Image saved')));
+              });
+            },
+            child: const Text('Save Image'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> saveNetworkImage(String? url) async {
+    var response = await http.get(Uri.parse(url!));
+    final result = await ImageGallerySaver.saveImage(
+        Uint8List.fromList(response.bodyBytes),
+        quality: 80,
+        name: UniqueKey().toString());
   }
 }

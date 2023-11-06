@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/widgets.dart';
 import 'package:frontend/models/pictureMeta.dart';
 import 'package:frontend/models/postCardData.dart';
 import 'package:frontend/models/space.dart';
@@ -24,7 +25,8 @@ final class SpaceState extends Equatable {
       this.parentId = -1,
       this.spaceName = "",
       this.backgroundPicture,
-      this.spaceMeta});
+      this.spaceMeta,
+      this.controller});
 
   final SpaceStatus status;
   final List<PostCardData> posts;
@@ -36,7 +38,8 @@ final class SpaceState extends Equatable {
   final String spaceName;
   final PictureMeta? backgroundPicture;
   final Space? spaceMeta;
-
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final ScrollController? controller;
   SpaceState copyWith(
       {SortDays? days,
       SpaceStatus? status,
@@ -47,7 +50,8 @@ final class SpaceState extends Equatable {
       int? parentId,
       String? spaceName,
       PictureMeta? backgroundPicture,
-      Space? spaceMeta}) {
+      Space? spaceMeta,
+      ScrollController? controller}) {
     return SpaceState(
         status: status ?? this.status,
         posts: posts ?? this.posts,
@@ -58,7 +62,8 @@ final class SpaceState extends Equatable {
         spaceName: spaceName ?? this.spaceName,
         sortDays: days ?? sortDays,
         backgroundPicture: backgroundPicture ?? this.backgroundPicture,
-        spaceMeta: spaceMeta ?? this.spaceMeta);
+        spaceMeta: spaceMeta ?? this.spaceMeta,
+        controller: controller ?? this.controller);
   }
 
   @override
