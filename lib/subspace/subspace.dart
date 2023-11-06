@@ -42,7 +42,6 @@ class _SubSpaceState extends State<Subspace> {
 
   final String name;
   final int parentId;
-  late ScrollController controller;
 
   @override
   void initState() {
@@ -161,7 +160,6 @@ class _SubSpaceState extends State<Subspace> {
                     child: CustomScrollView(
                         cacheExtent: 8500,
                         key: PageStorageKey<String>(name),
-                        controller: controller,
                         slivers: <Widget>[
                           SliverOverlapInjector(
                             handle:

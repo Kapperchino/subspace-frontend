@@ -47,6 +47,7 @@ class HomePage extends StatelessWidget {
         ),
         body: NestedScrollView(
           floatHeaderSlivers: false,
+          controller: controller,
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverOverlapAbsorber(
@@ -108,7 +109,6 @@ class HomePage extends StatelessWidget {
                       },
                       child: CustomScrollView(
                         cacheExtent: 8500,
-                        controller: controller,
                         key: const PageStorageKey<String>("Home"),
                         slivers: <Widget>[
                           SliverOverlapInjector(
