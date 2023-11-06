@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/pictureMeta.dart';
 
-enum ImageViewStatus { initial, success, failure }
+enum ImageViewStatus { initial, success, failure, saved}
 
 final class ImageViewState extends Equatable {
   const ImageViewState(

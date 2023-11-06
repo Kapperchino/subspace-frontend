@@ -31,6 +31,7 @@ class ImageViewBloc extends Bloc<ImageViewEvent, ImageViewState> {
       transformer: throttleDroppable(throttleDuration),
     );
     on<ImageViewChanged>(_onTransformChange);
+    on<ImageSaved>(_onImageSaved);
   }
 
   final http.Client httpClient;
@@ -41,6 +42,15 @@ class ImageViewBloc extends Bloc<ImageViewEvent, ImageViewState> {
   ) async {
     return emit(
       state.copyWith(transform: event.transform),
+    );
+  }
+
+  Future<void> _onImageSaved(
+    ImageSaved event,
+    Emitter<ImageViewState> emit,
+  ) async {
+    return emit(
+      state.copyWith(status: ImageViewStatus.saved),
     );
   }
 

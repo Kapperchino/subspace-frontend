@@ -11,8 +11,11 @@ final class ImageFetched extends ImageViewEvent {
   ImageFetched({required this.imageId});
 }
 
+final class ImageSaved extends ImageViewEvent {
+  ImageSaved();
+}
+
 final class ImageViewChanged extends ImageViewEvent {
   final Matrix4 transform;
   ImageViewChanged({required this.transform});
 }
-
